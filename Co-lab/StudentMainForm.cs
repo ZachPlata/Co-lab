@@ -138,6 +138,7 @@ namespace Co_LAB
         {
             if (MessageBox.Show("Are you sure you want to sign out?", "Sign Out", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
+                UserSession.Clear();
                 this.Close();
             }
         }

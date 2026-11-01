@@ -1,3 +1,6 @@
+-- WARNING: re-importing this file wipes all existing data.
+DROP DATABASE IF EXISTS db_colab;
+
 -- =============================================================================
 -- Co-LAB: Official Database Setup Script
 -- Target Database: db_colab
@@ -16,6 +19,8 @@ CREATE TABLE IF NOT EXISTS `tbl_users` (
     `FullName` VARCHAR(100) NOT NULL,
     `Email` VARCHAR(100) NOT NULL UNIQUE,
     `Password` VARCHAR(255) NOT NULL,
+    `SecurityQuestion` VARCHAR(255) DEFAULT NULL,
+    `SecurityAnswer` VARCHAR(255) DEFAULT NULL,
     `Role` ENUM('Student', 'Admin') DEFAULT 'Student',
     `StudentNumber` VARCHAR(20) DEFAULT NULL,
     `College` VARCHAR(100) DEFAULT NULL,
@@ -108,6 +113,4 @@ CREATE TABLE IF NOT EXISTS `tbl_tos` (
 
 INSERT IGNORE INTO `tbl_tos` (`TosId`, `TosContent`) VALUES
 (1, 'WELCOME TO CO-LAB: UE STUDENT SKILL EXCHANGE\n\n1. ELIGIBILITY: You must be an officially enrolled student of the University of the East with a valid @ue.edu.ph email address.\n\n2. ACADEMIC INTEGRITY: Skills exchanged must focus on tutoring, mentoring, creative skills, or technical training. Directly completing someone else\'s graded exam, quiz, or project is strictly forbidden.\n\n3. NON-MONETARY POLICY: Co-LAB is a barter/exchange platform. Charging cash or cryptocurrency for skill sharing is prohibited.\n\n4. SAFETY & CONDUCT: Respect your fellow students. For Face-to-Face exchanges, only meet in public campus areas (Libraries, Student Centers, Cafeteria).\n\n5. VIOLATIONS: Violations will lead to immediate account suspension and blacklisting.');
-
-
 
