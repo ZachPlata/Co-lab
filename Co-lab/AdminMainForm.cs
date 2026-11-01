@@ -1,3 +1,7 @@
+using System;
+using System.Drawing;
+using System.Windows.Forms;
+
 namespace Co_LAB
 {
     [System.ComponentModel.DesignerCategory("Form")]
@@ -11,7 +15,8 @@ namespace Co_LAB
         private void AdminMainForm_Load(object sender, EventArgs e)
         {
             if (DesignMode) return;
-            btn_AdminDashboard.PerformClick();
+            // Default to Skill Categories matching the reference template
+            btn_SkillCategories.PerformClick();
         }
 
         // ==========================================
@@ -22,68 +27,75 @@ namespace Co_LAB
         {
             uc_AdminDashboard frm = new uc_AdminDashboard();
             panelContent.Controls.Clear();
+            frm.Dock = DockStyle.Fill;
             panelContent.Controls.Add(frm);
             frm.Show();
             SetActiveButton(btn_AdminDashboard);
-            lblHeaderTitle.Text = "Admin Dashboard";
         }
 
         private void btn_SkillCategories_Click(object sender, EventArgs e)
         {
             uc_SkillCategories frm = new uc_SkillCategories();
             panelContent.Controls.Clear();
+            frm.Dock = DockStyle.Fill;
             panelContent.Controls.Add(frm);
             frm.Show();
             SetActiveButton(btn_SkillCategories);
-            lblHeaderTitle.Text = "Skill Categories Creation";
         }
 
         private void btn_ModerateListings_Click(object sender, EventArgs e)
         {
             uc_ModerateListings frm = new uc_ModerateListings();
             panelContent.Controls.Clear();
+            frm.Dock = DockStyle.Fill;
             panelContent.Controls.Add(frm);
             frm.Show();
             SetActiveButton(btn_ModerateListings);
-            lblHeaderTitle.Text = "Moderate Skill Listings";
         }
 
         private void btn_ReportedStudents_Click(object sender, EventArgs e)
         {
             uc_ReportedStudents frm = new uc_ReportedStudents();
             panelContent.Controls.Clear();
+            frm.Dock = DockStyle.Fill;
             panelContent.Controls.Add(frm);
             frm.Show();
             SetActiveButton(btn_ReportedStudents);
-            lblHeaderTitle.Text = "Reports & Blacklist";
         }
 
         private void btn_UpdateTOS_Click(object sender, EventArgs e)
         {
             uc_UpdateTOS frm = new uc_UpdateTOS();
             panelContent.Controls.Clear();
+            frm.Dock = DockStyle.Fill;
             panelContent.Controls.Add(frm);
             frm.Show();
             SetActiveButton(btn_UpdateTOS);
-            lblHeaderTitle.Text = "Update Terms of Service";
         }
 
         private void SetActiveButton(Button activeButton)
         {
-            Button[] navButtons = { btn_AdminDashboard, btn_SkillCategories, btn_ModerateListings, btn_ReportedStudents, btn_UpdateTOS };
+            Button[] navButtons = { btn_AdminDashboard, btn_ModerateListings, btn_ReportedStudents, btn_SkillCategories, btn_UpdateTOS };
             foreach (var btn in navButtons)
             {
                 if (btn == activeButton)
                 {
-                    btn.BackColor = Color.FromArgb(28, 28, 33);
-                    btn.ForeColor = Color.FromArgb(16, 185, 129); // Emerald Green
-                    pnlNavIndicator.Location = new Point(0, btn.Top);
-                    pnlNavIndicator.Height = btn.Height;
+                    btn.BackColor = Color.FromArgb(18, 38, 26);
+                    btn.ForeColor = Color.White;
+                    btn.FlatAppearance.BorderColor = Color.FromArgb(16, 185, 129);
+                    btn.FlatAppearance.BorderSize = 1;
+
+                    pnlNavIndicator.Location = new Point(btn.Left, btn.Top + 6);
+                    pnlNavIndicator.Height = btn.Height - 12;
+                    pnlNavIndicator.Visible = true;
+                    pnlNavIndicator.BringToFront();
                 }
                 else
                 {
-                    btn.BackColor = Color.Transparent;
-                    btn.ForeColor = Color.FromArgb(161, 161, 170); // Muted gray
+                    btn.BackColor = Color.FromArgb(161, 161, 170); // Use existing color instead
+                    btn.ForeColor = Color.FromArgb(161, 161, 170);
+                    btn.FlatAppearance.BorderColor = Color.Transparent;
+                    btn.FlatAppearance.BorderSize = 0;
                 }
             }
         }
@@ -94,11 +106,6 @@ namespace Co_LAB
             {
                 this.Close();
             }
-        }
-
-        private void content_adminpan_Paint(object sender, PaintEventArgs e)
-        {
-
         }
     }
 }

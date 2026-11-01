@@ -34,7 +34,8 @@ VALUES (1, 'System Administrator', 'admin@ue.edu.ph', 'admin123', 'Admin', 'ADMI
 -- -----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS `tbl_categories` (
     `CategoryId` INT AUTO_INCREMENT PRIMARY KEY,
-    `CategoryName` VARCHAR(100) NOT NULL UNIQUE
+    CategoryName VARCHAR(100) NOT NULL UNIQUE,
+    Description TEXT DEFAULT NULL
 ) ENGINE=InnoDB;
 
 -- Initial default categories
@@ -107,4 +108,6 @@ CREATE TABLE IF NOT EXISTS `tbl_tos` (
 
 INSERT IGNORE INTO `tbl_tos` (`TosId`, `TosContent`) VALUES
 (1, 'WELCOME TO CO-LAB: UE STUDENT SKILL EXCHANGE\n\n1. ELIGIBILITY: You must be an officially enrolled student of the University of the East with a valid @ue.edu.ph email address.\n\n2. ACADEMIC INTEGRITY: Skills exchanged must focus on tutoring, mentoring, creative skills, or technical training. Directly completing someone else\'s graded exam, quiz, or project is strictly forbidden.\n\n3. NON-MONETARY POLICY: Co-LAB is a barter/exchange platform. Charging cash or cryptocurrency for skill sharing is prohibited.\n\n4. SAFETY & CONDUCT: Respect your fellow students. For Face-to-Face exchanges, only meet in public campus areas (Libraries, Student Centers, Cafeteria).\n\n5. VIOLATIONS: Violations will lead to immediate account suspension and blacklisting.');
+
+
 
