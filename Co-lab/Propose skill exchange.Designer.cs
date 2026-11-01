@@ -82,7 +82,7 @@ namespace Co_LAB
             lblTheyOffer.ForeColor = Color.FromArgb(200, 220, 210);
             lblTheyOffer.Location = new Point(116, 54);
             lblTheyOffer.Name = "lblTheyOffer";
-            lblTheyOffer.Size = new Size(239, 15);
+            lblTheyOffer.Size = new Size(234, 15);
             lblTheyOffer.TabIndex = 2;
             lblTheyOffer.Text = "They Offer: C# WinForms  MySQL Tutoring";
             // 
@@ -93,7 +93,7 @@ namespace Co_LAB
             lblTheyNeed.ForeColor = Color.FromArgb(200, 220, 210);
             lblTheyNeed.Location = new Point(116, 72);
             lblTheyNeed.Name = "lblTheyNeed";
-            lblTheyNeed.Size = new Size(244, 15);
+            lblTheyNeed.Size = new Size(243, 15);
             lblTheyNeed.TabIndex = 3;
             lblTheyNeed.Text = "They Need: Figma UI Design or Video Editing";
             // 
@@ -128,7 +128,7 @@ namespace Co_LAB
             lblUserDept.ForeColor = Color.FromArgb(160, 180, 170);
             lblUserDept.Location = new Point(58, 30);
             lblUserDept.Name = "lblUserDept";
-            lblUserDept.Size = new Size(257, 13);
+            lblUserDept.Size = new Size(256, 13);
             lblUserDept.TabIndex = 2;
             lblUserDept.Text = "College of Computer Studies and Systems (CCSS)";
             // 
@@ -139,7 +139,7 @@ namespace Co_LAB
             lblUserName.ForeColor = Color.White;
             lblUserName.Location = new Point(58, 9);
             lblUserName.Name = "lblUserName";
-            lblUserName.Size = new Size(111, 20);
+            lblUserName.Size = new Size(114, 20);
             lblUserName.TabIndex = 1;
             lblUserName.Text = "Samantha Cruz";
             // 
@@ -159,7 +159,7 @@ namespace Co_LAB
             lblReturnSkill.ForeColor = Color.White;
             lblReturnSkill.Location = new Point(20, 168);
             lblReturnSkill.Name = "lblReturnSkill";
-            lblReturnSkill.Size = new Size(302, 15);
+            lblReturnSkill.Size = new Size(291, 15);
             lblReturnSkill.TabIndex = 5;
             lblReturnSkill.Text = "What skill will you give in return? (Strictly No Cash):";
             // 
@@ -181,7 +181,7 @@ namespace Co_LAB
             lblTradeMode.ForeColor = Color.White;
             lblTradeMode.Location = new Point(20, 224);
             lblTradeMode.Name = "lblTradeMode";
-            lblTradeMode.Size = new Size(174, 15);
+            lblTradeMode.Size = new Size(183, 15);
             lblTradeMode.TabIndex = 7;
             lblTradeMode.Text = "Exchange Format / Trade Mode:";
             // 
@@ -202,7 +202,7 @@ namespace Co_LAB
             rbOnline.ForeColor = Color.Black;
             rbOnline.Location = new Point(230, 4);
             rbOnline.Name = "rbOnline";
-            rbOnline.Size = new Size(106, 19);
+            rbOnline.Size = new Size(105, 19);
             rbOnline.TabIndex = 1;
             rbOnline.TabStop = true;
             rbOnline.Text = "Online Session";
@@ -216,7 +216,7 @@ namespace Co_LAB
             rbFaceToFace.ForeColor = Color.Black;
             rbFaceToFace.Location = new Point(15, 4);
             rbFaceToFace.Name = "rbFaceToFace";
-            rbFaceToFace.Size = new Size(150, 19);
+            rbFaceToFace.Size = new Size(151, 19);
             rbFaceToFace.TabIndex = 0;
             rbFaceToFace.TabStop = true;
             rbFaceToFace.Text = "Face-to-Face (Campus)";
@@ -229,7 +229,7 @@ namespace Co_LAB
             lblLocation.ForeColor = Color.White;
             lblLocation.Location = new Point(20, 284);
             lblLocation.Name = "lblLocation";
-            lblLocation.Size = new Size(393, 15);
+            lblLocation.Size = new Size(352, 15);
             lblLocation.TabIndex = 9;
             lblLocation.Text = "Required Campus Meetup Location (e.g., UE Library 2nd Floor):";
             // 
@@ -299,7 +299,7 @@ namespace Co_LAB
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(16, 33, 23);
+            BackColor = Color.FromArgb(24, 24, 27);
             Controls.Add(btnCancel);
             Controls.Add(btnSendRequest);
             Controls.Add(txtNotes);

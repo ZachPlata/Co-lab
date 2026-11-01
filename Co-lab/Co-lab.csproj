@@ -21,16 +21,6 @@
       <DependentUpon>StudentMainForm.cs</DependentUpon>
     </EmbeddedResource>
 
-    <Compile Update="AdminMainForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Update="AdminMainForm.Designer.cs">
-      <DependentUpon>AdminMainForm.cs</DependentUpon>
-    </Compile>
-    <EmbeddedResource Update="AdminMainForm.resx">
-      <DependentUpon>AdminMainForm.cs</DependentUpon>
-    </EmbeddedResource>
-
     <!-- Student UserControls -->
     <Compile Update="UCStudents\uc_SkillExchange.cs">
       <SubType>UserControl</SubType>

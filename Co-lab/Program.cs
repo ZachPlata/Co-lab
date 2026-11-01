@@ -10,7 +10,7 @@ namespace Co_LAB
         {
             ApplicationConfiguration.Initialize();
             // Launch Student Portal by default:
-            Application.Run(new AdminMainForm());
+            Application.Run(new StudentMainForm());
 
             // To launch Admin Portal instead, swap with:
             // Application.Run(new AdminMainForm());
