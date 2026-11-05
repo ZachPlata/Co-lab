@@ -17,54 +17,139 @@ namespace Co_LAB
 
         private void InitializeComponent()
         {
-            flowLayoutPanel1 = new FlowLayoutPanel();
-            flowLayoutPanel2 = new FlowLayoutPanel();
             panel1 = new Panel();
-            flowLayoutPanel1.SuspendLayout();
+            panel2 = new Panel();
+            panel3 = new Panel();
+            dataGridViewReports = new DataGridView();
+            colReportId = new DataGridViewTextBoxColumn();
+            colReportedStudent = new DataGridViewTextBoxColumn();
+            colReporter = new DataGridViewTextBoxColumn();
+            colReason = new DataGridViewTextBoxColumn();
+            colDate = new DataGridViewTextBoxColumn();
+            colBlacklist = new DataGridViewButtonColumn();
+            lblTitle = new Label();
+            panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dataGridViewReports).BeginInit();
             SuspendLayout();
-            // 
-            // flowLayoutPanel1
-            // 
-            flowLayoutPanel1.BackColor = Color.FromArgb(64, 64, 64);
-            flowLayoutPanel1.Controls.Add(panel1);
-            flowLayoutPanel1.Location = new Point(0, 64);
-            flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(1086, 238);
-            flowLayoutPanel1.TabIndex = 0;
-            // 
-            // flowLayoutPanel2
-            // 
-            flowLayoutPanel2.BackColor = Color.FromArgb(64, 64, 64);
-            flowLayoutPanel2.Location = new Point(0, 329);
-            flowLayoutPanel2.Name = "flowLayoutPanel2";
-            flowLayoutPanel2.Size = new Size(1086, 238);
-            flowLayoutPanel2.TabIndex = 1;
             // 
             // panel1
             // 
-            panel1.Location = new Point(3, 3);
+            panel1.BackColor = Color.FromArgb(6, 95, 70);
+            panel1.Location = new Point(32, 62);
             panel1.Name = "panel1";
-            panel1.Size = new Size(250, 97);
+            panel1.Size = new Size(949, 78);
             panel1.TabIndex = 0;
+            // 
+            // panel2
+            // 
+            panel2.BackColor = Color.FromArgb(6, 95, 70);
+            panel2.Controls.Add(panel3);
+            panel2.Controls.Add(dataGridViewReports);
+            panel2.Controls.Add(lblTitle);
+            panel2.Location = new Point(33, 163);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(949, 560);
+            panel2.TabIndex = 1;
+            panel2.Paint += panel2_Paint;
+            // 
+            // panel3
+            // 
+            panel3.BackColor = Color.FromArgb(16, 185, 129);
+            panel3.Location = new Point(64, 40);
+            panel3.Name = "panel3";
+            panel3.Size = new Size(839, 47);
+            panel3.TabIndex = 0;
+            // 
+            // lblTitle
+            // 
+            lblTitle.AutoSize = true;
+            lblTitle.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point);
+            lblTitle.ForeColor = Color.White;
+            lblTitle.Location = new Point(70, 50);
+            lblTitle.Name = "lblTitle";
+            lblTitle.Size = new Size(150, 21);
+            lblTitle.TabIndex = 2;
+            lblTitle.Text = "Reported Students";
+            // 
+            // dataGridViewReports
+            // 
+            dataGridViewReports.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewReports.Columns.AddRange(new DataGridViewColumn[] {
+            colReportId,
+            colReportedStudent,
+            colReporter,
+            colReason,
+            colDate,
+            colBlacklist});
+            dataGridViewReports.Location = new Point(20, 110);
+            dataGridViewReports.Name = "dataGridViewReports";
+            dataGridViewReports.RowHeadersWidth = 51;
+            dataGridViewReports.RowTemplate.Height = 29;
+            dataGridViewReports.Size = new Size(910, 430);
+            dataGridViewReports.TabIndex = 3;
+            // 
+            // colReportId
+            // 
+            colReportId.HeaderText = "Report ID";
+            colReportId.MinimumWidth = 6;
+            colReportId.Name = "colReportId";
+            colReportId.Width = 125;
+            // 
+            // colReportedStudent
+            // 
+            colReportedStudent.HeaderText = "Student";
+            colReportedStudent.MinimumWidth = 6;
+            colReportedStudent.Name = "colReportedStudent";
+            colReportedStudent.Width = 150;
+            // 
+            // colReporter
+            // 
+            colReporter.HeaderText = "Reporter";
+            colReporter.MinimumWidth = 6;
+            colReporter.Name = "colReporter";
+            colReporter.Width = 150;
+            // 
+            // colReason
+            // 
+            colReason.HeaderText = "Reason";
+            colReason.MinimumWidth = 6;
+            colReason.Name = "colReason";
+            colReason.Width = 200;
+            // 
+            // colDate
+            // 
+            colDate.HeaderText = "Date";
+            colDate.MinimumWidth = 6;
+            colDate.Name = "colDate";
+            colDate.Width = 120;
+            // 
+            // colBlacklist
+            // 
+            colBlacklist.HeaderText = "Blacklist";
+            colBlacklist.MinimumWidth = 6;
+            colBlacklist.Name = "colBlacklist";
+            colBlacklist.Width = 80;
             // 
             // uc_ReportedStudents
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(24, 24, 27);
-            Controls.Add(flowLayoutPanel2);
-            Controls.Add(flowLayoutPanel1);
+            Controls.Add(panel2);
+            Controls.Add(panel1);
             Margin = new Padding(3, 4, 3, 4);
             Name = "uc_ReportedStudents";
             Size = new Size(1086, 843);
-            flowLayoutPanel1.ResumeLayout(false);
+            panel2.ResumeLayout(false);
+            panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)dataGridViewReports).EndInit();
             ResumeLayout(false);
         }
 
         #endregion
 
-        private FlowLayoutPanel flowLayoutPanel1;
         private Panel panel1;
-        private FlowLayoutPanel flowLayoutPanel2;
+        private Panel panel2;
+        private Panel panel3;
     }
 }

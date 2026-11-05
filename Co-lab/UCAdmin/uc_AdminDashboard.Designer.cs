@@ -154,6 +154,7 @@ namespace Co_LAB
             pnlStatPending.Name = "pnlStatPending";
             pnlStatPending.Size = new Size(475, 85);
             pnlStatPending.TabIndex = 2;
+            pnlStatPending.Paint += pnlStatPending_Paint;
             // 
             // lblStatPendingTitle
             // 
@@ -661,7 +662,7 @@ namespace Co_LAB
 
         #endregion
 
-        // Stat tiles
+        // Stat tile
         private Panel pnlStatStudents;
         private Panel pnlStatSkills;
         private Panel pnlStatPending;

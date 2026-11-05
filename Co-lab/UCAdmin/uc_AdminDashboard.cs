@@ -257,7 +257,7 @@ namespace Co_LAB
             }
             catch
             {
-                // DB offline
+                // DB offline?
             }
         }
 
@@ -467,6 +467,11 @@ namespace Co_LAB
         }
 
         private void button1_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pnlStatPending_Paint(object sender, PaintEventArgs e)
         {
 
         }
