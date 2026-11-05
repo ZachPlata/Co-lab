@@ -170,25 +170,5 @@ namespace Co_LAB
         {
             LoadListings(txtSearch.Text, cmbStatusFilter.SelectedItem?.ToString() ?? "All Statuses");
         }
-
-        private void button4_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void button7_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void button8_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void button11_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }
