@@ -1,3 +1,6 @@
+-- WARNING: re-importing this file wipes all existing data.
+DROP DATABASE IF EXISTS db_colab;
+
 -- =============================================================================
 -- Co-LAB: Official Database Setup Script
 -- Target Database: db_colab
@@ -16,6 +19,8 @@ CREATE TABLE IF NOT EXISTS `tbl_users` (
     `FullName` VARCHAR(100) NOT NULL,
     `Email` VARCHAR(100) NOT NULL UNIQUE,
     `Password` VARCHAR(255) NOT NULL,
+    `SecurityQuestion` VARCHAR(255) DEFAULT NULL,
+    `SecurityAnswer` VARCHAR(255) DEFAULT NULL,
     `Role` ENUM('Student', 'Admin') DEFAULT 'Student',
     `StudentNumber` VARCHAR(20) DEFAULT NULL,
     `College` VARCHAR(100) DEFAULT NULL,
@@ -34,7 +39,8 @@ VALUES (1, 'System Administrator', 'admin@ue.edu.ph', 'admin123', 'Admin', 'ADMI
 -- -----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS `tbl_categories` (
     `CategoryId` INT AUTO_INCREMENT PRIMARY KEY,
-    `CategoryName` VARCHAR(100) NOT NULL UNIQUE
+    CategoryName VARCHAR(100) NOT NULL UNIQUE,
+    Description TEXT DEFAULT NULL
 ) ENGINE=InnoDB;
 
 -- Initial default categories

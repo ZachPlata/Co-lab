@@ -3,6 +3,8 @@ namespace Co_LAB
     [System.ComponentModel.DesignerCategory("Form")]
     public partial class StudentMainForm : Form
     {
+        public static string CurrentStudentName { get; set; } = "Juan Dela Cruz";
+
         public StudentMainForm()
         {
             InitializeComponent();
@@ -11,8 +13,23 @@ namespace Co_LAB
         private void StudentMainForm_Load(object sender, EventArgs e)
         {
             if (DesignMode) return;
+
+            // Reflect current student name in header and dashboard button
+            lblWelcome.Text = $"Welcome, {CurrentStudentName}";
+            btn_UserDashboard.Text = $"👤 {CurrentStudentName} (Dashboard)";
+
             btn_SkillExchange.PerformClick();
         }
+
+        // ==========================================
+        // NAVIGATION SHORTCUTS
+        // ==========================================
+
+        public void NavigateToSkillExchange() => btn_SkillExchange.PerformClick();
+        public void NavigateToPostSkill() => btn_PostSkill.PerformClick();
+        public void NavigateToManageSkills() => btn_ManageSkills.PerformClick();
+        public void NavigateToTradeRequests() => btn_TradeRequests.PerformClick();
+        public void NavigateToUserDashboard() => btn_UserDashboard.PerformClick();
 
         // ==========================================
         // SIDEBAR BUTTON CLICK EVENTS (TRANSITIONS)
@@ -22,6 +39,7 @@ namespace Co_LAB
         {
             uc_SkillExchange frm = new uc_SkillExchange();
             panelContent.Controls.Clear();
+            frm.Dock = DockStyle.Fill;
             panelContent.Controls.Add(frm);
             frm.Show();
             SetActiveButton(btn_SkillExchange);
@@ -32,6 +50,7 @@ namespace Co_LAB
         {
             uc_PostSkill frm = new uc_PostSkill();
             panelContent.Controls.Clear();
+            frm.Dock = DockStyle.Fill;
             panelContent.Controls.Add(frm);
             frm.Show();
             SetActiveButton(btn_PostSkill);
@@ -42,6 +61,7 @@ namespace Co_LAB
         {
             uc_ManageSkills frm = new uc_ManageSkills();
             panelContent.Controls.Clear();
+            frm.Dock = DockStyle.Fill;
             panelContent.Controls.Add(frm);
             frm.Show();
             SetActiveButton(btn_ManageSkills);
@@ -52,6 +72,7 @@ namespace Co_LAB
         {
             uc_TradeRequests frm = new uc_TradeRequests();
             panelContent.Controls.Clear();
+            frm.Dock = DockStyle.Fill;
             panelContent.Controls.Add(frm);
             frm.Show();
             SetActiveButton(btn_TradeRequests);
@@ -60,7 +81,11 @@ namespace Co_LAB
 
         private void btn_UserDashboard_Click(object sender, EventArgs e)
         {
-            uc_UserDashboard frm = new uc_UserDashboard();
+            uc_UserDashboard frm = new uc_UserDashboard
+            {
+                CurrentStudentName = CurrentStudentName,
+                Dock = DockStyle.Fill
+            };
             panelContent.Controls.Clear();
             panelContent.Controls.Add(frm);
             frm.Show();
@@ -113,6 +138,7 @@ namespace Co_LAB
         {
             if (MessageBox.Show("Are you sure you want to sign out?", "Sign Out", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
+                UserSession.Clear();
                 this.Close();
             }
         }

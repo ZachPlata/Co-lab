@@ -21,14 +21,55 @@
       <DependentUpon>StudentMainForm.cs</DependentUpon>
     </EmbeddedResource>
 
-    <Compile Update="AdminMainForm.cs">
+    <Compile Update="LoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="AdminMainForm.Designer.cs">
-      <DependentUpon>AdminMainForm.cs</DependentUpon>
+    <Compile Update="LoginForm.Designer.cs">
+      <DependentUpon>LoginForm.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Update="AdminMainForm.resx">
-      <DependentUpon>AdminMainForm.cs</DependentUpon>
+    <EmbeddedResource Update="LoginForm.resx">
+      <DependentUpon>LoginForm.cs</DependentUpon>
+    </EmbeddedResource>
+
+    <Compile Update="TosDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="TosDialog.Designer.cs">
+      <DependentUpon>TosDialog.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="TosDialog.resx">
+      <DependentUpon>TosDialog.cs</DependentUpon>
+    </EmbeddedResource>
+
+    <!-- Auth UserControls -->
+    <Compile Update="UCAuth\uc_Login.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UCAuth\uc_Login.Designer.cs">
+      <DependentUpon>uc_Login.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="UCAuth\uc_Login.resx">
+      <DependentUpon>uc_Login.cs</DependentUpon>
+    </EmbeddedResource>
+
+    <Compile Update="UCAuth\uc_Register.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UCAuth\uc_Register.Designer.cs">
+      <DependentUpon>uc_Register.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="UCAuth\uc_Register.resx">
+      <DependentUpon>uc_Register.cs</DependentUpon>
+    </EmbeddedResource>
+
+    <Compile Update="UCAuth\uc_ForgotPassword.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UCAuth\uc_ForgotPassword.Designer.cs">
+      <DependentUpon>uc_ForgotPassword.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="UCAuth\uc_ForgotPassword.resx">
+      <DependentUpon>uc_ForgotPassword.cs</DependentUpon>
     </EmbeddedResource>
 
     <!-- Student UserControls -->
@@ -100,6 +141,16 @@
     </Compile>
     <EmbeddedResource Update="UCStudents\uc_SentRequests.resx">
       <DependentUpon>uc_SentRequests.cs</DependentUpon>
+    </EmbeddedResource>
+
+    <Compile Update="Propose skill exchange.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Propose skill exchange.Designer.cs">
+      <DependentUpon>Propose skill exchange.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="Propose skill exchange.resx">
+      <DependentUpon>Propose skill exchange.cs</DependentUpon>
     </EmbeddedResource>
 
     <!-- Admin UserControls -->
