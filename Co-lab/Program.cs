@@ -48,10 +48,17 @@ namespace Co_LAB
                 }
                 else if (UserSession.Role == "Admin")
                 {
-                    // TODO: AdminMainForm doesn't exist yet; launch AdminMainForm when available.
-                    MessageBox.Show("Admin portal is not available yet.", "Co-LAB Admin", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    UserSession.Clear();
-                    continue;
+                    Application.Run(new AdminMainForm());
+
+                    // When the admin form closes AND UserSession was cleared by a Sign Out, return to LoginForm; otherwise exit the app.
+                    if (!UserSession.IsLoggedIn)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
                 else
                 {

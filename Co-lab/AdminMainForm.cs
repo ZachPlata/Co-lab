@@ -96,7 +96,7 @@ namespace Co_LAB
             switch (destination)
             {
                 case "StudentAccounts":
-                    // No dedicated panel yet – fall back to the Dashboard itself
+                    // No dedicated panel yet â€“ fall back to the Dashboard itself
                     btn_AdminDashboard.PerformClick();
                     break;
                 case "SkillCategories":
