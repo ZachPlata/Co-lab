@@ -1,50 +1,52 @@
--- WARNING: re-importing this file wipes all existing data.
-DROP DATABASE IF EXISTS db_colab;
-
 -- =============================================================================
--- Co-LAB: Official Database Setup Script
+-- Co-LAB: Complete Database Schema
 -- Target Database: db_colab
--- For use in XAMPP phpMyAdmin / MySQL
+-- For use in XAMPP phpMyAdmin / MariaDB
 -- =============================================================================
 
 CREATE DATABASE IF NOT EXISTS `db_colab` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE `db_colab`;
 
+SET FOREIGN_KEY_CHECKS = 0;
+
 -- -----------------------------------------------------------------------------
--- 1. tbl_users: User accounts (Student & Admin)
--- Used by: Gabs (Login/Register) & Miggy (Admin/Blacklist)
+-- 1. Table: tbl_users
+-- Handles authentication, registration, forgot password, and blacklist status.
 -- -----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `tbl_users` (
+DROP TABLE IF EXISTS `tbl_users`;
+CREATE TABLE `tbl_users` (
     `UserId` INT AUTO_INCREMENT PRIMARY KEY,
     `FullName` VARCHAR(100) NOT NULL,
     `Email` VARCHAR(100) NOT NULL UNIQUE,
     `Password` VARCHAR(255) NOT NULL,
-    `SecurityQuestion` VARCHAR(255) DEFAULT NULL,
-    `SecurityAnswer` VARCHAR(255) DEFAULT NULL,
     `Role` ENUM('Student', 'Admin') DEFAULT 'Student',
     `StudentNumber` VARCHAR(20) DEFAULT NULL,
     `College` VARCHAR(100) DEFAULT NULL,
+    `SecurityQuestion` VARCHAR(255) DEFAULT 'What was the name of your first pet?',
+    `SecurityAnswer` VARCHAR(255) DEFAULT 'dog',
     `is_blacklisted` TINYINT(1) DEFAULT 0,
     `BanReason` VARCHAR(255) DEFAULT NULL,
     `CreatedAt` DATETIME DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
--- Default Admin account for testing the Admin panel
-INSERT IGNORE INTO `tbl_users` (`UserId`, `FullName`, `Email`, `Password`, `Role`, `StudentNumber`, `College`) 
-VALUES (1, 'System Administrator', 'admin@ue.edu.ph', 'admin123', 'Admin', 'ADMIN-001', 'Administration');
+-- Populate ONLY the 5 specific users (Password: 12345678)
+INSERT INTO `tbl_users` (`UserId`, `FullName`, `Email`, `Password`, `Role`, `SecurityQuestion`, `SecurityAnswer`) VALUES
+(1, 'Zach Plata', 'plata.zachbenedict@ue.edu.ph', '12345678', 'Student', 'What was the name of your first pet?', 'dog'),
+(2, 'Trowa Bugarin', 'bugarin.trowabarton@ue.edu.ph', '12345678', 'Student', 'What was the name of your first pet?', 'dog'),
+(3, 'Gabs Katipunan', 'katipunan.karisgabriel@ue.edu.ph', '12345678', 'Student', 'What was the name of your first pet?', 'dog'),
+(4, 'Andrei Sarmiento', 'sarmiento.andrei@ue.edu.ph', '12345678', 'Student', 'What was the name of your first pet?', 'dog'),
+(5, 'Miguel Borja', 'borja.miguelantonio@ue.edu.ph', '12345678', 'Student', 'What was the name of your first pet?', 'dog');
 
 -- -----------------------------------------------------------------------------
--- 2. tbl_categories: Skill categories
--- Used by: Miggy (Manage Categories) & Zach/Andrei (Dropdown filters)
+-- 2. Table: tbl_categories
 -- -----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `tbl_categories` (
+DROP TABLE IF EXISTS `tbl_categories`;
+CREATE TABLE `tbl_categories` (
     `CategoryId` INT AUTO_INCREMENT PRIMARY KEY,
-    CategoryName VARCHAR(100) NOT NULL UNIQUE,
-    Description TEXT DEFAULT NULL
+    `CategoryName` VARCHAR(100) NOT NULL UNIQUE
 ) ENGINE=InnoDB;
 
--- Initial default categories
-INSERT IGNORE INTO `tbl_categories` (`CategoryId`, `CategoryName`) VALUES
+INSERT INTO `tbl_categories` (`CategoryId`, `CategoryName`) VALUES
 (1, 'Computer Science & IT'),
 (2, 'Graphic & Visual Design'),
 (3, 'Engineering & Math'),
@@ -54,10 +56,10 @@ INSERT IGNORE INTO `tbl_categories` (`CategoryId`, `CategoryName`) VALUES
 (7, 'Video Editing & Multimedia');
 
 -- -----------------------------------------------------------------------------
--- 3. tbl_skills: Marketplace listings
--- Used by: Andrei (Post/Manage), Zach (Marketplace), Miggy (Moderation)
+-- 3. Table: tbl_skills
 -- -----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `tbl_skills` (
+DROP TABLE IF EXISTS `tbl_skills`;
+CREATE TABLE `tbl_skills` (
     `SkillId` INT AUTO_INCREMENT PRIMARY KEY,
     `SkillTitle` VARCHAR(150) NOT NULL,
     `Category` VARCHAR(100) NOT NULL,
@@ -71,10 +73,10 @@ CREATE TABLE IF NOT EXISTS `tbl_skills` (
 ) ENGINE=InnoDB;
 
 -- -----------------------------------------------------------------------------
--- 4. tbl_traderequests: Proposals between students
--- Used by: Trowa (Trade Dialog & Manage Requests)
+-- 4. Table: tbl_traderequests
 -- -----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `tbl_traderequests` (
+DROP TABLE IF EXISTS `tbl_traderequests`;
+CREATE TABLE `tbl_traderequests` (
     `RequestId` INT AUTO_INCREMENT PRIMARY KEY,
     `TargetSkillId` INT NOT NULL,
     `SenderName` VARCHAR(100) NOT NULL,
@@ -89,10 +91,10 @@ CREATE TABLE IF NOT EXISTS `tbl_traderequests` (
 ) ENGINE=InnoDB;
 
 -- -----------------------------------------------------------------------------
--- 5. tbl_reports: Reported listings & students
--- Used by: Zach ("Report" button) & Miggy (Reported Students)
+-- 5. Table: tbl_reports
 -- -----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `tbl_reports` (
+DROP TABLE IF EXISTS `tbl_reports`;
+CREATE TABLE `tbl_reports` (
     `ReportId` INT AUTO_INCREMENT PRIMARY KEY,
     `SkillId` INT DEFAULT NULL,
     `ReportedUser` VARCHAR(100) NOT NULL,
@@ -102,15 +104,16 @@ CREATE TABLE IF NOT EXISTS `tbl_reports` (
 ) ENGINE=InnoDB;
 
 -- -----------------------------------------------------------------------------
--- 6. tbl_tos: Terms of Service
--- Used by: Miggy (Update TOS) & Gabs (Register/Login TOS check)
+-- 6. Table: tbl_tos
 -- -----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `tbl_tos` (
+DROP TABLE IF EXISTS `tbl_tos`;
+CREATE TABLE `tbl_tos` (
     `TosId` INT AUTO_INCREMENT PRIMARY KEY,
     `TosContent` LONGTEXT NOT NULL,
     `LastUpdated` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
-INSERT IGNORE INTO `tbl_tos` (`TosId`, `TosContent`) VALUES
-(1, 'WELCOME TO CO-LAB: UE STUDENT SKILL EXCHANGE\n\n1. ELIGIBILITY: You must be an officially enrolled student of the University of the East with a valid @ue.edu.ph email address.\n\n2. ACADEMIC INTEGRITY: Skills exchanged must focus on tutoring, mentoring, creative skills, or technical training. Directly completing someone else\'s graded exam, quiz, or project is strictly forbidden.\n\n3. NON-MONETARY POLICY: Co-LAB is a barter/exchange platform. Charging cash or cryptocurrency for skill sharing is prohibited.\n\n4. SAFETY & CONDUCT: Respect your fellow students. For Face-to-Face exchanges, only meet in public campus areas (Libraries, Student Centers, Cafeteria).\n\n5. VIOLATIONS: Violations will lead to immediate account suspension and blacklisting.');
+INSERT INTO `tbl_tos` (`TosId`, `TosContent`) VALUES
+(1, "WELCOME TO CO-LAB: UE STUDENT SKILL EXCHANGE\n\n1. ELIGIBILITY: You must be an officially enrolled student of the University of the East with a valid @ue.edu.ph email address.\n\n2. ACADEMIC INTEGRITY: Skills exchanged must focus on tutoring, mentoring, creative skills, or technical training. Directly completing someone else's graded exam, quiz, or project is strictly forbidden.\n\n3. NON-MONETARY POLICY: Co-LAB is a barter/exchange platform. Charging cash or cryptocurrency for skill sharing is prohibited.\n\n4. SAFETY & CONDUCT: Respect your fellow students. For Face-to-Face exchanges, only meet in public campus areas (Libraries, Student Centers, Cafeteria).\n\n5. VIOLATIONS: Violations will lead to immediate account suspension and blacklisting.");
 
+SET FOREIGN_KEY_CHECKS = 1;
