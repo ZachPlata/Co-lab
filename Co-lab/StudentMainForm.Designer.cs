@@ -54,8 +54,9 @@ namespace Co_LAB
             pnlSidebar.Controls.Add(pnlBrand);
             pnlSidebar.Dock = DockStyle.Left;
             pnlSidebar.Location = new Point(0, 0);
+            pnlSidebar.Margin = new Padding(3, 4, 3, 4);
             pnlSidebar.Name = "pnlSidebar";
-            pnlSidebar.Size = new Size(250, 720);
+            pnlSidebar.Size = new Size(286, 960);
             pnlSidebar.TabIndex = 0;
             // 
             // pnlNavContainer
@@ -66,18 +67,20 @@ namespace Co_LAB
             pnlNavContainer.Controls.Add(btn_PostSkill);
             pnlNavContainer.Controls.Add(btn_SkillExchange);
             pnlNavContainer.Dock = DockStyle.Fill;
-            pnlNavContainer.Location = new Point(0, 85);
+            pnlNavContainer.Location = new Point(0, 113);
+            pnlNavContainer.Margin = new Padding(3, 4, 3, 4);
             pnlNavContainer.Name = "pnlNavContainer";
-            pnlNavContainer.Padding = new Padding(0, 10, 0, 0);
-            pnlNavContainer.Size = new Size(250, 535);
+            pnlNavContainer.Padding = new Padding(0, 13, 0, 0);
+            pnlNavContainer.Size = new Size(286, 714);
             pnlNavContainer.TabIndex = 1;
             // 
             // pnlNavIndicator
             // 
             pnlNavIndicator.BackColor = Color.FromArgb(16, 185, 129);
-            pnlNavIndicator.Location = new Point(0, 10);
+            pnlNavIndicator.Location = new Point(0, 13);
+            pnlNavIndicator.Margin = new Padding(3, 4, 3, 4);
             pnlNavIndicator.Name = "pnlNavIndicator";
-            pnlNavIndicator.Size = new Size(4, 50);
+            pnlNavIndicator.Size = new Size(5, 67);
             pnlNavIndicator.TabIndex = 4;
             // 
             // btn_TradeRequests
@@ -90,10 +93,11 @@ namespace Co_LAB
             btn_TradeRequests.FlatStyle = FlatStyle.Flat;
             btn_TradeRequests.Font = new Font("Segoe UI", 10F);
             btn_TradeRequests.ForeColor = Color.FromArgb(161, 161, 170);
-            btn_TradeRequests.Location = new Point(0, 160);
+            btn_TradeRequests.Location = new Point(0, 214);
+            btn_TradeRequests.Margin = new Padding(3, 4, 3, 4);
             btn_TradeRequests.Name = "btn_TradeRequests";
-            btn_TradeRequests.Padding = new Padding(22, 0, 10, 0);
-            btn_TradeRequests.Size = new Size(250, 50);
+            btn_TradeRequests.Padding = new Padding(25, 0, 11, 0);
+            btn_TradeRequests.Size = new Size(286, 67);
             btn_TradeRequests.TabIndex = 3;
             btn_TradeRequests.Text = "Trade Requests";
             btn_TradeRequests.TextAlign = ContentAlignment.MiddleLeft;
@@ -110,10 +114,11 @@ namespace Co_LAB
             btn_ManageSkills.FlatStyle = FlatStyle.Flat;
             btn_ManageSkills.Font = new Font("Segoe UI", 10F);
             btn_ManageSkills.ForeColor = Color.FromArgb(161, 161, 170);
-            btn_ManageSkills.Location = new Point(0, 110);
+            btn_ManageSkills.Location = new Point(0, 147);
+            btn_ManageSkills.Margin = new Padding(3, 4, 3, 4);
             btn_ManageSkills.Name = "btn_ManageSkills";
-            btn_ManageSkills.Padding = new Padding(22, 0, 10, 0);
-            btn_ManageSkills.Size = new Size(250, 50);
+            btn_ManageSkills.Padding = new Padding(25, 0, 11, 0);
+            btn_ManageSkills.Size = new Size(286, 67);
             btn_ManageSkills.TabIndex = 2;
             btn_ManageSkills.Text = "My Listings";
             btn_ManageSkills.TextAlign = ContentAlignment.MiddleLeft;
@@ -130,10 +135,11 @@ namespace Co_LAB
             btn_PostSkill.FlatStyle = FlatStyle.Flat;
             btn_PostSkill.Font = new Font("Segoe UI", 10F);
             btn_PostSkill.ForeColor = Color.FromArgb(161, 161, 170);
-            btn_PostSkill.Location = new Point(0, 60);
+            btn_PostSkill.Location = new Point(0, 80);
+            btn_PostSkill.Margin = new Padding(3, 4, 3, 4);
             btn_PostSkill.Name = "btn_PostSkill";
-            btn_PostSkill.Padding = new Padding(22, 0, 10, 0);
-            btn_PostSkill.Size = new Size(250, 50);
+            btn_PostSkill.Padding = new Padding(25, 0, 11, 0);
+            btn_PostSkill.Size = new Size(286, 67);
             btn_PostSkill.TabIndex = 1;
             btn_PostSkill.Text = "Post New Skill";
             btn_PostSkill.TextAlign = ContentAlignment.MiddleLeft;
@@ -150,10 +156,11 @@ namespace Co_LAB
             btn_SkillExchange.FlatStyle = FlatStyle.Flat;
             btn_SkillExchange.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btn_SkillExchange.ForeColor = Color.FromArgb(16, 185, 129);
-            btn_SkillExchange.Location = new Point(0, 10);
+            btn_SkillExchange.Location = new Point(0, 13);
+            btn_SkillExchange.Margin = new Padding(3, 4, 3, 4);
             btn_SkillExchange.Name = "btn_SkillExchange";
-            btn_SkillExchange.Padding = new Padding(22, 0, 10, 0);
-            btn_SkillExchange.Size = new Size(250, 50);
+            btn_SkillExchange.Padding = new Padding(25, 0, 11, 0);
+            btn_SkillExchange.Size = new Size(286, 67);
             btn_SkillExchange.TabIndex = 0;
             btn_SkillExchange.Text = "Skill Exchange";
             btn_SkillExchange.TextAlign = ContentAlignment.MiddleLeft;
@@ -166,9 +173,10 @@ namespace Co_LAB
             pnlSidebarBottom.Controls.Add(btn_UserDashboard);
             pnlSidebarBottom.Controls.Add(pnlDividerBottom);
             pnlSidebarBottom.Dock = DockStyle.Bottom;
-            pnlSidebarBottom.Location = new Point(0, 620);
+            pnlSidebarBottom.Location = new Point(0, 827);
+            pnlSidebarBottom.Margin = new Padding(3, 4, 3, 4);
             pnlSidebarBottom.Name = "pnlSidebarBottom";
-            pnlSidebarBottom.Size = new Size(250, 100);
+            pnlSidebarBottom.Size = new Size(286, 133);
             pnlSidebarBottom.TabIndex = 2;
             // 
             // btn_SignOut
@@ -181,10 +189,11 @@ namespace Co_LAB
             btn_SignOut.FlatStyle = FlatStyle.Flat;
             btn_SignOut.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold);
             btn_SignOut.ForeColor = Color.FromArgb(239, 68, 68);
-            btn_SignOut.Location = new Point(0, 50);
+            btn_SignOut.Location = new Point(0, 66);
+            btn_SignOut.Margin = new Padding(3, 4, 3, 4);
             btn_SignOut.Name = "btn_SignOut";
-            btn_SignOut.Padding = new Padding(22, 0, 0, 0);
-            btn_SignOut.Size = new Size(250, 50);
+            btn_SignOut.Padding = new Padding(25, 0, 0, 0);
+            btn_SignOut.Size = new Size(286, 67);
             btn_SignOut.TabIndex = 2;
             btn_SignOut.Text = "Sign Out";
             btn_SignOut.TextAlign = ContentAlignment.MiddleLeft;
@@ -202,9 +211,10 @@ namespace Co_LAB
             btn_UserDashboard.Font = new Font("Segoe UI", 9.5F);
             btn_UserDashboard.ForeColor = Color.FromArgb(161, 161, 170);
             btn_UserDashboard.Location = new Point(0, 1);
+            btn_UserDashboard.Margin = new Padding(3, 4, 3, 4);
             btn_UserDashboard.Name = "btn_UserDashboard";
-            btn_UserDashboard.Padding = new Padding(22, 0, 10, 0);
-            btn_UserDashboard.Size = new Size(250, 48);
+            btn_UserDashboard.Padding = new Padding(25, 0, 11, 0);
+            btn_UserDashboard.Size = new Size(286, 64);
             btn_UserDashboard.TabIndex = 1;
             btn_UserDashboard.Text = "👤 Zach Plata (Dashboard)";
             btn_UserDashboard.TextAlign = ContentAlignment.MiddleLeft;
@@ -216,8 +226,9 @@ namespace Co_LAB
             pnlDividerBottom.BackColor = Color.FromArgb(39, 39, 42);
             pnlDividerBottom.Dock = DockStyle.Top;
             pnlDividerBottom.Location = new Point(0, 0);
+            pnlDividerBottom.Margin = new Padding(3, 4, 3, 4);
             pnlDividerBottom.Name = "pnlDividerBottom";
-            pnlDividerBottom.Size = new Size(250, 1);
+            pnlDividerBottom.Size = new Size(286, 1);
             pnlDividerBottom.TabIndex = 0;
             // 
             // pnlBrand
@@ -227,17 +238,19 @@ namespace Co_LAB
             pnlBrand.Controls.Add(lblBrandTitle);
             pnlBrand.Dock = DockStyle.Top;
             pnlBrand.Location = new Point(0, 0);
+            pnlBrand.Margin = new Padding(3, 4, 3, 4);
             pnlBrand.Name = "pnlBrand";
-            pnlBrand.Size = new Size(250, 85);
+            pnlBrand.Size = new Size(286, 113);
             pnlBrand.TabIndex = 0;
             // 
             // pnlDividerTop
             // 
             pnlDividerTop.BackColor = Color.FromArgb(39, 39, 42);
             pnlDividerTop.Dock = DockStyle.Bottom;
-            pnlDividerTop.Location = new Point(0, 84);
+            pnlDividerTop.Location = new Point(0, 112);
+            pnlDividerTop.Margin = new Padding(3, 4, 3, 4);
             pnlDividerTop.Name = "pnlDividerTop";
-            pnlDividerTop.Size = new Size(250, 1);
+            pnlDividerTop.Size = new Size(286, 1);
             pnlDividerTop.TabIndex = 2;
             // 
             // lblBrandSubtitle
@@ -245,9 +258,9 @@ namespace Co_LAB
             lblBrandSubtitle.AutoSize = true;
             lblBrandSubtitle.Font = new Font("Segoe UI", 8.25F);
             lblBrandSubtitle.ForeColor = Color.FromArgb(161, 161, 170);
-            lblBrandSubtitle.Location = new Point(22, 48);
+            lblBrandSubtitle.Location = new Point(25, 64);
             lblBrandSubtitle.Name = "lblBrandSubtitle";
-            lblBrandSubtitle.Size = new Size(141, 13);
+            lblBrandSubtitle.Size = new Size(166, 19);
             lblBrandSubtitle.TabIndex = 1;
             lblBrandSubtitle.Text = "UE Student Skill Exchange";
             // 
@@ -256,9 +269,9 @@ namespace Co_LAB
             lblBrandTitle.AutoSize = true;
             lblBrandTitle.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
             lblBrandTitle.ForeColor = Color.FromArgb(16, 185, 129);
-            lblBrandTitle.Location = new Point(20, 18);
+            lblBrandTitle.Location = new Point(23, 24);
             lblBrandTitle.Name = "lblBrandTitle";
-            lblBrandTitle.Size = new Size(93, 30);
+            lblBrandTitle.Size = new Size(116, 37);
             lblBrandTitle.TabIndex = 0;
             lblBrandTitle.Text = "CO-LAB";
             // 
@@ -269,18 +282,20 @@ namespace Co_LAB
             pnlHeader.Controls.Add(lblWelcome);
             pnlHeader.Controls.Add(lblHeaderTitle);
             pnlHeader.Dock = DockStyle.Top;
-            pnlHeader.Location = new Point(250, 0);
+            pnlHeader.Location = new Point(286, 0);
+            pnlHeader.Margin = new Padding(3, 4, 3, 4);
             pnlHeader.Name = "pnlHeader";
-            pnlHeader.Size = new Size(950, 85);
+            pnlHeader.Size = new Size(1085, 113);
             pnlHeader.TabIndex = 1;
             // 
             // pnlDividerHeader
             // 
             pnlDividerHeader.BackColor = Color.FromArgb(39, 39, 42);
             pnlDividerHeader.Dock = DockStyle.Bottom;
-            pnlDividerHeader.Location = new Point(0, 84);
+            pnlDividerHeader.Location = new Point(0, 112);
+            pnlDividerHeader.Margin = new Padding(3, 4, 3, 4);
             pnlDividerHeader.Name = "pnlDividerHeader";
-            pnlDividerHeader.Size = new Size(950, 1);
+            pnlDividerHeader.Size = new Size(1085, 1);
             pnlDividerHeader.TabIndex = 2;
             // 
             // lblWelcome
@@ -290,9 +305,9 @@ namespace Co_LAB
             lblWelcome.Cursor = Cursors.Hand;
             lblWelcome.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold);
             lblWelcome.ForeColor = Color.FromArgb(16, 185, 129);
-            lblWelcome.Location = new Point(780, 32);
+            lblWelcome.Location = new Point(890, 43);
             lblWelcome.Name = "lblWelcome";
-            lblWelcome.Size = new Size(137, 17);
+            lblWelcome.Size = new Size(176, 23);
             lblWelcome.TabIndex = 1;
             lblWelcome.Text = "Welcome, Zach Plata";
             lblWelcome.Click += lblWelcome_Click;
@@ -302,9 +317,9 @@ namespace Co_LAB
             lblHeaderTitle.AutoSize = true;
             lblHeaderTitle.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
             lblHeaderTitle.ForeColor = Color.White;
-            lblHeaderTitle.Location = new Point(30, 24);
+            lblHeaderTitle.Location = new Point(34, 32);
             lblHeaderTitle.Name = "lblHeaderTitle";
-            lblHeaderTitle.Size = new Size(160, 30);
+            lblHeaderTitle.Size = new Size(199, 37);
             lblHeaderTitle.TabIndex = 0;
             lblHeaderTitle.Text = "Skill Exchange";
             // 
@@ -313,28 +328,31 @@ namespace Co_LAB
             panelContent.BackColor = Color.FromArgb(24, 24, 27);
             panelContent.Controls.Add(content_studpan);
             panelContent.Dock = DockStyle.Fill;
-            panelContent.Location = new Point(250, 85);
+            panelContent.Location = new Point(286, 113);
+            panelContent.Margin = new Padding(3, 4, 3, 4);
             panelContent.Name = "panelContent";
-            panelContent.Size = new Size(950, 635);
+            panelContent.Size = new Size(1085, 847);
             panelContent.TabIndex = 2;
             // 
             // content_studpan
             // 
             content_studpan.Location = new Point(0, 1);
+            content_studpan.Margin = new Padding(3, 4, 3, 4);
             content_studpan.Name = "content_studpan";
-            content_studpan.Size = new Size(950, 632);
+            content_studpan.Size = new Size(1086, 843);
             content_studpan.TabIndex = 1;
             // 
             // StudentMainForm
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(15, 15, 17);
-            ClientSize = new Size(1200, 720);
+            ClientSize = new Size(1371, 960);
             Controls.Add(panelContent);
             Controls.Add(pnlHeader);
             Controls.Add(pnlSidebar);
-            MinimumSize = new Size(1000, 600);
+            Margin = new Padding(3, 4, 3, 4);
+            MinimumSize = new Size(1140, 784);
             Name = "StudentMainForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "CO-LAB - Student Portal";

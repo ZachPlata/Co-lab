@@ -88,6 +88,32 @@ namespace Co_LAB
             }
         }
 
+        /// <summary>
+        /// Allows child UserControls (e.g., dashboard shortcuts) to trigger sidebar navigation.
+        /// </summary>
+        public void NavigateTo(string destination)
+        {
+            switch (destination)
+            {
+                case "StudentAccounts":
+                    // No dedicated panel yet – fall back to the Dashboard itself
+                    btn_AdminDashboard.PerformClick();
+                    break;
+                case "SkillCategories":
+                    btn_SkillCategories.PerformClick();
+                    break;
+                case "ModerateListings":
+                    btn_ModerateListings.PerformClick();
+                    break;
+                case "ReviewTickets":
+                    btn_ReportedStudents.PerformClick();
+                    break;
+                default:
+                    btn_AdminDashboard.PerformClick();
+                    break;
+            }
+        }
+
         private void btn_SignOut_Click(object sender, EventArgs e)
         {
             if (MessageBox.Show("Are you sure you want to sign out of the Admin panel?", "Sign Out", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
