@@ -54,5 +54,10 @@ namespace Co_LAB
             path.CloseFigure();
             return path;
         }
+
+        private void btnSendRequest_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
