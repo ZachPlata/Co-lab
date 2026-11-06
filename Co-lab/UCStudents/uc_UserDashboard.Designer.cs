@@ -721,10 +721,6 @@ namespace Co_LAB
         private Label lblIncomingTitle;
         private Label lblIncomingSub;
         private DataGridView dgvIncoming;
-        private DataGridViewTextBoxColumn colIncReqId;
-        private DataGridViewTextBoxColumn colIncRequester;
-        private DataGridViewTextBoxColumn colIncOfferBack;
-        private DataGridViewTextBoxColumn colIncMode;
         private Button btnAccept;
         private Button btnDecline;
 
@@ -736,10 +732,6 @@ namespace Co_LAB
         private ComboBox cmbCategory;
         private Button btnAddSkill;
         private DataGridView dgvMySkills;
-        private DataGridViewTextBoxColumn colUserSkillId;
-        private DataGridViewTextBoxColumn colSkillName;
-        private DataGridViewTextBoxColumn colCategory;
-        private DataGridViewTextBoxColumn colProficiency;
         private Button btnDeleteSkill;
         private Button btnOfferInMarket;
     }
