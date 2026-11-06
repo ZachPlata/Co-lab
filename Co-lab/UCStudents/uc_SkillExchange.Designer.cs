@@ -54,7 +54,7 @@ namespace Co_LAB
             lblListingCount.ForeColor = Color.FromArgb(161, 161, 170);
             lblListingCount.Location = new Point(810, 26);
             lblListingCount.Name = "lblListingCount";
-            lblListingCount.Size = new Size(116, 15);
+            lblListingCount.Size = new Size(93, 15);
             lblListingCount.TabIndex = 6;
             lblListingCount.Text = "0 skills available";
             lblListingCount.TextAlign = ContentAlignment.MiddleRight;
@@ -136,7 +136,7 @@ namespace Co_LAB
             lblSearch.ForeColor = Color.FromArgb(161, 161, 170);
             lblSearch.Location = new Point(22, 25);
             lblSearch.Name = "lblSearch";
-            lblSearch.Size = new Size(50, 15);
+            lblSearch.Size = new Size(48, 15);
             lblSearch.TabIndex = 0;
             lblSearch.Text = "Search:";
             // 

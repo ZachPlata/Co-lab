@@ -153,6 +153,16 @@
       <DependentUpon>Propose skill exchange.cs</DependentUpon>
     </EmbeddedResource>
 
+    <Compile Update="addskill.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="addskill.Designer.cs">
+      <DependentUpon>addskill.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="addskill.resx">
+      <DependentUpon>addskill.cs</DependentUpon>
+    </EmbeddedResource>
+
     <!-- Admin UserControls -->
     <Compile Update="UCAdmin\uc_AdminDashboard.cs">
       <SubType>UserControl</SubType>
