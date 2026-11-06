@@ -279,6 +279,7 @@ namespace Co_LAB
             btnSendRequest.TabIndex = 13;
             btnSendRequest.Text = "Send Request";
             btnSendRequest.UseVisualStyleBackColor = false;
+            btnSendRequest.Click += btnSendRequest_Click;
             // 
             // btnCancel
             // 
