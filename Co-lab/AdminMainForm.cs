@@ -1,4 +1,4 @@
-namespace Co_LAB
+﻿namespace Co_LAB
 {
     [System.ComponentModel.DesignerCategory("Form")]
     public partial class AdminMainForm : Form
@@ -96,7 +96,7 @@ namespace Co_LAB
             switch (destination)
             {
                 case "StudentAccounts":
-                    // No dedicated panel yet â€“ fall back to the Dashboard itself
+                    // No dedicated panel yet ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“ fall back to the Dashboard itself
                     btn_AdminDashboard.PerformClick();
                     break;
                 case "SkillCategories":
@@ -118,6 +118,7 @@ namespace Co_LAB
         {
             if (MessageBox.Show("Are you sure you want to sign out of the Admin panel?", "Sign Out", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
+                UserSession.Clear();
                 this.Close();
             }
         }

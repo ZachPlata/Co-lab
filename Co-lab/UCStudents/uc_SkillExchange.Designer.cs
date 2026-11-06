@@ -150,6 +150,7 @@ namespace Co_LAB
             flpMarketplace.Padding = new Padding(20);
             flpMarketplace.Size = new Size(950, 564);
             flpMarketplace.TabIndex = 1;
+            flpMarketplace.Paint += flpMarketplace_Paint;
             // 
             // uc_SkillExchange
             // 

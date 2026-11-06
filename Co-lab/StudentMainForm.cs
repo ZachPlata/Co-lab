@@ -100,7 +100,7 @@ namespace Co_LAB
 
         private void SetActiveButton(Button activeButton)
         {
-            Button[] navButtons = { btn_SkillExchange, btn_PostSkill, btn_ManageSkills, btn_TradeRequests };
+            Button[] navButtons = { btn_UserDashboard, btn_SkillExchange, btn_PostSkill, btn_ManageSkills, btn_TradeRequests };
             foreach (var btn in navButtons)
             {
                 if (btn == activeButton)
@@ -115,21 +115,6 @@ namespace Co_LAB
                 {
                     btn.BackColor = Color.Transparent;
                     btn.ForeColor = Color.FromArgb(161, 161, 170); // Muted gray
-                }
-            }
-
-            if (btn_UserDashboard != null)
-            {
-                if (activeButton == btn_UserDashboard)
-                {
-                    btn_UserDashboard.BackColor = Color.FromArgb(28, 28, 33);
-                    btn_UserDashboard.ForeColor = Color.FromArgb(16, 185, 129);
-                    pnlNavIndicator.Visible = false;
-                }
-                else
-                {
-                    btn_UserDashboard.BackColor = Color.Transparent;
-                    btn_UserDashboard.ForeColor = Color.FromArgb(161, 161, 170);
                 }
             }
         }

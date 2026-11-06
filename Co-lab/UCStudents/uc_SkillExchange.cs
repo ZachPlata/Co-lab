@@ -30,7 +30,6 @@ namespace Co_LAB
 
             try
             {
-                // Query categories table created by Miggy/Admin
                 DataTable dt = DatabaseHelper.ExecuteQuery("SELECT CategoryName FROM tbl_categories ORDER BY CategoryName ASC");
                 foreach (DataRow row in dt.Rows)
                 {
@@ -138,7 +137,6 @@ namespace Co_LAB
 
         private void OnRequestTradeClicked(string skillId, string title, string owner, string mode)
         {
-            // Connects with Trowa's Trade Request feature
             MessageBox.Show(
                 $"Opening trade proposal for:\n\nSkill: {title}\nOffered by: {owner}\nMode: {mode}\n\n(Trowa's FormTradeRequest will open here!)",
                 "Trade Request",
@@ -148,7 +146,6 @@ namespace Co_LAB
 
         private void OnReportClicked(string skillId, string title, string owner)
         {
-            // Report dialog for Miggy's Admin Moderation / Reported Students queue
             string reason = Microsoft.VisualBasic.Interaction.InputBox(
                 $"Why are you reporting this listing?\n\nListing: {title}\nPosted by: {owner}",
                 "Report Listing / Student",
@@ -198,6 +195,11 @@ namespace Co_LAB
                 btnSearch.PerformClick();
                 e.SuppressKeyPress = true;
             }
+        }
+
+        private void flpMarketplace_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }
