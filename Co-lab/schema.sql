@@ -1,5 +1,5 @@
 -- =============================================================================
--- Co-LAB: Complete Database Schema
+-- Co-LAB: Complete Database Schema (Updated per Blueprint)
 -- Target Database: db_colab
 -- For use in XAMPP phpMyAdmin / MariaDB
 -- =============================================================================
@@ -35,10 +35,11 @@ INSERT INTO `tbl_users` (`UserId`, `FullName`, `Email`, `Password`, `Role`, `Sec
 (2, 'Trowa Bugarin', 'bugarin.trowabarton@ue.edu.ph', '12345678', 'Student', 'What was the name of your first pet?', 'dog'),
 (3, 'Gabs Katipunan', 'katipunan.karisgabriel@ue.edu.ph', '12345678', 'Student', 'What was the name of your first pet?', 'dog'),
 (4, 'Andrei Sarmiento', 'sarmiento.andrei@ue.edu.ph', '12345678', 'Student', 'What was the name of your first pet?', 'dog'),
-(5, 'Miguel Borja', 'borja.miguelantonio@ue.edu.ph', '12345678', 'Student', 'What was the name of your first pet?', 'dog');
+(5, 'Miguel Borja', 'borja.miguelantonio@ue.edu.ph', '12345678', 'Admin', 'What was the name of your first pet?', 'dog');
 
 -- -----------------------------------------------------------------------------
 -- 2. Table: tbl_categories
+-- Skill categories managed by Admin and used in dropdown filters.
 -- -----------------------------------------------------------------------------
 DROP TABLE IF EXISTS `tbl_categories`;
 CREATE TABLE `tbl_categories` (
@@ -56,11 +57,37 @@ INSERT INTO `tbl_categories` (`CategoryId`, `CategoryName`) VALUES
 (7, 'Video Editing & Multimedia');
 
 -- -----------------------------------------------------------------------------
--- 3. Table: tbl_skills
+-- 3. Table: tbl_user_skills (Student Known Skills / Bio Inventory)
+-- Added per Blueprint: Skills the student knows, not yet listed in the marketplace.
+-- -----------------------------------------------------------------------------
+DROP TABLE IF EXISTS `tbl_user_skills`;
+CREATE TABLE `tbl_user_skills` (
+    `UserSkillId` INT AUTO_INCREMENT PRIMARY KEY,
+    `UserId` INT NOT NULL,
+    `SkillName` VARCHAR(150) NOT NULL,
+    `Category` VARCHAR(100) NOT NULL,
+    `ProficiencyLevel` ENUM('Beginner', 'Intermediate', 'Advanced', 'Expert') DEFAULT 'Intermediate',
+    `CreatedAt` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`UserId`) REFERENCES `tbl_users`(`UserId`) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- Sample Known Skills for Students
+INSERT INTO `tbl_user_skills` (`UserId`, `SkillName`, `Category`, `ProficiencyLevel`) VALUES
+(1, 'C# Programming', 'Computer Science & IT', 'Advanced'),
+(1, 'SQL & Database Design', 'Computer Science & IT', 'Intermediate'),
+(2, 'Acoustic Guitar', 'Music & Arts', 'Intermediate'),
+(3, 'Calculus & Algebra', 'Engineering & Math', 'Advanced'),
+(4, 'Figma & UI Design', 'Graphic & Visual Design', 'Expert');
+
+-- -----------------------------------------------------------------------------
+-- 4. Table: tbl_skills (Marketplace Listings)
+-- Created in My Listings by selecting one of the student's known skills.
 -- -----------------------------------------------------------------------------
 DROP TABLE IF EXISTS `tbl_skills`;
 CREATE TABLE `tbl_skills` (
     `SkillId` INT AUTO_INCREMENT PRIMARY KEY,
+    `UserId` INT NOT NULL,
+    `UserSkillId` INT NULL,
     `SkillTitle` VARCHAR(150) NOT NULL,
     `Category` VARCHAR(100) NOT NULL,
     `Description` TEXT NOT NULL,
@@ -68,12 +95,19 @@ CREATE TABLE `tbl_skills` (
     `DesiredSkill` VARCHAR(150) DEFAULT 'Open to any skill',
     `DeliveryMode` ENUM('Online', 'Face-to-Face') DEFAULT 'Online',
     `Location` VARCHAR(150) DEFAULT NULL,
-    `Status` ENUM('Active', 'Flagged', 'Under Review', 'Completed', 'Archived') DEFAULT 'Active',
-    `CreatedAt` DATETIME DEFAULT CURRENT_TIMESTAMP
+    `Status` ENUM('Active', 'Paused', 'Flagged', 'Under Review', 'Completed', 'Archived') DEFAULT 'Active',
+    `CreatedAt` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`UserId`) REFERENCES `tbl_users`(`UserId`) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
+INSERT INTO `tbl_skills` (`UserId`, `UserSkillId`, `SkillTitle`, `Category`, `Description`, `OfferedBy`, `DesiredSkill`, `DeliveryMode`, `Location`, `Status`) VALUES
+(1, 1, 'C# & .NET WinForms Tutoring', 'Computer Science & IT', 'Guiding students through object-oriented programming, WinForms layouts, and SQL connectivity.', 'Zach Plata', 'Figma UI Basics', 'Online', 'Discord / Google Meet', 'Active'),
+(4, 5, 'Figma UI/UX Mockups & Prototyping', 'Graphic & Visual Design', 'Will design clean user interfaces and interactive prototypes for your student projects.', 'Andrei Sarmiento', 'C# Tutoring', 'Online', 'Discord', 'Active'),
+(3, 4, 'Calculus & Differential Equations', 'Engineering & Math', 'Step-by-step tutoring on derivatives, integrals, and exam prep.', 'Gabs Katipunan', 'Any Creative Skill', 'Face-to-Face', 'Tan Yan Kee Bldg 3rd Flr', 'Active'),
+(2, 3, 'Beginner Guitar Lessons', 'Music & Arts', 'Learn basic chords, strumming rhythms, and fingerstyle acoustic basics.', 'Trowa Bugarin', 'Web Development', 'Face-to-Face', 'UE Student Center', 'Active');
+
 -- -----------------------------------------------------------------------------
--- 4. Table: tbl_traderequests
+-- 5. Table: tbl_traderequests (Proposals between students)
 -- -----------------------------------------------------------------------------
 DROP TABLE IF EXISTS `tbl_traderequests`;
 CREATE TABLE `tbl_traderequests` (
@@ -91,7 +125,7 @@ CREATE TABLE `tbl_traderequests` (
 ) ENGINE=InnoDB;
 
 -- -----------------------------------------------------------------------------
--- 5. Table: tbl_reports
+-- 6. Table: tbl_reports (Listing & student reports)
 -- -----------------------------------------------------------------------------
 DROP TABLE IF EXISTS `tbl_reports`;
 CREATE TABLE `tbl_reports` (
@@ -104,7 +138,7 @@ CREATE TABLE `tbl_reports` (
 ) ENGINE=InnoDB;
 
 -- -----------------------------------------------------------------------------
--- 6. Table: tbl_tos
+-- 7. Table: tbl_tos (Terms of Service)
 -- -----------------------------------------------------------------------------
 DROP TABLE IF EXISTS `tbl_tos`;
 CREATE TABLE `tbl_tos` (

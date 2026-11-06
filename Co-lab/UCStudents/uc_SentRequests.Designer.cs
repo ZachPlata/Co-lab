@@ -17,36 +17,37 @@ namespace Co_LAB
 
         private void InitializeComponent()
         {
-            lblTitle = new Label();
+            flpRequests = new FlowLayoutPanel();
             SuspendLayout();
             // 
-            // lblTitle
+            // flpRequests
             // 
-            lblTitle.AutoSize = true;
-            lblTitle.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
-            lblTitle.ForeColor = Color.White;
-            lblTitle.Location = new Point(15, 15);
-            lblTitle.Name = "lblTitle";
-            lblTitle.Size = new Size(115, 21);
-            lblTitle.TabIndex = 0;
-            lblTitle.Text = "Sent Requests";
+            flpRequests.AutoScroll = true;
+            flpRequests.BackColor = Color.FromArgb(24, 24, 27);
+            flpRequests.Dock = DockStyle.Fill;
+            flpRequests.FlowDirection = FlowDirection.TopDown;
+            flpRequests.Location = new Point(0, 0);
+            flpRequests.Name = "flpRequests";
+            flpRequests.Padding = new Padding(12, 10, 12, 20);
+            flpRequests.Size = new Size(940, 600);
+            flpRequests.TabIndex = 0;
+            flpRequests.WrapContents = false;
+            flpRequests.Resize += flpRequests_Resize;
             // 
             // uc_SentRequests
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(24, 24, 27);
-            Controls.Add(lblTitle);
+            Controls.Add(flpRequests);
             Name = "uc_SentRequests";
             Size = new Size(940, 600);
             Load += uc_SentRequests_Load;
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
 
-        private Label lblTitle;
+        private FlowLayoutPanel flpRequests;
     }
 }
-

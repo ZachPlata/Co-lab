@@ -137,11 +137,34 @@ namespace Co_LAB
 
         private void OnRequestTradeClicked(string skillId, string title, string owner, string mode)
         {
-            MessageBox.Show(
-                $"Opening trade proposal for:\n\nSkill: {title}\nOffered by: {owner}\nMode: {mode}\n\n(Trowa's FormTradeRequest will open here!)",
-                "Trade Request",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
+            string currentStudent = UserSession.FullName;
+            if (!string.IsNullOrWhiteSpace(currentStudent) && string.Equals(owner, currentStudent, StringComparison.OrdinalIgnoreCase))
+            {
+                MessageBox.Show("This is your own skill listing! You cannot send a trade request to yourself.", "Notice", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            int.TryParse(skillId, out int parsedSkillId);
+
+            using Form dlg = new Form
+            {
+                Text = "Propose Skill Exchange",
+                Size = new Size(490, 585),
+                StartPosition = FormStartPosition.CenterParent,
+                BackColor = Color.FromArgb(20, 24, 21),
+                FormBorderStyle = FormBorderStyle.FixedDialog,
+                MaximizeBox = false,
+                MinimizeBox = false,
+                ShowInTaskbar = false
+            };
+
+            var uc = new Propose_skill_exchange
+            {
+                Dock = DockStyle.Fill
+            };
+            uc.InitializeTrade(parsedSkillId, title, owner, mode);
+            dlg.Controls.Add(uc);
+            dlg.ShowDialog(this);
         }
 
         private void OnReportClicked(string skillId, string title, string owner)

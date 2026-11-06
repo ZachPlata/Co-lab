@@ -18,7 +18,8 @@ namespace Co_LAB
             lblWelcome.Text = $"Welcome, {CurrentStudentName}";
             btn_UserDashboard.Text = $"👤 {CurrentStudentName} (Dashboard)";
 
-            btn_SkillExchange.PerformClick();
+            // Activate User Dashboard first so students can review/add their known skills
+            btn_UserDashboard.PerformClick();
         }
 
         // ==========================================
@@ -26,7 +27,6 @@ namespace Co_LAB
         // ==========================================
 
         public void NavigateToSkillExchange() => btn_SkillExchange.PerformClick();
-        public void NavigateToPostSkill() => btn_PostSkill.PerformClick();
         public void NavigateToManageSkills() => btn_ManageSkills.PerformClick();
         public void NavigateToTradeRequests() => btn_TradeRequests.PerformClick();
         public void NavigateToUserDashboard() => btn_UserDashboard.PerformClick();
@@ -44,17 +44,6 @@ namespace Co_LAB
             frm.Show();
             SetActiveButton(btn_SkillExchange);
             lblHeaderTitle.Text = "Skill Exchange";
-        }
-
-        private void btn_PostSkill_Click(object sender, EventArgs e)
-        {
-            uc_PostSkill frm = new uc_PostSkill();
-            panelContent.Controls.Clear();
-            frm.Dock = DockStyle.Fill;
-            panelContent.Controls.Add(frm);
-            frm.Show();
-            SetActiveButton(btn_PostSkill);
-            lblHeaderTitle.Text = "Post New Skill";
         }
 
         private void btn_ManageSkills_Click(object sender, EventArgs e)
@@ -100,7 +89,7 @@ namespace Co_LAB
 
         private void SetActiveButton(Button activeButton)
         {
-            Button[] navButtons = { btn_UserDashboard, btn_SkillExchange, btn_PostSkill, btn_ManageSkills, btn_TradeRequests };
+            Button[] navButtons = { btn_UserDashboard, btn_SkillExchange, btn_ManageSkills, btn_TradeRequests };
             foreach (var btn in navButtons)
             {
                 if (btn == activeButton)

@@ -17,53 +17,49 @@ namespace Co_LAB
 
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dgvHeaderStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dgvRowStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dgvHeaderStyle2 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dgvRowStyle2 = new DataGridViewCellStyle();
-
+            DataGridViewCellStyle dataGridViewCellStyle9 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle10 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle11 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle12 = new DataGridViewCellStyle();
             lblTitle = new Label();
             lblSubtitle = new Label();
             pnlUserBadge = new Panel();
             lblUserPrefix = new Label();
             lblUserName = new Label();
-
             pnlCard1 = new Panel();
             lblCard1Title = new Label();
             lblCard1Value = new Label();
-
             pnlCard2 = new Panel();
             lblCard2Title = new Label();
             lblCard2Value = new Label();
-
             pnlCard3 = new Panel();
             lblCard3Title = new Label();
             lblCard3Value = new Label();
-
             pnlCard4 = new Panel();
             lblCard4Title = new Label();
             lblCard4Value = new Label();
-
             pnlShortcuts = new Panel();
-            lblShortcutsTitle = new Label();
-            btnPostSkill = new Button();
-            btnBrowseMarketplace = new Button();
-            btnReadRegulations = new Button();
             btnTradeHistory = new Button();
-
+            btnReadRegulations = new Button();
+            btnBrowseMarketplace = new Button();
+            btnPostSkill = new Button();
+            lblShortcutsTitle = new Label();
             pnlIncoming = new Panel();
-            lblIncomingTitle = new Label();
-            lblIncomingSub = new Label();
-            dgvIncoming = new DataGridView();
-            btnAccept = new Button();
             btnDecline = new Button();
-
+            btnAccept = new Button();
+            dgvIncoming = new DataGridView();
+            lblIncomingSub = new Label();
+            lblIncomingTitle = new Label();
             pnlMySkills = new Panel();
-            lblMySkillsTitle = new Label();
-            lblMySkillsSub = new Label();
+            btnOfferInMarket = new Button();
+            btnDeleteSkill = new Button();
             dgvMySkills = new DataGridView();
-            btnCloseListing = new Button();
-
+            btnAddSkill = new Button();
+            cmbCategory = new ComboBox();
+            cmbProficiency = new ComboBox();
+            txtSkillName = new TextBox();
+            lblMySkillsSub = new Label();
+            lblMySkillsTitle = new Label();
             pnlUserBadge.SuspendLayout();
             pnlCard1.SuspendLayout();
             pnlCard2.SuspendLayout();
@@ -75,7 +71,6 @@ namespace Co_LAB
             pnlMySkills.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvMySkills).BeginInit();
             SuspendLayout();
-
             // 
             // lblTitle
             // 
@@ -84,10 +79,9 @@ namespace Co_LAB
             lblTitle.ForeColor = Color.White;
             lblTitle.Location = new Point(24, 12);
             lblTitle.Name = "lblTitle";
-            lblTitle.Size = new Size(307, 32);
+            lblTitle.Size = new Size(286, 32);
             lblTitle.TabIndex = 0;
             lblTitle.Text = "Student Trade Overview";
-
             // 
             // lblSubtitle
             // 
@@ -96,10 +90,9 @@ namespace Co_LAB
             lblSubtitle.ForeColor = Color.FromArgb(161, 161, 170);
             lblSubtitle.Location = new Point(26, 44);
             lblSubtitle.Name = "lblSubtitle";
-            lblSubtitle.Size = new Size(136, 15);
+            lblSubtitle.Size = new Size(134, 15);
             lblSubtitle.TabIndex = 1;
             lblSubtitle.Text = "Welcome back, student!";
-
             // 
             // pnlUserBadge
             // 
@@ -111,7 +104,6 @@ namespace Co_LAB
             pnlUserBadge.Size = new Size(200, 36);
             pnlUserBadge.TabIndex = 2;
             pnlUserBadge.Paint += RoundPanel_Paint;
-
             // 
             // lblUserPrefix
             // 
@@ -123,7 +115,6 @@ namespace Co_LAB
             lblUserPrefix.Size = new Size(33, 15);
             lblUserPrefix.TabIndex = 0;
             lblUserPrefix.Text = "User:";
-
             // 
             // lblUserName
             // 
@@ -132,12 +123,11 @@ namespace Co_LAB
             lblUserName.ForeColor = Color.White;
             lblUserName.Location = new Point(48, 9);
             lblUserName.Name = "lblUserName";
-            lblUserName.Size = new Size(99, 17);
+            lblUserName.Size = new Size(100, 17);
             lblUserName.TabIndex = 1;
             lblUserName.Text = "Juan Dela Cruz";
-
             // 
-            // pnlCard1 (Active Skill Listings)
+            // pnlCard1
             // 
             pnlCard1.BackColor = Color.FromArgb(24, 34, 27);
             pnlCard1.Controls.Add(lblCard1Title);
@@ -147,7 +137,6 @@ namespace Co_LAB
             pnlCard1.Size = new Size(215, 105);
             pnlCard1.TabIndex = 3;
             pnlCard1.Paint += RoundPanel_Paint;
-
             // 
             // lblCard1Title
             // 
@@ -159,24 +148,22 @@ namespace Co_LAB
             lblCard1Title.Padding = new Padding(0, 12, 0, 0);
             lblCard1Title.Size = new Size(215, 42);
             lblCard1Title.TabIndex = 0;
-            lblCard1Title.Text = "MY ACTIVE SKILL\r\nLISTINGS";
+            lblCard1Title.Text = "MY KNOWN SKILLS\r\n(PROFILE BIO)";
             lblCard1Title.TextAlign = ContentAlignment.TopCenter;
-
             // 
             // lblCard1Value
             // 
             lblCard1Value.Dock = DockStyle.Fill;
             lblCard1Value.Font = new Font("Segoe UI", 27F, FontStyle.Bold);
             lblCard1Value.ForeColor = Color.White;
-            lblCard1Value.Location = new Point(0, 42);
+            lblCard1Value.Location = new Point(0, 0);
             lblCard1Value.Name = "lblCard1Value";
-            lblCard1Value.Size = new Size(215, 63);
+            lblCard1Value.Size = new Size(215, 105);
             lblCard1Value.TabIndex = 1;
-            lblCard1Value.Text = "3";
+            lblCard1Value.Text = "0";
             lblCard1Value.TextAlign = ContentAlignment.MiddleCenter;
-
             // 
-            // pnlCard2 (Pending Incoming Requests)
+            // pnlCard2
             // 
             pnlCard2.BackColor = Color.FromArgb(24, 34, 27);
             pnlCard2.Controls.Add(lblCard2Title);
@@ -186,7 +173,6 @@ namespace Co_LAB
             pnlCard2.Size = new Size(215, 105);
             pnlCard2.TabIndex = 4;
             pnlCard2.Paint += RoundPanel_Paint;
-
             // 
             // lblCard2Title
             // 
@@ -200,22 +186,22 @@ namespace Co_LAB
             lblCard2Title.TabIndex = 0;
             lblCard2Title.Text = "PENDING INCOMING\r\nREQUESTS";
             lblCard2Title.TextAlign = ContentAlignment.TopCenter;
-
+            lblCard2Title.Click += lblCard2Title_Click;
             // 
             // lblCard2Value
             // 
             lblCard2Value.Dock = DockStyle.Fill;
             lblCard2Value.Font = new Font("Segoe UI", 27F, FontStyle.Bold);
             lblCard2Value.ForeColor = Color.FromArgb(234, 179, 8);
-            lblCard2Value.Location = new Point(0, 42);
+            lblCard2Value.Location = new Point(0, 0);
             lblCard2Value.Name = "lblCard2Value";
-            lblCard2Value.Size = new Size(215, 63);
+            lblCard2Value.Size = new Size(215, 105);
             lblCard2Value.TabIndex = 1;
-            lblCard2Value.Text = "2";
+            lblCard2Value.Text = "0";
             lblCard2Value.TextAlign = ContentAlignment.MiddleCenter;
-
+            lblCard2Value.Click += lblCard2Value_Click;
             // 
-            // pnlCard3 (Accepted Trades)
+            // pnlCard3
             // 
             pnlCard3.BackColor = Color.FromArgb(24, 34, 27);
             pnlCard3.Controls.Add(lblCard3Title);
@@ -225,7 +211,6 @@ namespace Co_LAB
             pnlCard3.Size = new Size(215, 105);
             pnlCard3.TabIndex = 5;
             pnlCard3.Paint += RoundPanel_Paint;
-
             // 
             // lblCard3Title
             // 
@@ -239,22 +224,20 @@ namespace Co_LAB
             lblCard3Title.TabIndex = 0;
             lblCard3Title.Text = "ACCEPTED TRADES\r\n(ACTIVE)";
             lblCard3Title.TextAlign = ContentAlignment.TopCenter;
-
             // 
             // lblCard3Value
             // 
             lblCard3Value.Dock = DockStyle.Fill;
             lblCard3Value.Font = new Font("Segoe UI", 27F, FontStyle.Bold);
             lblCard3Value.ForeColor = Color.FromArgb(94, 204, 122);
-            lblCard3Value.Location = new Point(0, 42);
+            lblCard3Value.Location = new Point(0, 0);
             lblCard3Value.Name = "lblCard3Value";
-            lblCard3Value.Size = new Size(215, 63);
+            lblCard3Value.Size = new Size(215, 105);
             lblCard3Value.TabIndex = 1;
-            lblCard3Value.Text = "5";
+            lblCard3Value.Text = "0";
             lblCard3Value.TextAlign = ContentAlignment.MiddleCenter;
-
             // 
-            // pnlCard4 (Outgoing Requests)
+            // pnlCard4
             // 
             pnlCard4.BackColor = Color.FromArgb(24, 34, 27);
             pnlCard4.Controls.Add(lblCard4Title);
@@ -264,7 +247,6 @@ namespace Co_LAB
             pnlCard4.Size = new Size(215, 105);
             pnlCard4.TabIndex = 6;
             pnlCard4.Paint += RoundPanel_Paint;
-
             // 
             // lblCard4Title
             // 
@@ -278,20 +260,18 @@ namespace Co_LAB
             lblCard4Title.TabIndex = 0;
             lblCard4Title.Text = "OUTGOING\r\nREQUESTS";
             lblCard4Title.TextAlign = ContentAlignment.TopCenter;
-
             // 
             // lblCard4Value
             // 
             lblCard4Value.Dock = DockStyle.Fill;
             lblCard4Value.Font = new Font("Segoe UI", 27F, FontStyle.Bold);
             lblCard4Value.ForeColor = Color.White;
-            lblCard4Value.Location = new Point(0, 42);
+            lblCard4Value.Location = new Point(0, 0);
             lblCard4Value.Name = "lblCard4Value";
-            lblCard4Value.Size = new Size(215, 63);
+            lblCard4Value.Size = new Size(215, 105);
             lblCard4Value.TabIndex = 1;
-            lblCard4Value.Text = "1";
+            lblCard4Value.Text = "0";
             lblCard4Value.TextAlign = ContentAlignment.MiddleCenter;
-
             // 
             // pnlShortcuts
             // 
@@ -306,83 +286,12 @@ namespace Co_LAB
             pnlShortcuts.Size = new Size(902, 80);
             pnlShortcuts.TabIndex = 7;
             pnlShortcuts.Paint += RoundPanel_Paint;
-
-            // 
-            // lblShortcutsTitle
-            // 
-            lblShortcutsTitle.AutoSize = true;
-            lblShortcutsTitle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblShortcutsTitle.ForeColor = Color.White;
-            lblShortcutsTitle.Location = new Point(20, 10);
-            lblShortcutsTitle.Name = "lblShortcutsTitle";
-            lblShortcutsTitle.Size = new Size(130, 19);
-            lblShortcutsTitle.TabIndex = 0;
-            lblShortcutsTitle.Text = "Student Shortcuts";
-
-            // 
-            // btnPostSkill
-            // 
-            btnPostSkill.BackColor = Color.FromArgb(20, 28, 23);
-            btnPostSkill.Cursor = Cursors.Hand;
-            btnPostSkill.FlatAppearance.BorderColor = Color.FromArgb(48, 68, 54);
-            btnPostSkill.FlatAppearance.BorderSize = 1;
-            btnPostSkill.FlatAppearance.MouseOverBackColor = Color.FromArgb(32, 45, 36);
-            btnPostSkill.FlatStyle = FlatStyle.Flat;
-            btnPostSkill.Font = new Font("Segoe UI Semibold", 9F);
-            btnPostSkill.ForeColor = Color.White;
-            btnPostSkill.Location = new Point(78, 36);
-            btnPostSkill.Name = "btnPostSkill";
-            btnPostSkill.Size = new Size(168, 32);
-            btnPostSkill.TabIndex = 1;
-            btnPostSkill.Text = "Post New Skill";
-            btnPostSkill.UseVisualStyleBackColor = false;
-            btnPostSkill.Click += btnPostSkill_Click;
-
-            // 
-            // btnBrowseMarketplace
-            // 
-            btnBrowseMarketplace.BackColor = Color.FromArgb(20, 28, 23);
-            btnBrowseMarketplace.Cursor = Cursors.Hand;
-            btnBrowseMarketplace.FlatAppearance.BorderColor = Color.FromArgb(48, 68, 54);
-            btnBrowseMarketplace.FlatAppearance.BorderSize = 1;
-            btnBrowseMarketplace.FlatAppearance.MouseOverBackColor = Color.FromArgb(32, 45, 36);
-            btnBrowseMarketplace.FlatStyle = FlatStyle.Flat;
-            btnBrowseMarketplace.Font = new Font("Segoe UI Semibold", 9F);
-            btnBrowseMarketplace.ForeColor = Color.White;
-            btnBrowseMarketplace.Location = new Point(266, 36);
-            btnBrowseMarketplace.Name = "btnBrowseMarketplace";
-            btnBrowseMarketplace.Size = new Size(178, 32);
-            btnBrowseMarketplace.TabIndex = 2;
-            btnBrowseMarketplace.Text = "Browse Marketplace";
-            btnBrowseMarketplace.UseVisualStyleBackColor = false;
-            btnBrowseMarketplace.Click += btnBrowseMarketplace_Click;
-
-            // 
-            // btnReadRegulations
-            // 
-            btnReadRegulations.BackColor = Color.FromArgb(20, 28, 23);
-            btnReadRegulations.Cursor = Cursors.Hand;
-            btnReadRegulations.FlatAppearance.BorderColor = Color.FromArgb(48, 68, 54);
-            btnReadRegulations.FlatAppearance.BorderSize = 1;
-            btnReadRegulations.FlatAppearance.MouseOverBackColor = Color.FromArgb(32, 45, 36);
-            btnReadRegulations.FlatStyle = FlatStyle.Flat;
-            btnReadRegulations.Font = new Font("Segoe UI Semibold", 9F);
-            btnReadRegulations.ForeColor = Color.White;
-            btnReadRegulations.Location = new Point(464, 36);
-            btnReadRegulations.Name = "btnReadRegulations";
-            btnReadRegulations.Size = new Size(172, 32);
-            btnReadRegulations.TabIndex = 3;
-            btnReadRegulations.Text = "Read Regulations";
-            btnReadRegulations.UseVisualStyleBackColor = false;
-            btnReadRegulations.Click += btnReadRegulations_Click;
-
             // 
             // btnTradeHistory
             // 
             btnTradeHistory.BackColor = Color.FromArgb(20, 28, 23);
             btnTradeHistory.Cursor = Cursors.Hand;
             btnTradeHistory.FlatAppearance.BorderColor = Color.FromArgb(48, 68, 54);
-            btnTradeHistory.FlatAppearance.BorderSize = 1;
             btnTradeHistory.FlatAppearance.MouseOverBackColor = Color.FromArgb(32, 45, 36);
             btnTradeHistory.FlatStyle = FlatStyle.Flat;
             btnTradeHistory.Font = new Font("Segoe UI Semibold", 9F);
@@ -394,9 +303,70 @@ namespace Co_LAB
             btnTradeHistory.Text = "My Trade History";
             btnTradeHistory.UseVisualStyleBackColor = false;
             btnTradeHistory.Click += btnTradeHistory_Click;
-
             // 
-            // pnlIncoming (Incoming Trade Requests)
+            // btnReadRegulations
+            // 
+            btnReadRegulations.BackColor = Color.FromArgb(20, 28, 23);
+            btnReadRegulations.Cursor = Cursors.Hand;
+            btnReadRegulations.FlatAppearance.BorderColor = Color.FromArgb(48, 68, 54);
+            btnReadRegulations.FlatAppearance.MouseOverBackColor = Color.FromArgb(32, 45, 36);
+            btnReadRegulations.FlatStyle = FlatStyle.Flat;
+            btnReadRegulations.Font = new Font("Segoe UI Semibold", 9F);
+            btnReadRegulations.ForeColor = Color.White;
+            btnReadRegulations.Location = new Point(464, 36);
+            btnReadRegulations.Name = "btnReadRegulations";
+            btnReadRegulations.Size = new Size(172, 32);
+            btnReadRegulations.TabIndex = 3;
+            btnReadRegulations.Text = "Read Regulations";
+            btnReadRegulations.UseVisualStyleBackColor = false;
+            btnReadRegulations.Click += btnReadRegulations_Click;
+            // 
+            // btnBrowseMarketplace
+            // 
+            btnBrowseMarketplace.BackColor = Color.FromArgb(20, 28, 23);
+            btnBrowseMarketplace.Cursor = Cursors.Hand;
+            btnBrowseMarketplace.FlatAppearance.BorderColor = Color.FromArgb(48, 68, 54);
+            btnBrowseMarketplace.FlatAppearance.MouseOverBackColor = Color.FromArgb(32, 45, 36);
+            btnBrowseMarketplace.FlatStyle = FlatStyle.Flat;
+            btnBrowseMarketplace.Font = new Font("Segoe UI Semibold", 9F);
+            btnBrowseMarketplace.ForeColor = Color.White;
+            btnBrowseMarketplace.Location = new Point(266, 36);
+            btnBrowseMarketplace.Name = "btnBrowseMarketplace";
+            btnBrowseMarketplace.Size = new Size(178, 32);
+            btnBrowseMarketplace.TabIndex = 2;
+            btnBrowseMarketplace.Text = "Browse Marketplace";
+            btnBrowseMarketplace.UseVisualStyleBackColor = false;
+            btnBrowseMarketplace.Click += btnBrowseMarketplace_Click;
+            // 
+            // btnPostSkill
+            // 
+            btnPostSkill.BackColor = Color.FromArgb(20, 28, 23);
+            btnPostSkill.Cursor = Cursors.Hand;
+            btnPostSkill.FlatAppearance.BorderColor = Color.FromArgb(48, 68, 54);
+            btnPostSkill.FlatAppearance.MouseOverBackColor = Color.FromArgb(32, 45, 36);
+            btnPostSkill.FlatStyle = FlatStyle.Flat;
+            btnPostSkill.Font = new Font("Segoe UI Semibold", 9F);
+            btnPostSkill.ForeColor = Color.White;
+            btnPostSkill.Location = new Point(78, 36);
+            btnPostSkill.Name = "btnPostSkill";
+            btnPostSkill.Size = new Size(180, 32);
+            btnPostSkill.TabIndex = 1;
+            btnPostSkill.Text = "➕ Offer Skill (My Listings)";
+            btnPostSkill.UseVisualStyleBackColor = false;
+            btnPostSkill.Click += btnPostSkill_Click;
+            // 
+            // lblShortcutsTitle
+            // 
+            lblShortcutsTitle.AutoSize = true;
+            lblShortcutsTitle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblShortcutsTitle.ForeColor = Color.White;
+            lblShortcutsTitle.Location = new Point(20, 10);
+            lblShortcutsTitle.Name = "lblShortcutsTitle";
+            lblShortcutsTitle.Size = new Size(126, 19);
+            lblShortcutsTitle.TabIndex = 0;
+            lblShortcutsTitle.Text = "Student Shortcuts";
+            // 
+            // pnlIncoming
             // 
             pnlIncoming.BackColor = Color.FromArgb(24, 34, 27);
             pnlIncoming.Controls.Add(btnDecline);
@@ -409,93 +379,6 @@ namespace Co_LAB
             pnlIncoming.Size = new Size(443, 342);
             pnlIncoming.TabIndex = 8;
             pnlIncoming.Paint += RoundPanel_Paint;
-
-            // 
-            // lblIncomingTitle
-            // 
-            lblIncomingTitle.AutoSize = true;
-            lblIncomingTitle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblIncomingTitle.ForeColor = Color.White;
-            lblIncomingTitle.Location = new Point(14, 12);
-            lblIncomingTitle.Name = "lblIncomingTitle";
-            lblIncomingTitle.Size = new Size(174, 19);
-            lblIncomingTitle.TabIndex = 0;
-            lblIncomingTitle.Text = "Incoming Trade Requests";
-
-            // 
-            // lblIncomingSub
-            // 
-            lblIncomingSub.AutoSize = true;
-            lblIncomingSub.Font = new Font("Segoe UI", 8.5F);
-            lblIncomingSub.ForeColor = Color.FromArgb(140, 160, 145);
-            lblIncomingSub.Location = new Point(190, 15);
-            lblIncomingSub.Name = "lblIncomingSub";
-            lblIncomingSub.Size = new Size(149, 15);
-            lblIncomingSub.TabIndex = 1;
-            lblIncomingSub.Text = "(Waiting for your approval)";
-
-            // 
-            // dgvIncoming
-            // 
-            dgvIncoming.AllowUserToAddRows = false;
-            dgvIncoming.AllowUserToDeleteRows = false;
-            dgvIncoming.AllowUserToResizeRows = false;
-            dgvIncoming.BackgroundColor = Color.FromArgb(19, 26, 21);
-            dgvIncoming.BorderStyle = BorderStyle.None;
-            dgvIncoming.CellBorderStyle = DataGridViewCellBorderStyle.Single;
-            dgvIncoming.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
-            dgvHeaderStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dgvHeaderStyle1.BackColor = Color.FromArgb(28, 38, 31);
-            dgvHeaderStyle1.Font = new Font("Segoe UI Semibold", 8.5F, FontStyle.Bold);
-            dgvHeaderStyle1.ForeColor = Color.White;
-            dgvHeaderStyle1.Padding = new Padding(4, 0, 0, 0);
-            dgvHeaderStyle1.SelectionBackColor = Color.FromArgb(28, 38, 31);
-            dgvHeaderStyle1.SelectionForeColor = Color.White;
-            dgvHeaderStyle1.WrapMode = DataGridViewTriState.False;
-            dgvIncoming.ColumnHeadersDefaultCellStyle = dgvHeaderStyle1;
-            dgvIncoming.ColumnHeadersHeight = 28;
-            dgvIncoming.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            dgvRowStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dgvRowStyle1.BackColor = Color.FromArgb(22, 30, 24);
-            dgvRowStyle1.Font = new Font("Segoe UI", 8.5F);
-            dgvRowStyle1.ForeColor = Color.FromArgb(228, 228, 231);
-            dgvRowStyle1.Padding = new Padding(4, 0, 0, 0);
-            dgvRowStyle1.SelectionBackColor = Color.FromArgb(38, 58, 45);
-            dgvRowStyle1.SelectionForeColor = Color.White;
-            dgvRowStyle1.WrapMode = DataGridViewTriState.False;
-            dgvIncoming.DefaultCellStyle = dgvRowStyle1;
-            dgvIncoming.EnableHeadersVisualStyles = false;
-            dgvIncoming.GridColor = Color.FromArgb(42, 58, 46);
-            dgvIncoming.Location = new Point(14, 38);
-            dgvIncoming.MultiSelect = false;
-            dgvIncoming.Name = "dgvIncoming";
-            dgvIncoming.ReadOnly = true;
-            dgvIncoming.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
-            dgvIncoming.RowHeadersDefaultCellStyle = dgvHeaderStyle1;
-            dgvIncoming.RowHeadersWidth = 24;
-            dgvIncoming.RowTemplate.Height = 26;
-            dgvIncoming.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvIncoming.Size = new Size(330, 288);
-            dgvIncoming.TabIndex = 2;
-
-            // 
-            // btnAccept
-            // 
-            btnAccept.BackColor = Color.FromArgb(78, 135, 82);
-            btnAccept.Cursor = Cursors.Hand;
-            btnAccept.FlatAppearance.BorderSize = 0;
-            btnAccept.FlatAppearance.MouseOverBackColor = Color.FromArgb(92, 155, 96);
-            btnAccept.FlatStyle = FlatStyle.Flat;
-            btnAccept.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
-            btnAccept.ForeColor = Color.White;
-            btnAccept.Location = new Point(353, 142);
-            btnAccept.Name = "btnAccept";
-            btnAccept.Size = new Size(78, 32);
-            btnAccept.TabIndex = 3;
-            btnAccept.Text = "Accept";
-            btnAccept.UseVisualStyleBackColor = false;
-            btnAccept.Click += btnAccept_Click;
-
             // 
             // btnDecline
             // 
@@ -513,13 +396,98 @@ namespace Co_LAB
             btnDecline.Text = "Decline";
             btnDecline.UseVisualStyleBackColor = false;
             btnDecline.Click += btnDecline_Click;
-
             // 
-            // pnlMySkills (My Offered Skills)
+            // btnAccept
+            // 
+            btnAccept.BackColor = Color.FromArgb(78, 135, 82);
+            btnAccept.Cursor = Cursors.Hand;
+            btnAccept.FlatAppearance.BorderSize = 0;
+            btnAccept.FlatAppearance.MouseOverBackColor = Color.FromArgb(92, 155, 96);
+            btnAccept.FlatStyle = FlatStyle.Flat;
+            btnAccept.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
+            btnAccept.ForeColor = Color.White;
+            btnAccept.Location = new Point(353, 142);
+            btnAccept.Name = "btnAccept";
+            btnAccept.Size = new Size(78, 32);
+            btnAccept.TabIndex = 3;
+            btnAccept.Text = "Accept";
+            btnAccept.UseVisualStyleBackColor = false;
+            btnAccept.Click += btnAccept_Click;
+            // 
+            // dgvIncoming
+            // 
+            dgvIncoming.AllowUserToAddRows = false;
+            dgvIncoming.AllowUserToDeleteRows = false;
+            dgvIncoming.AllowUserToResizeRows = false;
+            dgvIncoming.BackgroundColor = Color.FromArgb(19, 26, 21);
+            dgvIncoming.BorderStyle = BorderStyle.None;
+            dgvIncoming.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
+            dataGridViewCellStyle9.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle9.BackColor = Color.FromArgb(28, 38, 31);
+            dataGridViewCellStyle9.Font = new Font("Segoe UI Semibold", 8.5F, FontStyle.Bold);
+            dataGridViewCellStyle9.ForeColor = Color.White;
+            dataGridViewCellStyle9.Padding = new Padding(4, 0, 0, 0);
+            dataGridViewCellStyle9.SelectionBackColor = Color.FromArgb(28, 38, 31);
+            dataGridViewCellStyle9.SelectionForeColor = Color.White;
+            dataGridViewCellStyle9.WrapMode = DataGridViewTriState.False;
+            dgvIncoming.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle9;
+            dgvIncoming.ColumnHeadersHeight = 28;
+            dgvIncoming.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            dataGridViewCellStyle10.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle10.BackColor = Color.FromArgb(22, 30, 24);
+            dataGridViewCellStyle10.Font = new Font("Segoe UI", 8.5F);
+            dataGridViewCellStyle10.ForeColor = Color.FromArgb(228, 228, 231);
+            dataGridViewCellStyle10.Padding = new Padding(4, 0, 0, 0);
+            dataGridViewCellStyle10.SelectionBackColor = Color.FromArgb(38, 58, 45);
+            dataGridViewCellStyle10.SelectionForeColor = Color.White;
+            dataGridViewCellStyle10.WrapMode = DataGridViewTriState.False;
+            dgvIncoming.DefaultCellStyle = dataGridViewCellStyle10;
+            dgvIncoming.EnableHeadersVisualStyles = false;
+            dgvIncoming.GridColor = Color.FromArgb(42, 58, 46);
+            dgvIncoming.Location = new Point(14, 38);
+            dgvIncoming.MultiSelect = false;
+            dgvIncoming.Name = "dgvIncoming";
+            dgvIncoming.ReadOnly = true;
+            dgvIncoming.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
+            dgvIncoming.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
+            dgvIncoming.RowHeadersWidth = 24;
+            dgvIncoming.RowTemplate.Height = 26;
+            dgvIncoming.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvIncoming.Size = new Size(330, 288);
+            dgvIncoming.TabIndex = 2;
+            // 
+            // lblIncomingSub
+            // 
+            lblIncomingSub.AutoSize = true;
+            lblIncomingSub.Font = new Font("Segoe UI", 8.5F);
+            lblIncomingSub.ForeColor = Color.FromArgb(140, 160, 145);
+            lblIncomingSub.Location = new Point(190, 15);
+            lblIncomingSub.Name = "lblIncomingSub";
+            lblIncomingSub.Size = new Size(150, 15);
+            lblIncomingSub.TabIndex = 1;
+            lblIncomingSub.Text = "(Waiting for your approval)";
+            // 
+            // lblIncomingTitle
+            // 
+            lblIncomingTitle.AutoSize = true;
+            lblIncomingTitle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblIncomingTitle.ForeColor = Color.White;
+            lblIncomingTitle.Location = new Point(14, 12);
+            lblIncomingTitle.Name = "lblIncomingTitle";
+            lblIncomingTitle.Size = new Size(176, 19);
+            lblIncomingTitle.TabIndex = 0;
+            lblIncomingTitle.Text = "Incoming Trade Requests";
+            // 
+            // pnlMySkills
             // 
             pnlMySkills.BackColor = Color.FromArgb(24, 34, 27);
-            pnlMySkills.Controls.Add(btnCloseListing);
+            pnlMySkills.Controls.Add(btnOfferInMarket);
+            pnlMySkills.Controls.Add(btnDeleteSkill);
             pnlMySkills.Controls.Add(dgvMySkills);
+            pnlMySkills.Controls.Add(btnAddSkill);
+            pnlMySkills.Controls.Add(cmbCategory);
+            pnlMySkills.Controls.Add(cmbProficiency);
+            pnlMySkills.Controls.Add(txtSkillName);
             pnlMySkills.Controls.Add(lblMySkillsSub);
             pnlMySkills.Controls.Add(lblMySkillsTitle);
             pnlMySkills.Location = new Point(483, 275);
@@ -527,93 +495,160 @@ namespace Co_LAB
             pnlMySkills.Size = new Size(443, 342);
             pnlMySkills.TabIndex = 9;
             pnlMySkills.Paint += RoundPanel_Paint;
-
             // 
-            // lblMySkillsTitle
+            // btnOfferInMarket
             // 
-            lblMySkillsTitle.AutoSize = true;
-            lblMySkillsTitle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblMySkillsTitle.ForeColor = Color.White;
-            lblMySkillsTitle.Location = new Point(14, 12);
-            lblMySkillsTitle.Name = "lblMySkillsTitle";
-            lblMySkillsTitle.Size = new Size(127, 19);
-            lblMySkillsTitle.TabIndex = 0;
-            lblMySkillsTitle.Text = "My Offered Skills";
-
+            btnOfferInMarket.BackColor = Color.FromArgb(28, 38, 31);
+            btnOfferInMarket.Cursor = Cursors.Hand;
+            btnOfferInMarket.FlatAppearance.BorderColor = Color.FromArgb(16, 185, 129);
+            btnOfferInMarket.FlatStyle = FlatStyle.Flat;
+            btnOfferInMarket.Font = new Font("Segoe UI Semibold", 8.5F, FontStyle.Bold);
+            btnOfferInMarket.ForeColor = Color.FromArgb(16, 185, 129);
+            btnOfferInMarket.Location = new Point(234, 302);
+            btnOfferInMarket.Name = "btnOfferInMarket";
+            btnOfferInMarket.Size = new Size(195, 28);
+            btnOfferInMarket.TabIndex = 8;
+            btnOfferInMarket.Text = "🚀 Offer in My Listings ➔";
+            btnOfferInMarket.UseVisualStyleBackColor = false;
+            btnOfferInMarket.Click += btnOfferInMarket_Click;
             // 
-            // lblMySkillsSub
+            // btnDeleteSkill
             // 
-            lblMySkillsSub.AutoSize = true;
-            lblMySkillsSub.Font = new Font("Segoe UI", 8.5F);
-            lblMySkillsSub.ForeColor = Color.FromArgb(140, 160, 145);
-            lblMySkillsSub.Location = new Point(143, 15);
-            lblMySkillsSub.Name = "lblMySkillsSub";
-            lblMySkillsSub.Size = new Size(157, 15);
-            lblMySkillsSub.TabIndex = 1;
-            lblMySkillsSub.Text = "(Manage your active posts)";
-
+            btnDeleteSkill.BackColor = Color.FromArgb(185, 38, 38);
+            btnDeleteSkill.Cursor = Cursors.Hand;
+            btnDeleteSkill.FlatAppearance.BorderSize = 0;
+            btnDeleteSkill.FlatStyle = FlatStyle.Flat;
+            btnDeleteSkill.Font = new Font("Segoe UI Semibold", 8.5F, FontStyle.Bold);
+            btnDeleteSkill.ForeColor = Color.White;
+            btnDeleteSkill.Location = new Point(14, 302);
+            btnDeleteSkill.Name = "btnDeleteSkill";
+            btnDeleteSkill.Size = new Size(130, 28);
+            btnDeleteSkill.TabIndex = 7;
+            btnDeleteSkill.Text = "🗑️ Remove Skill";
+            btnDeleteSkill.UseVisualStyleBackColor = false;
+            btnDeleteSkill.Click += btnDeleteSkill_Click;
             // 
             // dgvMySkills
             // 
             dgvMySkills.AllowUserToAddRows = false;
             dgvMySkills.AllowUserToDeleteRows = false;
             dgvMySkills.AllowUserToResizeRows = false;
+            dgvMySkills.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvMySkills.BackgroundColor = Color.FromArgb(19, 26, 21);
             dgvMySkills.BorderStyle = BorderStyle.None;
-            dgvMySkills.CellBorderStyle = DataGridViewCellBorderStyle.Single;
             dgvMySkills.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
-            dgvHeaderStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dgvHeaderStyle2.BackColor = Color.FromArgb(28, 38, 31);
-            dgvHeaderStyle2.Font = new Font("Segoe UI Semibold", 8.5F, FontStyle.Bold);
-            dgvHeaderStyle2.ForeColor = Color.White;
-            dgvHeaderStyle2.Padding = new Padding(4, 0, 0, 0);
-            dgvHeaderStyle2.SelectionBackColor = Color.FromArgb(28, 38, 31);
-            dgvHeaderStyle2.SelectionForeColor = Color.White;
-            dgvHeaderStyle2.WrapMode = DataGridViewTriState.False;
-            dgvMySkills.ColumnHeadersDefaultCellStyle = dgvHeaderStyle2;
+            dataGridViewCellStyle11.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle11.BackColor = Color.FromArgb(28, 38, 31);
+            dataGridViewCellStyle11.Font = new Font("Segoe UI Semibold", 8.5F, FontStyle.Bold);
+            dataGridViewCellStyle11.ForeColor = Color.White;
+            dataGridViewCellStyle11.Padding = new Padding(4, 0, 0, 0);
+            dataGridViewCellStyle11.SelectionBackColor = Color.FromArgb(28, 38, 31);
+            dataGridViewCellStyle11.SelectionForeColor = Color.White;
+            dataGridViewCellStyle11.WrapMode = DataGridViewTriState.False;
+            dgvMySkills.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle11;
             dgvMySkills.ColumnHeadersHeight = 28;
             dgvMySkills.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            dgvRowStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dgvRowStyle2.BackColor = Color.FromArgb(22, 30, 24);
-            dgvRowStyle2.Font = new Font("Segoe UI", 8.5F);
-            dgvRowStyle2.ForeColor = Color.FromArgb(228, 228, 231);
-            dgvRowStyle2.Padding = new Padding(4, 0, 0, 0);
-            dgvRowStyle2.SelectionBackColor = Color.FromArgb(38, 58, 45);
-            dgvRowStyle2.SelectionForeColor = Color.White;
-            dgvRowStyle2.WrapMode = DataGridViewTriState.False;
-            dgvMySkills.DefaultCellStyle = dgvRowStyle2;
+            dataGridViewCellStyle12.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle12.BackColor = Color.FromArgb(22, 30, 24);
+            dataGridViewCellStyle12.Font = new Font("Segoe UI", 8.5F);
+            dataGridViewCellStyle12.ForeColor = Color.FromArgb(228, 228, 231);
+            dataGridViewCellStyle12.Padding = new Padding(4, 0, 0, 0);
+            dataGridViewCellStyle12.SelectionBackColor = Color.FromArgb(38, 58, 45);
+            dataGridViewCellStyle12.SelectionForeColor = Color.White;
+            dataGridViewCellStyle12.WrapMode = DataGridViewTriState.False;
+            dgvMySkills.DefaultCellStyle = dataGridViewCellStyle12;
             dgvMySkills.EnableHeadersVisualStyles = false;
             dgvMySkills.GridColor = Color.FromArgb(42, 58, 46);
-            dgvMySkills.Location = new Point(14, 38);
+            dgvMySkills.Location = new Point(14, 95);
             dgvMySkills.MultiSelect = false;
             dgvMySkills.Name = "dgvMySkills";
             dgvMySkills.ReadOnly = true;
             dgvMySkills.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
-            dgvMySkills.RowHeadersDefaultCellStyle = dgvHeaderStyle2;
+            dgvMySkills.RowHeadersDefaultCellStyle = dataGridViewCellStyle11;
+            dgvMySkills.RowHeadersVisible = false;
             dgvMySkills.RowHeadersWidth = 24;
             dgvMySkills.RowTemplate.Height = 26;
             dgvMySkills.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvMySkills.Size = new Size(415, 236);
-            dgvMySkills.TabIndex = 2;
-
+            dgvMySkills.Size = new Size(415, 200);
+            dgvMySkills.TabIndex = 6;
             // 
-            // btnCloseListing
+            // btnAddSkill
             // 
-            btnCloseListing.BackColor = Color.FromArgb(185, 38, 38);
-            btnCloseListing.Cursor = Cursors.Hand;
-            btnCloseListing.FlatAppearance.BorderSize = 0;
-            btnCloseListing.FlatAppearance.MouseOverBackColor = Color.FromArgb(210, 48, 48);
-            btnCloseListing.FlatStyle = FlatStyle.Flat;
-            btnCloseListing.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
-            btnCloseListing.ForeColor = Color.White;
-            btnCloseListing.Location = new Point(126, 288);
-            btnCloseListing.Name = "btnCloseListing";
-            btnCloseListing.Size = new Size(190, 36);
-            btnCloseListing.TabIndex = 3;
-            btnCloseListing.Text = "Close / Remove Listing";
-            btnCloseListing.UseVisualStyleBackColor = false;
-            btnCloseListing.Click += btnCloseListing_Click;
-
+            btnAddSkill.BackColor = Color.FromArgb(16, 185, 129);
+            btnAddSkill.Cursor = Cursors.Hand;
+            btnAddSkill.FlatAppearance.BorderSize = 0;
+            btnAddSkill.FlatStyle = FlatStyle.Flat;
+            btnAddSkill.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
+            btnAddSkill.ForeColor = Color.White;
+            btnAddSkill.Location = new Point(275, 62);
+            btnAddSkill.Name = "btnAddSkill";
+            btnAddSkill.Size = new Size(154, 25);
+            btnAddSkill.TabIndex = 5;
+            btnAddSkill.Text = "➕ Add to Bio";
+            btnAddSkill.UseVisualStyleBackColor = false;
+            btnAddSkill.Click += btnAddSkill_Click;
+            // 
+            // cmbCategory
+            // 
+            cmbCategory.BackColor = Color.FromArgb(28, 38, 31);
+            cmbCategory.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbCategory.FlatStyle = FlatStyle.Flat;
+            cmbCategory.Font = new Font("Segoe UI", 9F);
+            cmbCategory.ForeColor = Color.White;
+            cmbCategory.FormattingEnabled = true;
+            cmbCategory.Items.AddRange(new object[] { "Computer Science & IT", "Graphic & Visual Design", "Engineering & Math", "Music & Arts", "Language & Writing", "Business & Marketing", "Video Editing & Multimedia" });
+            cmbCategory.Location = new Point(14, 63);
+            cmbCategory.Name = "cmbCategory";
+            cmbCategory.Size = new Size(255, 23);
+            cmbCategory.TabIndex = 4;
+            // 
+            // cmbProficiency
+            // 
+            cmbProficiency.BackColor = Color.FromArgb(28, 38, 31);
+            cmbProficiency.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbProficiency.FlatStyle = FlatStyle.Flat;
+            cmbProficiency.Font = new Font("Segoe UI", 9F);
+            cmbProficiency.ForeColor = Color.White;
+            cmbProficiency.FormattingEnabled = true;
+            cmbProficiency.Items.AddRange(new object[] { "Beginner", "Intermediate", "Advanced", "Expert" });
+            cmbProficiency.Location = new Point(275, 34);
+            cmbProficiency.Name = "cmbProficiency";
+            cmbProficiency.Size = new Size(154, 23);
+            cmbProficiency.TabIndex = 3;
+            // 
+            // txtSkillName
+            // 
+            txtSkillName.BackColor = Color.FromArgb(28, 38, 31);
+            txtSkillName.BorderStyle = BorderStyle.FixedSingle;
+            txtSkillName.Font = new Font("Segoe UI", 9F);
+            txtSkillName.ForeColor = Color.White;
+            txtSkillName.Location = new Point(14, 34);
+            txtSkillName.Name = "txtSkillName";
+            txtSkillName.PlaceholderText = "Skill name (e.g. C# Programming, Guitar)";
+            txtSkillName.Size = new Size(255, 23);
+            txtSkillName.TabIndex = 2;
+            // 
+            // lblMySkillsSub
+            // 
+            lblMySkillsSub.AutoSize = true;
+            lblMySkillsSub.Font = new Font("Segoe UI", 8.5F);
+            lblMySkillsSub.ForeColor = Color.FromArgb(140, 160, 145);
+            lblMySkillsSub.Location = new Point(205, 12);
+            lblMySkillsSub.Name = "lblMySkillsSub";
+            lblMySkillsSub.Size = new Size(126, 15);
+            lblMySkillsSub.TabIndex = 1;
+            lblMySkillsSub.Text = "(Skills you know/offer)";
+            // 
+            // lblMySkillsTitle
+            // 
+            lblMySkillsTitle.AutoSize = true;
+            lblMySkillsTitle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblMySkillsTitle.ForeColor = Color.White;
+            lblMySkillsTitle.Location = new Point(14, 10);
+            lblMySkillsTitle.Name = "lblMySkillsTitle";
+            lblMySkillsTitle.Size = new Size(202, 19);
+            lblMySkillsTitle.TabIndex = 0;
+            lblMySkillsTitle.Text = "My Known Skills (Profile Bio)";
             // 
             // uc_UserDashboard
             // 
@@ -633,7 +668,6 @@ namespace Co_LAB
             Name = "uc_UserDashboard";
             Size = new Size(950, 632);
             Load += uc_UserDashboard_Load;
-
             pnlUserBadge.ResumeLayout(false);
             pnlUserBadge.PerformLayout();
             pnlCard1.ResumeLayout(false);
@@ -687,13 +721,26 @@ namespace Co_LAB
         private Label lblIncomingTitle;
         private Label lblIncomingSub;
         private DataGridView dgvIncoming;
+        private DataGridViewTextBoxColumn colIncReqId;
+        private DataGridViewTextBoxColumn colIncRequester;
+        private DataGridViewTextBoxColumn colIncOfferBack;
+        private DataGridViewTextBoxColumn colIncMode;
         private Button btnAccept;
         private Button btnDecline;
 
         private Panel pnlMySkills;
         private Label lblMySkillsTitle;
         private Label lblMySkillsSub;
+        private TextBox txtSkillName;
+        private ComboBox cmbProficiency;
+        private ComboBox cmbCategory;
+        private Button btnAddSkill;
         private DataGridView dgvMySkills;
-        private Button btnCloseListing;
+        private DataGridViewTextBoxColumn colUserSkillId;
+        private DataGridViewTextBoxColumn colSkillName;
+        private DataGridViewTextBoxColumn colCategory;
+        private DataGridViewTextBoxColumn colProficiency;
+        private Button btnDeleteSkill;
+        private Button btnOfferInMarket;
     }
 }

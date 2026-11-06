@@ -20,10 +20,9 @@ namespace Co_LAB
             pnlSidebar = new Panel();
             pnlNavContainer = new Panel();
             btn_UserDashboard = new Button();
-            btn_TradeRequests = new Button();
-            btn_ManageSkills = new Button();
-            btn_PostSkill = new Button();
             btn_SkillExchange = new Button();
+            btn_ManageSkills = new Button();
+            btn_TradeRequests = new Button();
             pnlNavIndicator = new Panel();
             pnlSidebarBottom = new Panel();
             btn_SignOut = new Button();
@@ -61,10 +60,9 @@ namespace Co_LAB
             // pnlNavContainer
             // 
             pnlNavContainer.Controls.Add(btn_UserDashboard);
-            pnlNavContainer.Controls.Add(btn_TradeRequests);
-            pnlNavContainer.Controls.Add(btn_ManageSkills);
-            pnlNavContainer.Controls.Add(btn_PostSkill);
             pnlNavContainer.Controls.Add(btn_SkillExchange);
+            pnlNavContainer.Controls.Add(btn_ManageSkills);
+            pnlNavContainer.Controls.Add(btn_TradeRequests);
             pnlNavContainer.Controls.Add(pnlNavIndicator);
             pnlNavContainer.Dock = DockStyle.Fill;
             pnlNavContainer.Location = new Point(0, 85);
@@ -86,30 +84,30 @@ namespace Co_LAB
             btn_UserDashboard.Name = "btn_UserDashboard";
             btn_UserDashboard.Padding = new Padding(22, 0, 10, 0);
             btn_UserDashboard.Size = new Size(250, 50);
-            btn_UserDashboard.TabIndex = 1;
+            btn_UserDashboard.TabIndex = 0;
             btn_UserDashboard.Text = "👤 Zach Plata (Dashboard)";
             btn_UserDashboard.TextAlign = ContentAlignment.MiddleLeft;
             btn_UserDashboard.UseVisualStyleBackColor = true;
             btn_UserDashboard.Click += btn_UserDashboard_Click;
             // 
-            // btn_TradeRequests
+            // btn_SkillExchange
             // 
-            btn_TradeRequests.Cursor = Cursors.Hand;
-            btn_TradeRequests.FlatAppearance.BorderSize = 0;
-            btn_TradeRequests.FlatAppearance.MouseDownBackColor = Color.FromArgb(35, 35, 42);
-            btn_TradeRequests.FlatAppearance.MouseOverBackColor = Color.FromArgb(28, 28, 33);
-            btn_TradeRequests.FlatStyle = FlatStyle.Flat;
-            btn_TradeRequests.Font = new Font("Segoe UI", 10F);
-            btn_TradeRequests.ForeColor = Color.FromArgb(161, 161, 170);
-            btn_TradeRequests.Location = new Point(3, 234);
-            btn_TradeRequests.Name = "btn_TradeRequests";
-            btn_TradeRequests.Padding = new Padding(22, 0, 10, 0);
-            btn_TradeRequests.Size = new Size(250, 50);
-            btn_TradeRequests.TabIndex = 3;
-            btn_TradeRequests.Text = "Trade Requests";
-            btn_TradeRequests.TextAlign = ContentAlignment.MiddleLeft;
-            btn_TradeRequests.UseVisualStyleBackColor = true;
-            btn_TradeRequests.Click += btn_TradeRequests_Click;
+            btn_SkillExchange.Cursor = Cursors.Hand;
+            btn_SkillExchange.FlatAppearance.BorderSize = 0;
+            btn_SkillExchange.FlatAppearance.MouseDownBackColor = Color.FromArgb(35, 35, 42);
+            btn_SkillExchange.FlatAppearance.MouseOverBackColor = Color.FromArgb(28, 28, 33);
+            btn_SkillExchange.FlatStyle = FlatStyle.Flat;
+            btn_SkillExchange.Font = new Font("Segoe UI", 10F);
+            btn_SkillExchange.ForeColor = Color.FromArgb(161, 161, 170);
+            btn_SkillExchange.Location = new Point(3, 66);
+            btn_SkillExchange.Name = "btn_SkillExchange";
+            btn_SkillExchange.Padding = new Padding(22, 0, 10, 0);
+            btn_SkillExchange.Size = new Size(250, 50);
+            btn_SkillExchange.TabIndex = 1;
+            btn_SkillExchange.Text = "Skill Exchange";
+            btn_SkillExchange.TextAlign = ContentAlignment.MiddleLeft;
+            btn_SkillExchange.UseVisualStyleBackColor = true;
+            btn_SkillExchange.Click += btn_SkillExchange_Click;
             // 
             // btn_ManageSkills
             // 
@@ -120,7 +118,7 @@ namespace Co_LAB
             btn_ManageSkills.FlatStyle = FlatStyle.Flat;
             btn_ManageSkills.Font = new Font("Segoe UI", 10F);
             btn_ManageSkills.ForeColor = Color.FromArgb(161, 161, 170);
-            btn_ManageSkills.Location = new Point(3, 178);
+            btn_ManageSkills.Location = new Point(3, 122);
             btn_ManageSkills.Name = "btn_ManageSkills";
             btn_ManageSkills.Padding = new Padding(22, 0, 10, 0);
             btn_ManageSkills.Size = new Size(250, 50);
@@ -130,43 +128,24 @@ namespace Co_LAB
             btn_ManageSkills.UseVisualStyleBackColor = true;
             btn_ManageSkills.Click += btn_ManageSkills_Click;
             // 
-            // btn_PostSkill
+            // btn_TradeRequests
             // 
-            btn_PostSkill.Cursor = Cursors.Hand;
-            btn_PostSkill.FlatAppearance.BorderSize = 0;
-            btn_PostSkill.FlatAppearance.MouseDownBackColor = Color.FromArgb(35, 35, 42);
-            btn_PostSkill.FlatAppearance.MouseOverBackColor = Color.FromArgb(28, 28, 33);
-            btn_PostSkill.FlatStyle = FlatStyle.Flat;
-            btn_PostSkill.Font = new Font("Segoe UI", 10F);
-            btn_PostSkill.ForeColor = Color.FromArgb(161, 161, 170);
-            btn_PostSkill.Location = new Point(3, 122);
-            btn_PostSkill.Name = "btn_PostSkill";
-            btn_PostSkill.Padding = new Padding(22, 0, 10, 0);
-            btn_PostSkill.Size = new Size(250, 50);
-            btn_PostSkill.TabIndex = 1;
-            btn_PostSkill.Text = "Post New Skill";
-            btn_PostSkill.TextAlign = ContentAlignment.MiddleLeft;
-            btn_PostSkill.UseVisualStyleBackColor = true;
-            btn_PostSkill.Click += btn_PostSkill_Click;
-            // 
-            // btn_SkillExchange
-            // 
-            btn_SkillExchange.Cursor = Cursors.Hand;
-            btn_SkillExchange.FlatAppearance.BorderSize = 0;
-            btn_SkillExchange.FlatAppearance.MouseDownBackColor = Color.FromArgb(35, 35, 42);
-            btn_SkillExchange.FlatAppearance.MouseOverBackColor = Color.FromArgb(28, 28, 33);
-            btn_SkillExchange.FlatStyle = FlatStyle.Flat;
-            btn_SkillExchange.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            btn_SkillExchange.ForeColor = Color.FromArgb(16, 185, 129);
-            btn_SkillExchange.Location = new Point(3, 66);
-            btn_SkillExchange.Name = "btn_SkillExchange";
-            btn_SkillExchange.Padding = new Padding(22, 0, 10, 0);
-            btn_SkillExchange.Size = new Size(250, 50);
-            btn_SkillExchange.TabIndex = 0;
-            btn_SkillExchange.Text = "Skill Exchange";
-            btn_SkillExchange.TextAlign = ContentAlignment.MiddleLeft;
-            btn_SkillExchange.UseVisualStyleBackColor = true;
-            btn_SkillExchange.Click += btn_SkillExchange_Click;
+            btn_TradeRequests.Cursor = Cursors.Hand;
+            btn_TradeRequests.FlatAppearance.BorderSize = 0;
+            btn_TradeRequests.FlatAppearance.MouseDownBackColor = Color.FromArgb(35, 35, 42);
+            btn_TradeRequests.FlatAppearance.MouseOverBackColor = Color.FromArgb(28, 28, 33);
+            btn_TradeRequests.FlatStyle = FlatStyle.Flat;
+            btn_TradeRequests.Font = new Font("Segoe UI", 10F);
+            btn_TradeRequests.ForeColor = Color.FromArgb(161, 161, 170);
+            btn_TradeRequests.Location = new Point(3, 178);
+            btn_TradeRequests.Name = "btn_TradeRequests";
+            btn_TradeRequests.Padding = new Padding(22, 0, 10, 0);
+            btn_TradeRequests.Size = new Size(250, 50);
+            btn_TradeRequests.TabIndex = 3;
+            btn_TradeRequests.Text = "Trade Requests";
+            btn_TradeRequests.TextAlign = ContentAlignment.MiddleLeft;
+            btn_TradeRequests.UseVisualStyleBackColor = true;
+            btn_TradeRequests.Click += btn_TradeRequests_Click;
             // 
             // pnlNavIndicator
             // 
@@ -354,7 +333,6 @@ namespace Co_LAB
         private Panel pnlDividerTop;
         private Panel pnlNavContainer;
         private Button btn_SkillExchange;
-        private Button btn_PostSkill;
         private Button btn_ManageSkills;
         private Button btn_TradeRequests;
         private Panel pnlNavIndicator;
