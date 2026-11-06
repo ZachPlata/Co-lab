@@ -63,5 +63,10 @@ namespace Co_LAB
             SetActiveButton(button2);
             LoadView(new uc_SentRequests());
         }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }

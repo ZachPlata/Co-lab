@@ -11,7 +11,7 @@ namespace Co_LAB
     [System.ComponentModel.DesignerCategory("UserControl")]
     public partial class uc_IncomingRequests : UserControl
     {
-        // Internal data model
+        // Internal data model matching tbl_traderequests schema
         public class TradeRequestModel
         {
             public int RequestId { get; set; }
@@ -23,7 +23,7 @@ namespace Co_LAB
             public DateTime RequestDateTime { get; set; }
             public string Location { get; set; } = "";
             public string Note { get; set; } = "";
-            public string Status { get; set; } = "PENDING"; // PENDING, ACCEPTED, COMPLETED, REJECTED
+            public string Status { get; set; } = "PENDING"; // PENDING, ACCEPTED, COMPLETED, DECLINED
         }
 
         private List<TradeRequestModel> _requests = new List<TradeRequestModel>();
@@ -39,21 +39,38 @@ namespace Co_LAB
         }
 
         /// <summary>
-        /// Loads requests from MySQL database if available; otherwise falls back to realistic sample data from reference.
+        /// Loads real incoming trade proposals from tbl_traderequests joined to tbl_skills for this student.
+        /// No fake seeded mock data.
         /// </summary>
         public void LoadIncomingRequests()
         {
             _requests.Clear();
 
-            bool loadedFromDb = false;
+            int uid = UserSession.UserId;
+            string studentName = string.IsNullOrWhiteSpace(UserSession.FullName) ? "Zach Plata" : UserSession.FullName;
+
             try
             {
-                // Ensure table exists in database
-                EnsureTableExists();
+                string query = @"SELECT 
+                                    r.RequestId, 
+                                    r.SenderName AS RequesterName, 
+                                    COALESCE(u.College, 'UE Student') AS RequesterProgram, 
+                                    s.SkillTitle AS WantsSkill, 
+                                    r.OfferedSkillTitle AS OffersSkill, 
+                                    r.RequestDate AS RequestDateTime, 
+                                    r.Location, 
+                                    r.Message AS Note, 
+                                    r.Status 
+                                 FROM tbl_traderequests r 
+                                 INNER JOIN tbl_skills s ON r.TargetSkillId = s.SkillId 
+                                 LEFT JOIN tbl_users u ON r.SenderEmail = u.Email OR r.SenderName = u.FullName 
+                                 WHERE (s.UserId = @uid OR s.OfferedBy = @user) 
+                                   AND (r.Status != 'Declined') 
+                                 ORDER BY r.RequestId DESC";
 
-                DataTable dt = DatabaseHelper.ExecuteQuery(
-                    "SELECT RequestId, RequesterName, RequesterProgram, Initials, WantsSkill, OffersSkill, RequestDateTime, Location, Note, Status " +
-                    "FROM tbl_trade_requests WHERE Status != 'REJECTED' ORDER BY RequestId DESC");
+                DataTable dt = DatabaseHelper.ExecuteQuery(query,
+                    new MySqlParameter("@uid", uid),
+                    new MySqlParameter("@user", studentName));
 
                 if (dt != null && dt.Rows.Count > 0)
                 {
@@ -63,111 +80,53 @@ namespace Co_LAB
                         {
                             RequestId = Convert.ToInt32(row["RequestId"]),
                             RequesterName = row["RequesterName"]?.ToString() ?? "",
-                            RequesterProgram = row["RequesterProgram"]?.ToString() ?? "",
-                            Initials = row["Initials"]?.ToString() ?? "",
+                            RequesterProgram = row["RequesterProgram"]?.ToString() ?? "UE Student",
                             WantsSkill = row["WantsSkill"]?.ToString() ?? "",
                             OffersSkill = row["OffersSkill"]?.ToString() ?? "",
                             RequestDateTime = row["RequestDateTime"] != DBNull.Value ? Convert.ToDateTime(row["RequestDateTime"]) : DateTime.Now,
                             Location = row["Location"]?.ToString() ?? "",
                             Note = row["Note"]?.ToString() ?? "",
-                            Status = row["Status"]?.ToString() ?? "PENDING"
+                            Status = (row["Status"]?.ToString() ?? "Pending").ToUpper()
                         };
 
-                        if (string.IsNullOrWhiteSpace(req.Initials) && !string.IsNullOrWhiteSpace(req.RequesterName))
-                        {
-                            req.Initials = ExtractInitials(req.RequesterName);
-                        }
-
+                        req.Initials = ExtractInitials(req.RequesterName);
                         _requests.Add(req);
                     }
-                    loadedFromDb = true;
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                // phpMyAdmin or MySQL is currently offline/not configured; fallback to mock data seamlessly
-            }
-
-            // Fallback to sample data matching the exact reference screenshot
-            if (!loadedFromDb || _requests.Count == 0)
-            {
-                _requests = GetSampleIncomingRequests();
+                System.Diagnostics.Debug.WriteLine($"Error loading incoming requests: {ex.Message}");
             }
 
             RenderCards();
         }
 
-        private void EnsureTableExists()
-        {
-            string createSql = @"
-                CREATE TABLE IF NOT EXISTS tbl_trade_requests (
-                    RequestId INT AUTO_INCREMENT PRIMARY KEY,
-                    RequesterName VARCHAR(100) NOT NULL,
-                    RequesterProgram VARCHAR(100) NOT NULL,
-                    Initials VARCHAR(10) DEFAULT '',
-                    WantsSkill VARCHAR(150) NOT NULL,
-                    OffersSkill VARCHAR(150) NOT NULL,
-                    RequestDateTime DATETIME NOT NULL,
-                    Location VARCHAR(150) DEFAULT '',
-                    Note TEXT DEFAULT NULL,
-                    Status VARCHAR(30) DEFAULT 'PENDING'
-                );";
-            DatabaseHelper.ExecuteNonQuery(createSql);
-        }
-
-        private List<TradeRequestModel> GetSampleIncomingRequests()
-        {
-            return new List<TradeRequestModel>
-            {
-                new TradeRequestModel
-                {
-                    RequestId = 101,
-                    RequesterName = "Sarah Cruz",
-                    RequesterProgram = "BS Information Technology",
-                    Initials = "SC",
-                    WantsSkill = "prog",
-                    OffersSkill = "Figma UI/UX Mobile App Wireframing",
-                    RequestDateTime = new DateTime(2026, 10, 21, 13, 15, 0),
-                    Location = "",
-                    Note = "",
-                    Status = "PENDING"
-                },
-                new TradeRequestModel
-                {
-                    RequestId = 102,
-                    RequesterName = "Sarah Cruz",
-                    RequesterProgram = "BS Information Technology",
-                    Initials = "SC",
-                    WantsSkill = "C# .NET Windows Forms Masterclass",
-                    OffersSkill = "Figma UI/UX Mobile App",
-                    RequestDateTime = new DateTime(2026, 10, 22, 11, 42, 0),
-                    Location = "Campus Library 3rd Floor Room B",
-                    Note = "Hi Alex, looking forward to understanding SQL queries and connection strings for my course project.",
-                    Status = "ACCEPTED"
-                },
-                new TradeRequestModel
-                {
-                    RequestId = 103,
-                    RequesterName = "Marcus Lee",
-                    RequesterProgram = "BS Computer Engineering",
-                    Initials = "ML",
-                    WantsSkill = "Python for Data Analysis Automation",
-                    OffersSkill = "Integral Differential Calculus",
-                    RequestDateTime = new DateTime(2026, 10, 15, 11, 42, 0),
-                    Location = "Engineering Building Study Lounge",
-                    Note = "Calculus review in exchange for Python scraping tutorial.",
-                    Status = "COMPLETED"
-                }
-            };
-        }
-
         /// <summary>
         /// Renders all request cards inside the vertical scrollable FlowLayoutPanel.
+        /// Shows empty state message if no requests exist.
         /// </summary>
         private void RenderCards()
         {
             flpRequests.SuspendLayout();
             flpRequests.Controls.Clear();
+
+            if (_requests.Count == 0)
+            {
+                Label lblEmpty = new Label
+                {
+                    Text = "No incoming trade requests yet.\nWhen other students propose to trade skills with you, their requests will appear here.",
+                    ForeColor = Color.FromArgb(161, 161, 170),
+                    Font = new Font("Segoe UI", 10.5F),
+                    AutoSize = false,
+                    Size = new Size(Math.Max(flpRequests.ClientSize.Width - 40, 600), 100),
+                    TextAlign = ContentAlignment.MiddleCenter,
+                    Margin = new Padding(20, 80, 0, 0)
+                };
+                flpRequests.Controls.Add(lblEmpty);
+                flpRequests.ResumeLayout(true);
+                return;
+            }
 
             int cardWidth = GetResponsiveCardWidth();
 
@@ -202,7 +161,7 @@ namespace Co_LAB
         }
 
         /// <summary>
-        /// Creates a card panel that precisely matches the reference design.
+        /// Creates a card panel matching the dark theme design.
         /// </summary>
         private Panel CreateRequestCard(TradeRequestModel req, int cardWidth)
         {
@@ -210,12 +169,11 @@ namespace Co_LAB
             {
                 Width = cardWidth,
                 Height = 175,
-                BackColor = Color.FromArgb(25, 36, 29), // Dark muted green-gray
+                BackColor = Color.FromArgb(25, 36, 29),
                 Margin = new Padding(0, 0, 0, 14),
                 Padding = new Padding(16)
             };
 
-            // Custom border paint for subtle muted border with rounded corners
             card.Paint += (s, e) =>
             {
                 e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
@@ -235,7 +193,7 @@ namespace Co_LAB
             avatar.Paint += (s, e) =>
             {
                 e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                using var brush = new SolidBrush(Color.FromArgb(48, 68, 54)); // Muted sage/olive
+                using var brush = new SolidBrush(Color.FromArgb(48, 68, 54));
                 using var textBrush = new SolidBrush(Color.FromArgb(200, 230, 210));
                 using var font = new Font("Segoe UI", 11.5F, FontStyle.Bold);
                 using var sf = new StringFormat
@@ -249,121 +207,107 @@ namespace Co_LAB
             };
             card.Controls.Add(avatar);
 
-            // 2. Status Badge (Upper-Right)
-            Label lblStatus = new Label
-            {
-                Text = req.Status.ToUpper(),
-                Font = new Font("Segoe UI", 8.5F, FontStyle.Bold),
-                Size = new Size(100, 24),
-                TextAlign = ContentAlignment.MiddleCenter,
-                Anchor = AnchorStyles.Top | AnchorStyles.Right,
-                Location = new Point(card.Width - 116, 16)
-            };
-
-            switch (req.Status.ToUpper())
-            {
-                case "ACCEPTED":
-                    lblStatus.BackColor = Color.FromArgb(22, 45, 30);
-                    lblStatus.ForeColor = Color.FromArgb(74, 222, 128); // Green
-                    break;
-                case "COMPLETED":
-                    lblStatus.BackColor = Color.FromArgb(20, 40, 32);
-                    lblStatus.ForeColor = Color.FromArgb(52, 211, 153); // Emerald/Teal
-                    break;
-                case "REJECTED":
-                    lblStatus.BackColor = Color.FromArgb(45, 25, 25);
-                    lblStatus.ForeColor = Color.FromArgb(248, 113, 113); // Soft red
-                    break;
-                default: // PENDING
-                    lblStatus.BackColor = Color.FromArgb(45, 38, 20);
-                    lblStatus.ForeColor = Color.FromArgb(234, 179, 8); // Amber
-                    break;
-            }
-
-            lblStatus.Paint += (s, e) =>
-            {
-                e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                using var path = CreateRoundedRectanglePath(new Rectangle(0, 0, lblStatus.Width - 1, lblStatus.Height - 1), 4);
-                lblStatus.Region = new Region(path);
-            };
-            card.Controls.Add(lblStatus);
-
-            // 3. Requester Information (Name + Program)
-            Label lblRequester = new Label
+            // 2. Title Label: "Request from: [Name] ([Program])"
+            Label lblHeader = new Label
             {
                 Text = $"Request from: {req.RequesterName} ({req.RequesterProgram})",
                 Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold),
                 ForeColor = Color.White,
-                Location = new Point(68, 16),
+                Location = new Point(70, 16),
                 AutoSize = true
             };
-            card.Controls.Add(lblRequester);
+            card.Controls.Add(lblHeader);
 
-            // 4. Wants and Offers (with ⇄ exchange arrow)
+            // 3. Status Badge (top right)
+            Label lblStatus = new Label
+            {
+                Text = req.Status,
+                Font = new Font("Segoe UI Black", 8F, FontStyle.Bold),
+                TextAlign = ContentAlignment.MiddleRight,
+                Anchor = AnchorStyles.Top | AnchorStyles.Right,
+                Location = new Point(card.Width - 120, 16),
+                Size = new Size(100, 20)
+            };
+
+            switch (req.Status)
+            {
+                case "PENDING":
+                    lblStatus.ForeColor = Color.FromArgb(234, 179, 8); // Amber
+                    break;
+                case "ACCEPTED":
+                    lblStatus.ForeColor = Color.FromArgb(74, 222, 128); // Green
+                    break;
+                case "COMPLETED":
+                    lblStatus.ForeColor = Color.FromArgb(161, 161, 170); // Muted gray
+                    break;
+                case "DECLINED":
+                    lblStatus.ForeColor = Color.FromArgb(239, 68, 68); // Red
+                    break;
+                default:
+                    lblStatus.ForeColor = Color.FromArgb(234, 179, 8);
+                    break;
+            }
+            card.Controls.Add(lblStatus);
+
+            // 4. Trade Offer Detail: Wants: "[Wants]" ⇌ Offers: "[Offers]"
             Label lblExchange = new Label
             {
-                Text = $"Wants: \"{req.WantsSkill}\"  ⇄  Offers: \"{req.OffersSkill}\"",
+                Text = $"Wants: \"{req.WantsSkill}\"  ⇌  Offers: \"{req.OffersSkill}\"",
                 Font = new Font("Segoe UI", 9F),
-                ForeColor = Color.FromArgb(195, 210, 200),
-                Location = new Point(68, 42),
+                ForeColor = Color.FromArgb(200, 215, 205),
+                Location = new Point(70, 42),
                 AutoSize = true
             };
             card.Controls.Add(lblExchange);
 
-            // 5. Date/Time and Location line
-            string locationText = string.IsNullOrWhiteSpace(req.Location) ? "📍 ." : $"📍 {req.Location}";
-            string dateStr = req.RequestDateTime.ToString("ddd, MMM dd, yyyy @ h:mm tt");
-
-            Label lblDateTimeLocation = new Label
+            // 5. Date & Location info
+            string locText = string.IsNullOrWhiteSpace(req.Location) ? "" : $"  📍  {req.Location}";
+            Label lblMeta = new Label
             {
-                Text = $"📅 {dateStr}          {locationText}",
-                Font = new Font("Segoe UI", 8.5F),
-                ForeColor = Color.FromArgb(150, 165, 155),
-                Location = new Point(68, 66),
+                Text = $"📅 {req.RequestDateTime:ddd, MMM d, yyyy @ h:mm tt}{locText}",
+                Font = new Font("Segoe UI", 8F),
+                ForeColor = Color.FromArgb(140, 160, 145),
+                Location = new Point(70, 68),
                 AutoSize = true
             };
-            card.Controls.Add(lblDateTimeLocation);
+            card.Controls.Add(lblMeta);
 
-            // 6. Message or Note line
-            string noteText = string.IsNullOrWhiteSpace(req.Note)
-                ? "No note provided."
-                : $"Note: \"{req.Note}\"";
-
+            // 6. Note / Message
+            string noteText = string.IsNullOrWhiteSpace(req.Note) ? "No message provided." : $"Note: \"{req.Note}\"";
             Label lblNote = new Label
             {
                 Text = noteText,
-                Font = new Font("Segoe UI", 8.5F),
-                ForeColor = Color.FromArgb(150, 165, 155),
-                Location = new Point(68, 88),
-                AutoSize = true
+                Font = new Font("Segoe UI", 8F, FontStyle.Italic),
+                ForeColor = Color.FromArgb(130, 150, 135),
+                Location = new Point(70, 92),
+                Size = new Size(card.Width - 90, 20),
+                AutoEllipsis = true
             };
             card.Controls.Add(lblNote);
 
-            // 7. Action Buttons (Row at Y = 120)
-            int btnY = 122;
-            int currentBtnX = 68;
+            // 7. Action Buttons (bottom row)
+            int btnY = 124;
+            int currentBtnX = 70;
 
-            // Details Button (Always visible)
-            Button btnDetails = CreateButton("Details", Color.FromArgb(34, 46, 38), Color.White, new Size(78, 28));
+            // Details Button
+            Button btnDetails = CreateButton("Details", Color.FromArgb(32, 45, 36), Color.FromArgb(220, 235, 225), new Size(78, 28));
             btnDetails.Location = new Point(currentBtnX, btnY);
             btnDetails.Click += (s, e) => ShowRequestDetails(req);
             card.Controls.Add(btnDetails);
             currentBtnX += 86;
 
             // Conditional Action Buttons based on status
-            switch (req.Status.ToUpper())
+            switch (req.Status)
             {
                 case "PENDING":
-                    // Accept Button (Soft light sage green background with dark green/black text)
-                    Button btnAccept = CreateButton("✓ Accept", Color.FromArgb(145, 195, 155), Color.FromArgb(12, 35, 18), new Size(88, 28));
+                    Button btnAccept = CreateButton("✓ Accept", Color.FromArgb(16, 185, 129), Color.White, new Size(88, 28));
                     btnAccept.Font = new Font("Segoe UI Semibold", 8.5F, FontStyle.Bold);
                     btnAccept.Location = new Point(currentBtnX, btnY);
                     btnAccept.Click += (s, e) => AcceptRequest(req);
                     card.Controls.Add(btnAccept);
                     currentBtnX += 96;
 
-                    // Reject Button (Coral Red)
-                    Button btnReject = CreateButton("✗ Reject", Color.FromArgb(239, 68, 68), Color.White, new Size(88, 28));
+                    Button btnReject = CreateButton("✗ Decline", Color.FromArgb(239, 68, 68), Color.White, new Size(88, 28));
                     btnReject.Font = new Font("Segoe UI Semibold", 8.5F, FontStyle.Bold);
                     btnReject.Location = new Point(currentBtnX, btnY);
                     btnReject.Click += (s, e) => RejectRequest(req);
@@ -371,15 +315,13 @@ namespace Co_LAB
                     break;
 
                 case "ACCEPTED":
-                    // Mark Completed Button (Chat button removed as requested)
-                    Button btnComplete = CreateButton("🎓 Mark Completed", Color.FromArgb(70, 95, 78), Color.White, new Size(130, 28));
+                    Button btnComplete = CreateButton("🎓 Mark Completed", Color.FromArgb(50, 75, 58), Color.White, new Size(130, 28));
                     btnComplete.Location = new Point(currentBtnX, btnY);
                     btnComplete.Click += (s, e) => MarkCompleted(req);
                     card.Controls.Add(btnComplete);
                     break;
 
                 case "COMPLETED":
-                    // No extra button needed, or just Details
                     break;
             }
 
@@ -414,9 +356,8 @@ namespace Co_LAB
 
             if (res == DialogResult.Yes)
             {
-                req.Status = "ACCEPTED";
-                UpdateDatabaseStatus(req.RequestId, "ACCEPTED");
-                RenderCards();
+                UpdateDatabaseStatus(req.RequestId, "Accepted");
+                LoadIncomingRequests();
                 MessageBox.Show($"Request from {req.RequesterName} is now ACCEPTED!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
@@ -431,10 +372,8 @@ namespace Co_LAB
 
             if (res == DialogResult.Yes)
             {
-                req.Status = "REJECTED";
-                UpdateDatabaseStatus(req.RequestId, "REJECTED");
-                _requests.Remove(req);
-                RenderCards();
+                UpdateDatabaseStatus(req.RequestId, "Declined");
+                LoadIncomingRequests();
             }
         }
 
@@ -448,9 +387,8 @@ namespace Co_LAB
 
             if (res == DialogResult.Yes)
             {
-                req.Status = "COMPLETED";
-                UpdateDatabaseStatus(req.RequestId, "COMPLETED");
-                RenderCards();
+                UpdateDatabaseStatus(req.RequestId, "Completed");
+                LoadIncomingRequests();
                 MessageBox.Show($"Trade with {req.RequesterName} marked as COMPLETED!", "Exchange Completed", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
@@ -460,32 +398,19 @@ namespace Co_LAB
             try
             {
                 DatabaseHelper.ExecuteNonQuery(
-                    "UPDATE tbl_trade_requests SET Status = @status WHERE RequestId = @id",
+                    "UPDATE tbl_traderequests SET Status = @status WHERE RequestId = @id",
                     new MySqlParameter("@status", newStatus),
                     new MySqlParameter("@id", requestId));
             }
-            catch
+            catch (Exception ex)
             {
-                // In-memory update is preserved if DB connection is unavailable
+                System.Diagnostics.Debug.WriteLine($"Error updating request status: {ex.Message}");
             }
         }
 
         private void ShowRequestDetails(TradeRequestModel req)
         {
-            string loc = string.IsNullOrWhiteSpace(req.Location) ? "Not specified" : req.Location;
-            string note = string.IsNullOrWhiteSpace(req.Note) ? "No note provided." : req.Note;
-
-            string details =
-                $"Student Requester: {req.RequesterName}\n" +
-                $"Program: {req.RequesterProgram}\n" +
-                $"Status: {req.Status}\n\n" +
-                $"Skill Wanted: \"{req.WantsSkill}\"\n" +
-                $"Skill Offered: \"{req.OffersSkill}\"\n\n" +
-                $"Submitted: {req.RequestDateTime:f}\n" +
-                $"Preferred Location: {loc}\n\n" +
-                $"Message/Note:\n\"{note}\"";
-
-            MessageBox.Show(details, $"Trade Request Details - {req.RequesterName}", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            // Details dialog placeholder: add your custom Form here
         }
 
         private static string ExtractInitials(string fullName)

@@ -30,7 +30,6 @@ namespace Co_LAB
 
             try
             {
-                // Query categories table created by Miggy/Admin
                 DataTable dt = DatabaseHelper.ExecuteQuery("SELECT CategoryName FROM tbl_categories ORDER BY CategoryName ASC");
                 foreach (DataRow row in dt.Rows)
                 {
@@ -96,7 +95,16 @@ namespace Co_LAB
                     lblListingCount.Text = $"{dt.Rows.Count} skill(s) available";
                     foreach (DataRow row in dt.Rows)
                     {
-                        Panel card = CreateSkillCard(row);
+                        var card = new UCStudents.uc_SkillCard();
+                        card.BindData(row);
+                        card.RequestTradeClicked += (s, args) =>
+                        {
+                            OnRequestTradeClicked(args.SkillId, args.SkillTitle, args.OfferedBy, args.DeliveryMode);
+                        };
+                        card.ReportClicked += (s, args) =>
+                        {
+                            OnReportClicked(args.SkillId, args.SkillTitle, args.OfferedBy);
+                        };
                         flpMarketplace.Controls.Add(card);
                     }
                 }
@@ -110,136 +118,6 @@ namespace Co_LAB
             {
                 flpMarketplace.ResumeLayout();
             }
-        }
-
-        /// <summary>
-        /// Creates a modern dark-themed card panel for a single skill.
-        /// </summary>
-        private Panel CreateSkillCard(DataRow row)
-        {
-            string skillId = row["SkillId"]?.ToString() ?? "0";
-            string title = row["SkillTitle"]?.ToString() ?? "Untitled Skill";
-            string cat = row["Category"]?.ToString() ?? "General";
-            string desc = row["Description"]?.ToString() ?? "No description provided.";
-            string offeredBy = row["OfferedBy"]?.ToString() ?? "Anonymous Student";
-            string mode = row["DeliveryMode"]?.ToString() ?? "Online";
-
-            Panel card = new Panel
-            {
-                Width = 280,
-                Height = 250,
-                BackColor = Color.FromArgb(32, 32, 36),
-                Margin = new Padding(10),
-                Padding = new Padding(14)
-            };
-
-            // Category Badge
-            Label lblBadge = new Label
-            {
-                Text = cat.ToUpper(),
-                Font = new Font("Segoe UI Semibold", 7.5F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(16, 185, 129), // Emerald
-                AutoSize = true,
-                Location = new Point(14, 12)
-            };
-
-            // Mode Badge (Online or F2F)
-            Label lblMode = new Label
-            {
-                Text = mode == "Face-to-Face" ? "📍 F2F" : "🌐 Online",
-                Font = new Font("Segoe UI", 7.5F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(161, 161, 170),
-                AutoSize = true,
-                Location = new Point(card.Width - 65, 12)
-            };
-
-            // Skill Title
-            Label lblTitle = new Label
-            {
-                Text = title,
-                Font = new Font("Segoe UI", 11F, FontStyle.Bold),
-                ForeColor = Color.White,
-                Location = new Point(12, 32),
-                Size = new Size(card.Width - 24, 25),
-                AutoEllipsis = true
-            };
-
-            // Description
-            Label lblDesc = new Label
-            {
-                Text = desc,
-                Font = new Font("Segoe UI", 8.5F),
-                ForeColor = Color.FromArgb(161, 161, 170),
-                Location = new Point(14, 60),
-                Size = new Size(card.Width - 28, 75),
-                AutoEllipsis = true
-            };
-
-            // Offered By
-            Label lblAuthor = new Label
-            {
-                Text = "👤 " + offeredBy,
-                Font = new Font("Segoe UI Semibold", 8.5F),
-                ForeColor = Color.FromArgb(212, 212, 216),
-                Location = new Point(14, 145),
-                Size = new Size(card.Width - 28, 20),
-                AutoEllipsis = true
-            };
-
-            // Divider Line
-            Panel divider = new Panel
-            {
-                BackColor = Color.FromArgb(45, 45, 50),
-                Location = new Point(14, 175),
-                Size = new Size(card.Width - 28, 1)
-            };
-
-            // "Request Trade" Button
-            Button btnTrade = new Button
-            {
-                Text = "🤝 Request Trade",
-                Font = new Font("Segoe UI Semibold", 8.5F, FontStyle.Bold),
-                BackColor = Color.FromArgb(16, 185, 129), // Emerald green
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand,
-                Size = new Size(160, 32),
-                Location = new Point(14, 185)
-            };
-            btnTrade.FlatAppearance.BorderSize = 0;
-            btnTrade.Click += (s, e) =>
-            {
-                OnRequestTradeClicked(skillId, title, offeredBy, mode);
-            };
-
-            // "Report" Button
-            Button btnReport = new Button
-            {
-                Text = "🚩 Report",
-                Font = new Font("Segoe UI", 8F),
-                BackColor = Color.FromArgb(45, 45, 50),
-                ForeColor = Color.FromArgb(239, 68, 68), // Soft red
-                FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand,
-                Size = new Size(80, 32),
-                Location = new Point(184, 185)
-            };
-            btnReport.FlatAppearance.BorderSize = 0;
-            btnReport.Click += (s, e) =>
-            {
-                OnReportClicked(skillId, title, offeredBy);
-            };
-
-            card.Controls.Add(lblBadge);
-            card.Controls.Add(lblMode);
-            card.Controls.Add(lblTitle);
-            card.Controls.Add(lblDesc);
-            card.Controls.Add(lblAuthor);
-            card.Controls.Add(divider);
-            card.Controls.Add(btnTrade);
-            card.Controls.Add(btnReport);
-
-            return card;
         }
 
         private void ShowEmptyState(string message)
@@ -259,17 +137,38 @@ namespace Co_LAB
 
         private void OnRequestTradeClicked(string skillId, string title, string owner, string mode)
         {
-            // Connects with Trowa's Trade Request feature
-            MessageBox.Show(
-                $"Opening trade proposal for:\n\nSkill: {title}\nOffered by: {owner}\nMode: {mode}\n\n(Trowa's FormTradeRequest will open here!)",
-                "Trade Request",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
+            string currentStudent = UserSession.FullName;
+            if (!string.IsNullOrWhiteSpace(currentStudent) && string.Equals(owner, currentStudent, StringComparison.OrdinalIgnoreCase))
+            {
+                MessageBox.Show("This is your own skill listing! You cannot send a trade request to yourself.", "Notice", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            int.TryParse(skillId, out int parsedSkillId);
+
+            using Form dlg = new Form
+            {
+                Text = "Propose Skill Exchange",
+                Size = new Size(490, 585),
+                StartPosition = FormStartPosition.CenterParent,
+                BackColor = Color.FromArgb(20, 24, 21),
+                FormBorderStyle = FormBorderStyle.FixedDialog,
+                MaximizeBox = false,
+                MinimizeBox = false,
+                ShowInTaskbar = false
+            };
+
+            var uc = new Propose_skill_exchange
+            {
+                Dock = DockStyle.Fill
+            };
+            uc.InitializeTrade(parsedSkillId, title, owner, mode);
+            dlg.Controls.Add(uc);
+            dlg.ShowDialog(this);
         }
 
         private void OnReportClicked(string skillId, string title, string owner)
         {
-            // Report dialog for Miggy's Admin Moderation / Reported Students queue
             string reason = Microsoft.VisualBasic.Interaction.InputBox(
                 $"Why are you reporting this listing?\n\nListing: {title}\nPosted by: {owner}",
                 "Report Listing / Student",
@@ -319,6 +218,11 @@ namespace Co_LAB
                 btnSearch.PerformClick();
                 e.SuppressKeyPress = true;
             }
+        }
+
+        private void flpMarketplace_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

@@ -26,6 +26,23 @@ namespace Co_LAB
 
         private void uc_UserDashboard_Load(object sender, EventArgs e)
         {
+            if (DesignMode) return;
+
+            if (!string.IsNullOrWhiteSpace(UserSession.FullName))
+            {
+                CurrentStudentName = UserSession.FullName;
+            }
+
+            if (cmbProficiency.Items.Count > 0 && cmbProficiency.SelectedIndex < 0)
+            {
+                cmbProficiency.SelectedIndex = 1; // Intermediate
+            }
+
+            if (cmbCategory.Items.Count > 0 && cmbCategory.SelectedIndex < 0)
+            {
+                cmbCategory.SelectedIndex = 0;
+            }
+
             LoadDashboardData();
         }
 
@@ -37,57 +54,93 @@ namespace Co_LAB
         {
             lblUserName.Text = CurrentStudentName;
 
-            int activeSkillsCount = 0;
-            int pendingRequestsCount = 0;
-            int acceptedTradesCount = 0;
-            int outgoingRequestsCount = 0;
+            // Load Known Skills (Bio Inventory) independently so metrics errors never block it
+            LoadKnownSkills();
 
-            DataTable? dtIncoming = null;
-            DataTable? dtSkills = null;
+            // Load Other Metrics & Trade Requests
+            LoadTradeMetrics();
+        }
+
+        /// <summary>
+        /// Loads the student's known skills directly from tbl_user_skills into dgvMySkills and updates Card 1.
+        /// </summary>
+        public void LoadKnownSkills()
+        {
+            int uid = UserSession.UserId;
+            string studentName = string.IsNullOrWhiteSpace(UserSession.FullName) ? CurrentStudentName : UserSession.FullName;
 
             try
             {
-                // 1. Check active skills in tbl_skills
-                object? activeObj = DatabaseHelper.ExecuteScalar(
-                    "SELECT COUNT(*) FROM tbl_skills WHERE OfferedBy = @user AND (Status = 'Active' OR Status = 'Open' OR Status IS NULL)",
-                    new MySqlParameter("@user", CurrentStudentName));
-                if (activeObj != null && int.TryParse(activeObj.ToString(), out int c1))
-                {
-                    activeSkillsCount = c1;
-                }
+                DataTable dt = DatabaseHelper.ExecuteQuery(
+                    @"SELECT UserSkillId, SkillName, Category, ProficiencyLevel 
+                      FROM tbl_user_skills 
+                      WHERE UserId = @uid OR UserId = (SELECT UserId FROM tbl_users WHERE FullName = @name LIMIT 1) 
+                      ORDER BY UserSkillId DESC",
+                    new MySqlParameter("@uid", uid),
+                    new MySqlParameter("@name", studentName));
 
-                // 2. Check pending incoming requests in tbl_traderequests joined to tbl_skills
-                object? pendingObj = DatabaseHelper.ExecuteScalar(
-                    @"SELECT COUNT(*) FROM tbl_traderequests r 
+                BindMySkillsGrid(dt);
+
+                int count = (dt != null) ? dt.Rows.Count : 0;
+                lblCard1Value.Text = count.ToString();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error loading known skills: {ex.Message}");
+                BindMySkillsGrid(null);
+            }
+        }
+
+        private void LoadTradeMetrics()
+        {
+            int pendingRequestsCount = 0;
+            int acceptedTradesCount = 0;
+            int outgoingRequestsCount = 0;
+            DataTable? dtIncoming = null;
+
+            int uid = UserSession.UserId;
+            string studentName = string.IsNullOrWhiteSpace(UserSession.FullName) ? CurrentStudentName : UserSession.FullName;
+
+            try
+            {
+                // 1. Pending Incoming Requests (targeted at this student's skills)
+                object? pObj = DatabaseHelper.ExecuteScalar(
+                    @"SELECT COUNT(*) 
+                      FROM tbl_traderequests r 
                       INNER JOIN tbl_skills s ON r.TargetSkillId = s.SkillId 
-                      WHERE s.OfferedBy = @user AND (r.Status = 'Pending' OR r.Status IS NULL)",
-                    new MySqlParameter("@user", CurrentStudentName));
-                if (pendingObj != null && int.TryParse(pendingObj.ToString(), out int c2))
+                      WHERE (s.UserId = @uid OR s.OfferedBy = @name) 
+                        AND (r.Status = 'Pending' OR r.Status IS NULL)",
+                    new MySqlParameter("@uid", uid),
+                    new MySqlParameter("@name", studentName));
+                if (pObj != null && int.TryParse(pObj.ToString(), out int c2))
                 {
                     pendingRequestsCount = c2;
                 }
 
-                // 3. Check accepted trades (active) for this student
-                object? acceptedObj = DatabaseHelper.ExecuteScalar(
-                    @"SELECT COUNT(*) FROM tbl_traderequests r 
+                // 2. Accepted Trades (where this student is either owner or requester)
+                object? aObj = DatabaseHelper.ExecuteScalar(
+                    @"SELECT COUNT(*) 
+                      FROM tbl_traderequests r 
                       INNER JOIN tbl_skills s ON r.TargetSkillId = s.SkillId 
-                      WHERE (s.OfferedBy = @user OR r.SenderName = @user) AND r.Status = 'Accepted'",
-                    new MySqlParameter("@user", CurrentStudentName));
-                if (acceptedObj != null && int.TryParse(acceptedObj.ToString(), out int c3))
+                      WHERE (s.UserId = @uid OR s.OfferedBy = @name OR r.SenderName = @name) 
+                        AND r.Status = 'Accepted'",
+                    new MySqlParameter("@uid", uid),
+                    new MySqlParameter("@name", studentName));
+                if (aObj != null && int.TryParse(aObj.ToString(), out int c3))
                 {
                     acceptedTradesCount = c3;
                 }
 
-                // 4. Check outgoing requests sent by this student
-                object? outgoingObj = DatabaseHelper.ExecuteScalar(
-                    "SELECT COUNT(*) FROM tbl_traderequests WHERE SenderName = @user",
-                    new MySqlParameter("@user", CurrentStudentName));
-                if (outgoingObj != null && int.TryParse(outgoingObj.ToString(), out int c4))
+                // 3. Outgoing Requests (sent by this student)
+                object? oObj = DatabaseHelper.ExecuteScalar(
+                    "SELECT COUNT(*) FROM tbl_traderequests WHERE SenderName = @name",
+                    new MySqlParameter("@name", studentName));
+                if (oObj != null && int.TryParse(oObj.ToString(), out int c4))
                 {
                     outgoingRequestsCount = c4;
                 }
 
-                // 5. Query Incoming Trade Requests table
+                // 4. Query Incoming Requests for dgvIncoming
                 dtIncoming = DatabaseHelper.ExecuteQuery(
                     @"SELECT 
                         r.RequestId, 
@@ -97,123 +150,150 @@ namespace Co_LAB
                         r.Status 
                       FROM tbl_traderequests r 
                       INNER JOIN tbl_skills s ON r.TargetSkillId = s.SkillId 
-                      WHERE s.OfferedBy = @user AND (r.Status = 'Pending' OR r.Status IS NULL) 
+                      WHERE (s.UserId = @uid OR s.OfferedBy = @name) 
+                        AND (r.Status = 'Pending' OR r.Status IS NULL) 
                       ORDER BY r.RequestId DESC",
-                    new MySqlParameter("@user", CurrentStudentName));
-
-                // 6. Query My Offered Skills table
-                dtSkills = DatabaseHelper.ExecuteQuery(
-                    @"SELECT 
-                        SkillId, 
-                        SkillTitle AS [Skill Offered], 
-                        DesiredSkill AS [Skill Wanted], 
-                        Status 
-                      FROM tbl_skills 
-                      WHERE OfferedBy = @user AND (Status != 'Archived' OR Status IS NULL) 
-                      ORDER BY SkillId DESC",
-                    new MySqlParameter("@user", CurrentStudentName));
+                    new MySqlParameter("@uid", uid),
+                    new MySqlParameter("@name", studentName));
             }
-            catch
+            catch (Exception ex)
             {
-                // In case database is offline or not reachable
+                System.Diagnostics.Debug.WriteLine($"Error loading trade metrics: {ex.Message}");
             }
 
-            // Update Metric Cards
-            lblCard1Value.Text = activeSkillsCount.ToString();
             lblCard2Value.Text = pendingRequestsCount.ToString();
             lblCard3Value.Text = acceptedTradesCount.ToString();
             lblCard4Value.Text = outgoingRequestsCount.ToString();
 
-            // Populate Incoming Requests DataGridView (blank schema if no data)
-            if (dtIncoming != null)
-            {
-                BindIncomingGrid(dtIncoming);
-            }
-            else
-            {
-                DataTable emptyIncoming = new DataTable();
-                emptyIncoming.Columns.Add("RequestId", typeof(int));
-                emptyIncoming.Columns.Add("Requester", typeof(string));
-                emptyIncoming.Columns.Add("Their Offer Back", typeof(string));
-                emptyIncoming.Columns.Add("Mode", typeof(string));
-                emptyIncoming.Columns.Add("Status", typeof(string));
-                BindIncomingGrid(emptyIncoming);
-            }
-
-            // Populate My Offered Skills DataGridView (blank schema if no data)
-            if (dtSkills != null)
-            {
-                BindMySkillsGrid(dtSkills);
-            }
-            else
-            {
-                DataTable emptySkills = new DataTable();
-                emptySkills.Columns.Add("SkillId", typeof(int));
-                emptySkills.Columns.Add("Skill Offered", typeof(string));
-                emptySkills.Columns.Add("Skill Wanted", typeof(string));
-                emptySkills.Columns.Add("Status", typeof(string));
-                BindMySkillsGrid(emptySkills);
-            }
+            BindIncomingGrid(dtIncoming);
         }
 
-        private void BindIncomingGrid(DataTable dt)
+        private void BindIncomingGrid(DataTable? dt)
         {
+            dgvIncoming.DataSource = null;
+            dgvIncoming.AutoGenerateColumns = false;
             dgvIncoming.DataSource = dt;
-
-            if (dgvIncoming.Columns["RequestId"] is DataGridViewColumn colReqId)
-                colReqId.Visible = false;
-
-            if (dgvIncoming.Columns["Status"] is DataGridViewColumn colStatus)
-                colStatus.Visible = false;
-
-            if (dgvIncoming.Columns["Requester"] is DataGridViewColumn colReq)
-            {
-                colReq.HeaderText = "Requester";
-                colReq.Width = 95;
-            }
-
-            if (dgvIncoming.Columns["Their Offer Back"] is DataGridViewColumn colOffer)
-            {
-                colOffer.HeaderText = "Their Offer Back";
-                colOffer.Width = 130;
-            }
-
-            if (dgvIncoming.Columns["Mode"] is DataGridViewColumn colMode)
-            {
-                colMode.HeaderText = "Mode";
-                colMode.Width = 70;
-            }
+            dgvIncoming.Refresh();
         }
 
-        private void BindMySkillsGrid(DataTable dt)
+        private void BindMySkillsGrid(DataTable? dt)
         {
+            dgvMySkills.DataSource = null;
+            dgvMySkills.AutoGenerateColumns = false;
             dgvMySkills.DataSource = dt;
-
-            if (dgvMySkills.Columns["SkillId"] is DataGridViewColumn colSkillId)
-                colSkillId.Visible = false;
-
-            if (dgvMySkills.Columns["Skill Offered"] is DataGridViewColumn colOffered)
-            {
-                colOffered.HeaderText = "Skill Offered";
-                colOffered.Width = 145;
-            }
-
-            if (dgvMySkills.Columns["Skill Wanted"] is DataGridViewColumn colWanted)
-            {
-                colWanted.HeaderText = "Skill Wanted";
-                colWanted.Width = 145;
-            }
-
-            if (dgvMySkills.Columns["Status"] is DataGridViewColumn colStat)
-            {
-                colStat.HeaderText = "Status";
-                colStat.Width = 90;
-            }
+            dgvMySkills.Refresh();
         }
 
         // ==========================================
-        // ACTION BUTTONS (ACCEPT / DECLINE / REMOVE)
+        // ACTION BUTTONS (ACCEPT / DECLINE / KNOWN SKILLS CRUD)
         // ==========================================
+
+        private void btnAddSkill_Click(object sender, EventArgs e)
+        {
+            string skillName = txtSkillName.Text.Trim();
+            if (string.IsNullOrWhiteSpace(skillName))
+            {
+                MessageBox.Show("Please enter a skill name that you know (e.g. C# Programming, Guitar, Calculus).", "Missing Skill", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtSkillName.Focus();
+                return;
+            }
+
+            int uid = UserSession.UserId;
+            if (uid <= 0)
+            {
+                object? idObj = DatabaseHelper.ExecuteScalar(
+                    "SELECT UserId FROM tbl_users WHERE FullName = @name LIMIT 1",
+                    new MySqlParameter("@name", CurrentStudentName));
+                if (idObj != null && int.TryParse(idObj.ToString(), out int parsedUid))
+                {
+                    uid = parsedUid;
+                    UserSession.UserId = parsedUid;
+                }
+            }
+
+            if (uid <= 0)
+            {
+                MessageBox.Show("User session is not valid. Please log in again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            string category = cmbCategory.SelectedItem?.ToString() ?? "Computer Science & IT";
+            string level = cmbProficiency.SelectedItem?.ToString() ?? "Intermediate";
+
+            try
+            {
+                int rows = DatabaseHelper.ExecuteNonQuery(
+                    "INSERT INTO tbl_user_skills (UserId, SkillName, Category, ProficiencyLevel) VALUES (@uid, @name, @cat, @level)",
+                    new MySqlParameter("@uid", uid),
+                    new MySqlParameter("@name", skillName),
+                    new MySqlParameter("@cat", category),
+                    new MySqlParameter("@level", level));
+
+                if (rows > 0)
+                {
+                    txtSkillName.Clear();
+                    LoadDashboardData();
+                    MessageBox.Show($"'{skillName}' has been added to your profile inventory!\n\nWhen you're ready to offer it in the marketplace, visit 'My Listings'.", "Skill Added", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Could not add skill to database: {ex.Message}", "Database Notice", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void btnDeleteSkill_Click(object sender, EventArgs e)
+        {
+            if (dgvMySkills.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Please select a skill from your profile list to remove.", "Select Skill", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            var row = dgvMySkills.SelectedRows[0];
+            int userSkillId = 0;
+            if (row.Cells["colUserSkillId"]?.Value != null &&
+                int.TryParse(row.Cells["colUserSkillId"].Value.ToString(), out int parsedId))
+            {
+                userSkillId = parsedId;
+            }
+
+            if (userSkillId <= 0)
+            {
+                MessageBox.Show("No valid skill selected.", "Notice", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            string skillName = row.Cells["colSkillName"]?.Value?.ToString() ?? "this skill";
+
+            if (MessageBox.Show($"Are you sure you want to remove '{skillName}' from your profile bio?", "Confirm Remove", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                return;
+
+            try
+            {
+                int rows = DatabaseHelper.ExecuteNonQuery(
+                    "DELETE FROM tbl_user_skills WHERE UserSkillId = @id",
+                    new MySqlParameter("@id", userSkillId));
+
+                if (rows > 0)
+                {
+                    MessageBox.Show($"'{skillName}' removed from profile.", "Skill Removed", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadDashboardData();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Could not remove skill from database: {ex.Message}", "Database Notice", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void btnOfferInMarket_Click(object sender, EventArgs e)
+        {
+            if (FindForm() is StudentMainForm mainForm)
+            {
+                mainForm.NavigateToManageSkills();
+            }
+        }
 
         private void btnAccept_Click(object sender, EventArgs e)
         {
@@ -298,48 +378,7 @@ namespace Co_LAB
             }
         }
 
-        private void btnCloseListing_Click(object sender, EventArgs e)
-        {
-            if (dgvMySkills.SelectedRows.Count == 0)
-            {
-                MessageBox.Show("Please select a skill listing to close or remove.", "Select Listing", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
 
-            var row = dgvMySkills.SelectedRows[0];
-            int skillId = 0;
-            if (row.Cells["SkillId"] != null && row.Cells["SkillId"].Value != null &&
-                int.TryParse(row.Cells["SkillId"].Value?.ToString(), out int parsedId))
-            {
-                skillId = parsedId;
-            }
-
-            if (skillId <= 0)
-            {
-                MessageBox.Show("No valid skill listing selected.", "Notice", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            if (MessageBox.Show("Are you sure you want to close / remove this skill listing?", "Confirm Remove Listing", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
-                return;
-
-            try
-            {
-                int rows = DatabaseHelper.ExecuteNonQuery(
-                    "UPDATE tbl_skills SET Status = 'Archived' WHERE SkillId = @id",
-                    new MySqlParameter("@id", skillId));
-
-                if (rows > 0)
-                {
-                    MessageBox.Show("Skill listing has been closed and removed.", "Listing Removed", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    LoadDashboardData();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Could not remove skill listing from database: {ex.Message}", "Database Notice", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-        }
 
         // ==========================================
         // SHORTCUT BUTTONS
@@ -349,7 +388,7 @@ namespace Co_LAB
         {
             if (FindForm() is StudentMainForm mainForm)
             {
-                mainForm.NavigateToPostSkill();
+                mainForm.NavigateToManageSkills();
             }
         }
 
@@ -483,6 +522,21 @@ namespace Co_LAB
             path.AddArc(rect.X, rect.Bottom - diameter, diameter, diameter, 90, 90);
             path.CloseFigure();
             return path;
+        }
+
+        private void dgvMySkills_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void lblCard2Title_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblCard2Value_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

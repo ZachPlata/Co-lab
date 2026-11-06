@@ -73,6 +73,16 @@
     </EmbeddedResource>
 
     <!-- Student UserControls -->
+    <Compile Update="UCStudents\uc_SkillCard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UCStudents\uc_SkillCard.Designer.cs">
+      <DependentUpon>uc_SkillCard.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="UCStudents\uc_SkillCard.resx">
+      <DependentUpon>uc_SkillCard.cs</DependentUpon>
+    </EmbeddedResource>
+
     <Compile Update="UCStudents\uc_SkillExchange.cs">
       <SubType>UserControl</SubType>
     </Compile>
