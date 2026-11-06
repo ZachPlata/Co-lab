@@ -19,7 +19,6 @@ namespace Co_LAB
         {
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             pnlHeader = new Panel();
             btnRefresh = new Button();
             btnSearch = new Button();
@@ -132,7 +131,7 @@ namespace Co_LAB
             lblStatusCount.ForeColor = Color.FromArgb(161, 161, 170);
             lblStatusCount.Location = new Point(810, 26);
             lblStatusCount.Name = "lblStatusCount";
-            lblStatusCount.Size = new Size(116, 15);
+            lblStatusCount.Size = new Size(92, 15);
             lblStatusCount.TabIndex = 0;
             lblStatusCount.Text = "0 listings loaded";
             lblStatusCount.TextAlign = ContentAlignment.MiddleRight;

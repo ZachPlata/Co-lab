@@ -34,7 +34,7 @@ namespace Co_LAB.UCStudents
             lblCategoryBadge.ForeColor = Color.FromArgb(16, 185, 129);
             lblCategoryBadge.Location = new Point(14, 12);
             lblCategoryBadge.Name = "lblCategoryBadge";
-            lblCategoryBadge.Size = new Size(62, 12);
+            lblCategoryBadge.Size = new Size(55, 12);
             lblCategoryBadge.TabIndex = 0;
             lblCategoryBadge.Text = "CATEGORY";
             // 
@@ -104,7 +104,7 @@ namespace Co_LAB.UCStudents
             btnRequestTrade.Name = "btnRequestTrade";
             btnRequestTrade.Size = new Size(160, 32);
             btnRequestTrade.TabIndex = 6;
-            btnRequestTrade.Text = "🤝 Request Trade";
+            btnRequestTrade.Text = "\U0001f91d Request Trade";
             btnRequestTrade.UseVisualStyleBackColor = false;
             btnRequestTrade.Click += btnRequestTrade_Click;
             // 

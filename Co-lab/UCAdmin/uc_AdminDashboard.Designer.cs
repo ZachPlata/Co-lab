@@ -17,8 +17,8 @@ namespace Co_LAB
 
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
             pnlStatStudents = new Panel();
             lblStatStudentsTitle = new Label();
             lblTotalStudentCount = new Label();
@@ -44,23 +44,23 @@ namespace Co_LAB
             flowLayoutPanel7 = new FlowLayoutPanel();
             flowLayoutPanel6 = new FlowLayoutPanel();
             flowLayoutPanel5 = new FlowLayoutPanel();
-            flowLayoutPanel4 = new FlowLayoutPanel();
+            flpPendingVerification = new FlowLayoutPanel();
             lblPendingVerifTitle = new Label();
             pnlBlacklisted = new Panel();
             flowLayoutPanel3 = new FlowLayoutPanel();
             flowLayoutPanel2 = new FlowLayoutPanel();
-            flowLayoutPanel1 = new FlowLayoutPanel();
+            flpBlacklisted = new FlowLayoutPanel();
             label3 = new Label();
             lblBlacklistedTitle = new Label();
             pnlDeclined = new Panel();
             flowLayoutPanel11 = new FlowLayoutPanel();
             flowLayoutPanel10 = new FlowLayoutPanel();
             flowLayoutPanel9 = new FlowLayoutPanel();
-            flowLayoutPanel8 = new FlowLayoutPanel();
+            flpDeclined = new FlowLayoutPanel();
             button1 = new Button();
             lblDeclinedTitle = new Label();
             pnlReports = new Panel();
-            dataGridView1 = new DataGridView();
+            dgvReportRecords = new DataGridView();
             colReportId = new DataGridViewTextBoxColumn();
             colReportedStudent = new DataGridViewTextBoxColumn();
             colReporter = new DataGridViewTextBoxColumn();
@@ -76,9 +76,9 @@ namespace Co_LAB
             pnlPendingVerif.SuspendLayout();
             pnlBlacklisted.SuspendLayout();
             pnlDeclined.SuspendLayout();
-            flowLayoutPanel8.SuspendLayout();
+            flpDeclined.SuspendLayout();
             pnlReports.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dgvReportRecords).BeginInit();
             SuspendLayout();
             // 
             // pnlStatStudents
@@ -348,7 +348,7 @@ namespace Co_LAB
             pnlPendingVerif.Controls.Add(flowLayoutPanel7);
             pnlPendingVerif.Controls.Add(flowLayoutPanel6);
             pnlPendingVerif.Controls.Add(flowLayoutPanel5);
-            pnlPendingVerif.Controls.Add(flowLayoutPanel4);
+            pnlPendingVerif.Controls.Add(flpPendingVerification);
             pnlPendingVerif.Controls.Add(lblPendingVerifTitle);
             pnlPendingVerif.Location = new Point(446, 155);
             pnlPendingVerif.Margin = new Padding(3, 2, 3, 2);
@@ -383,14 +383,14 @@ namespace Co_LAB
             flowLayoutPanel5.Size = new Size(156, 28);
             flowLayoutPanel5.TabIndex = 5;
             // 
-            // flowLayoutPanel4
+            // flpPendingVerification
             // 
-            flowLayoutPanel4.BackColor = Color.FromArgb(16, 185, 129);
-            flowLayoutPanel4.Location = new Point(23, 23);
-            flowLayoutPanel4.Margin = new Padding(3, 2, 3, 2);
-            flowLayoutPanel4.Name = "flowLayoutPanel4";
-            flowLayoutPanel4.Size = new Size(156, 28);
-            flowLayoutPanel4.TabIndex = 4;
+            flpPendingVerification.BackColor = Color.FromArgb(16, 185, 129);
+            flpPendingVerification.Location = new Point(23, 23);
+            flpPendingVerification.Margin = new Padding(3, 2, 3, 2);
+            flpPendingVerification.Name = "flpPendingVerification";
+            flpPendingVerification.Size = new Size(156, 28);
+            flpPendingVerification.TabIndex = 4;
             // 
             // lblPendingVerifTitle
             // 
@@ -408,7 +408,7 @@ namespace Co_LAB
             pnlBlacklisted.BackColor = Color.FromArgb(6, 95, 70);
             pnlBlacklisted.Controls.Add(flowLayoutPanel3);
             pnlBlacklisted.Controls.Add(flowLayoutPanel2);
-            pnlBlacklisted.Controls.Add(flowLayoutPanel1);
+            pnlBlacklisted.Controls.Add(flpBlacklisted);
             pnlBlacklisted.Controls.Add(label3);
             pnlBlacklisted.Controls.Add(lblBlacklistedTitle);
             pnlBlacklisted.Location = new Point(18, 272);
@@ -435,14 +435,14 @@ namespace Co_LAB
             flowLayoutPanel2.Size = new Size(354, 24);
             flowLayoutPanel2.TabIndex = 4;
             // 
-            // flowLayoutPanel1
+            // flpBlacklisted
             // 
-            flowLayoutPanel1.BackColor = Color.FromArgb(16, 185, 129);
-            flowLayoutPanel1.Location = new Point(18, 22);
-            flowLayoutPanel1.Margin = new Padding(3, 2, 3, 2);
-            flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(354, 24);
-            flowLayoutPanel1.TabIndex = 3;
+            flpBlacklisted.BackColor = Color.FromArgb(16, 185, 129);
+            flpBlacklisted.Location = new Point(18, 22);
+            flpBlacklisted.Margin = new Padding(3, 2, 3, 2);
+            flpBlacklisted.Name = "flpBlacklisted";
+            flpBlacklisted.Size = new Size(354, 24);
+            flpBlacklisted.TabIndex = 3;
             // 
             // label3
             // 
@@ -473,7 +473,7 @@ namespace Co_LAB
             pnlDeclined.Controls.Add(flowLayoutPanel11);
             pnlDeclined.Controls.Add(flowLayoutPanel10);
             pnlDeclined.Controls.Add(flowLayoutPanel9);
-            pnlDeclined.Controls.Add(flowLayoutPanel8);
+            pnlDeclined.Controls.Add(flpDeclined);
             pnlDeclined.Controls.Add(lblDeclinedTitle);
             pnlDeclined.Location = new Point(446, 272);
             pnlDeclined.Margin = new Padding(3, 2, 3, 2);
@@ -508,15 +508,15 @@ namespace Co_LAB
             flowLayoutPanel9.Size = new Size(156, 28);
             flowLayoutPanel9.TabIndex = 5;
             // 
-            // flowLayoutPanel8
+            // flpDeclined
             // 
-            flowLayoutPanel8.BackColor = Color.FromArgb(16, 185, 129);
-            flowLayoutPanel8.Controls.Add(button1);
-            flowLayoutPanel8.Location = new Point(23, 23);
-            flowLayoutPanel8.Margin = new Padding(3, 2, 3, 2);
-            flowLayoutPanel8.Name = "flowLayoutPanel8";
-            flowLayoutPanel8.Size = new Size(156, 28);
-            flowLayoutPanel8.TabIndex = 5;
+            flpDeclined.BackColor = Color.FromArgb(16, 185, 129);
+            flpDeclined.Controls.Add(button1);
+            flpDeclined.Location = new Point(23, 23);
+            flpDeclined.Margin = new Padding(3, 2, 3, 2);
+            flpDeclined.Name = "flpDeclined";
+            flpDeclined.Size = new Size(156, 28);
+            flpDeclined.TabIndex = 5;
             // 
             // button1
             // 
@@ -544,7 +544,7 @@ namespace Co_LAB
             // pnlReports
             // 
             pnlReports.BackColor = Color.FromArgb(6, 95, 70);
-            pnlReports.Controls.Add(dataGridView1);
+            pnlReports.Controls.Add(dgvReportRecords);
             pnlReports.Controls.Add(lblReportsTitle);
             pnlReports.Location = new Point(18, 395);
             pnlReports.Margin = new Padding(3, 2, 3, 2);
@@ -552,36 +552,36 @@ namespace Co_LAB
             pnlReports.Size = new Size(844, 200);
             pnlReports.TabIndex = 8;
             // 
-            // dataGridView1
+            // dgvReportRecords
             // 
-            dataGridView1.BackgroundColor = Color.FromArgb(6, 95, 70);
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = Color.FromArgb(4, 120, 87);
-            dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F);
-            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = Color.FromArgb(4, 120, 87);
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-            dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
-            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Columns.AddRange(new DataGridViewColumn[] { colReportId, colReportedStudent, colReporter, colReason, colDate, colBlacklist });
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = Color.FromArgb(16, 185, 129);
-            dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F);
-            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
-            dataGridView1.DefaultCellStyle = dataGridViewCellStyle2;
-            dataGridView1.EnableHeadersVisualStyles = false;
-            dataGridView1.GridColor = SystemColors.WindowText;
-            dataGridView1.Location = new Point(18, 22);
-            dataGridView1.Margin = new Padding(3, 2, 3, 2);
-            dataGridView1.Name = "dataGridView1";
-            dataGridView1.RowHeadersVisible = false;
-            dataGridView1.RowHeadersWidth = 51;
-            dataGridView1.Size = new Size(780, 141);
-            dataGridView1.TabIndex = 1;
+            dgvReportRecords.BackgroundColor = Color.FromArgb(6, 95, 70);
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = Color.FromArgb(4, 120, 87);
+            dataGridViewCellStyle3.Font = new Font("Segoe UI", 9F);
+            dataGridViewCellStyle3.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = Color.FromArgb(4, 120, 87);
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
+            dgvReportRecords.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dgvReportRecords.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvReportRecords.Columns.AddRange(new DataGridViewColumn[] { colReportId, colReportedStudent, colReporter, colReason, colDate, colBlacklist });
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = Color.FromArgb(16, 185, 129);
+            dataGridViewCellStyle4.Font = new Font("Segoe UI", 9F);
+            dataGridViewCellStyle4.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.False;
+            dgvReportRecords.DefaultCellStyle = dataGridViewCellStyle4;
+            dgvReportRecords.EnableHeadersVisualStyles = false;
+            dgvReportRecords.GridColor = SystemColors.WindowText;
+            dgvReportRecords.Location = new Point(18, 22);
+            dgvReportRecords.Margin = new Padding(3, 2, 3, 2);
+            dgvReportRecords.Name = "dgvReportRecords";
+            dgvReportRecords.RowHeadersVisible = false;
+            dgvReportRecords.RowHeadersWidth = 51;
+            dgvReportRecords.Size = new Size(780, 141);
+            dgvReportRecords.TabIndex = 1;
             // 
             // colReportId
             // 
@@ -667,10 +667,10 @@ namespace Co_LAB
             pnlBlacklisted.PerformLayout();
             pnlDeclined.ResumeLayout(false);
             pnlDeclined.PerformLayout();
-            flowLayoutPanel8.ResumeLayout(false);
+            flpDeclined.ResumeLayout(false);
             pnlReports.ResumeLayout(false);
             pnlReports.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dgvReportRecords).EndInit();
             ResumeLayout(false);
         }
 
@@ -733,17 +733,17 @@ namespace Co_LAB
         private TableLayoutPanel tableLayoutPanel5;
         private FlowLayoutPanel flowLayoutPanel3;
         private FlowLayoutPanel flowLayoutPanel2;
-        private FlowLayoutPanel flowLayoutPanel1;
+        private FlowLayoutPanel flpBlacklisted;
         private FlowLayoutPanel flowLayoutPanel7;
         private FlowLayoutPanel flowLayoutPanel6;
         private FlowLayoutPanel flowLayoutPanel5;
-        private FlowLayoutPanel flowLayoutPanel4;
+        private FlowLayoutPanel flpPendingVerification;
         private FlowLayoutPanel flowLayoutPanel11;
         private FlowLayoutPanel flowLayoutPanel10;
         private FlowLayoutPanel flowLayoutPanel9;
-        private FlowLayoutPanel flowLayoutPanel8;
+        private FlowLayoutPanel flpDeclined;
         private Button button1;
-        private DataGridView dataGridView1;
+        private DataGridView dgvReportRecords;
         private DataGridViewTextBoxColumn colReportId;
         private DataGridViewTextBoxColumn colReportedStudent;
         private DataGridViewTextBoxColumn colReporter;
