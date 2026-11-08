@@ -10,10 +10,10 @@ namespace Co_LAB
         // XAMPP / PHPMYADMIN CONFIGURATION
         // Modify these values if your database name or credentials differ
         // =========================================================================
-        public static string Server = "localhost";
+        public static string Server = "192.168.1.20";
         public static string Database = "db_colab"; // Set your database name here
-        public static string Uid = "root";
-        public static string Password = "";
+        public static string Uid = "ddbms_user";
+        public static string Password = "password123";
 
         public static string ConnectionString => $"server={Server};database={Database};uid={Uid};pwd={Password};Charset=utf8mb4;";
 
