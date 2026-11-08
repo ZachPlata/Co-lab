@@ -173,6 +173,7 @@ namespace Co_LAB
             cmbReturnSkill.Name = "cmbReturnSkill";
             cmbReturnSkill.Size = new Size(430, 23);
             cmbReturnSkill.TabIndex = 6;
+            cmbReturnSkill.SelectedIndexChanged += cmbReturnSkill_SelectedIndexChanged;
             // 
             // lblTradeMode
             // 

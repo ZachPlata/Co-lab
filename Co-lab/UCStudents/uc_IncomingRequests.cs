@@ -21,6 +21,7 @@ namespace Co_LAB
             public string WantsSkill { get; set; } = "";
             public string OffersSkill { get; set; } = "";
             public DateTime RequestDateTime { get; set; }
+            public string MeetingMode { get; set; } = "Face-to-Face";
             public string Location { get; set; } = "";
             public string Note { get; set; } = "";
             public string Status { get; set; } = "PENDING"; // PENDING, ACCEPTED, COMPLETED, DECLINED
@@ -58,6 +59,7 @@ namespace Co_LAB
                                     s.SkillTitle AS WantsSkill, 
                                     r.OfferedSkillTitle AS OffersSkill, 
                                     r.RequestDate AS RequestDateTime, 
+                                    COALESCE(r.MeetingMode, 'Face-to-Face') AS MeetingMode,
                                     r.Location, 
                                     r.Message AS Note, 
                                     r.Status 
@@ -84,6 +86,7 @@ namespace Co_LAB
                             WantsSkill = row["WantsSkill"]?.ToString() ?? "",
                             OffersSkill = row["OffersSkill"]?.ToString() ?? "",
                             RequestDateTime = row["RequestDateTime"] != DBNull.Value ? Convert.ToDateTime(row["RequestDateTime"]) : DateTime.Now,
+                            MeetingMode = row["MeetingMode"]?.ToString() ?? "Face-to-Face",
                             Location = row["Location"]?.ToString() ?? "",
                             Note = row["Note"]?.ToString() ?? "",
                             Status = (row["Status"]?.ToString() ?? "Pending").ToUpper()
@@ -348,13 +351,28 @@ namespace Co_LAB
 
         private void AcceptRequest(TradeRequestModel req)
         {
-            var res = MessageBox.Show(
-                $"Accept trade request from {req.RequesterName}?\n\nYou agree to exchange:\nWants: \"{req.WantsSkill}\"\nOffers: \"{req.OffersSkill}\"",
-                "Accept Trade Request",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question);
+            if (req == null) return;
 
-            if (res == DialogResult.Yes)
+            using Form dlg = new Form
+            {
+                Text = "Confirm Trade Request",
+                ClientSize = new Size(470, 501),
+                StartPosition = FormStartPosition.CenterParent,
+                FormBorderStyle = FormBorderStyle.FixedDialog,
+                MaximizeBox = false,
+                MinimizeBox = false,
+                BackColor = Color.FromArgb(24, 24, 27)
+            };
+
+            var confirmControl = new UCStudents.uc_RequestConfirmation
+            {
+                Dock = DockStyle.Fill
+            };
+            confirmControl.LoadRequest(req);
+
+            dlg.Controls.Add(confirmControl);
+
+            if (dlg.ShowDialog(this) == DialogResult.OK || confirmControl.IsConfirmed)
             {
                 UpdateDatabaseStatus(req.RequestId, "Accepted");
                 LoadIncomingRequests();
@@ -410,7 +428,27 @@ namespace Co_LAB
 
         private void ShowRequestDetails(TradeRequestModel req)
         {
-            // Details dialog placeholder: add your custom Form here
+            if (req == null) return;
+
+            using Form dlg = new Form
+            {
+                Text = "Transaction Details",
+                ClientSize = new Size(470, 501),
+                StartPosition = FormStartPosition.CenterParent,
+                FormBorderStyle = FormBorderStyle.FixedDialog,
+                MaximizeBox = false,
+                MinimizeBox = false,
+                BackColor = Color.FromArgb(24, 24, 27)
+            };
+
+            var detailsControl = new UCStudents.uc_Requestdetails
+            {
+                Dock = DockStyle.Fill
+            };
+            detailsControl.LoadDetails(req);
+
+            dlg.Controls.Add(detailsControl);
+            dlg.ShowDialog(this);
         }
 
         private static string ExtractInitials(string fullName)

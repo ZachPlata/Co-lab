@@ -20,6 +20,7 @@ namespace Co_LAB
             public string TargetSkill { get; set; } = "";
             public string WhatIOffered { get; set; } = "";
             public DateTime RequestDateTime { get; set; }
+            public string MeetingMode { get; set; } = "Face-to-Face";
             public string Location { get; set; } = "";
             public string Note { get; set; } = "";
             public string Status { get; set; } = "PENDING";
@@ -53,6 +54,7 @@ namespace Co_LAB
                                     s.SkillTitle AS TargetSkill, 
                                     r.OfferedSkillTitle AS WhatIOffered, 
                                     r.RequestDate AS RequestDateTime, 
+                                    COALESCE(r.MeetingMode, 'Face-to-Face') AS MeetingMode,
                                     r.Location, 
                                     r.Message AS Note, 
                                     r.Status 
@@ -78,6 +80,7 @@ namespace Co_LAB
                             TargetSkill = row["TargetSkill"]?.ToString() ?? "",
                             WhatIOffered = row["WhatIOffered"]?.ToString() ?? "",
                             RequestDateTime = row["RequestDateTime"] != DBNull.Value ? Convert.ToDateTime(row["RequestDateTime"]) : DateTime.Now,
+                            MeetingMode = row["MeetingMode"]?.ToString() ?? "Face-to-Face",
                             Location = row["Location"]?.ToString() ?? "",
                             Note = row["Note"]?.ToString() ?? "",
                             Status = (row["Status"]?.ToString() ?? "Pending").ToUpper()
@@ -332,7 +335,27 @@ namespace Co_LAB
 
         private void ShowSentDetails(SentRequestModel req)
         {
-            // Details dialog placeholder: add your custom Form here
+            if (req == null) return;
+
+            using Form dlg = new Form
+            {
+                Text = "Transaction Details",
+                ClientSize = new Size(470, 501),
+                StartPosition = FormStartPosition.CenterParent,
+                FormBorderStyle = FormBorderStyle.FixedDialog,
+                MaximizeBox = false,
+                MinimizeBox = false,
+                BackColor = Color.FromArgb(24, 24, 27)
+            };
+
+            var detailsControl = new UCStudents.uc_Requestdetails
+            {
+                Dock = DockStyle.Fill
+            };
+            detailsControl.LoadDetails(req);
+
+            dlg.Controls.Add(detailsControl);
+            dlg.ShowDialog(this);
         }
 
         private static string ExtractInitials(string fullName)

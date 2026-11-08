@@ -117,12 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="lblTipText.Text" xml:space="preserve">
-    <value>🤝 How Co-Lab Works:
-
-1. Your listing appears on the student Skill Exchange catalog.
-2. Interested peers will propose trades from what they offer.
-3. You review proposals under 'Incoming Requests' and accept barter partners.
-4. Coordinate learning sessions safely via campus hubs or online!</value>
-  </data>
 </root>

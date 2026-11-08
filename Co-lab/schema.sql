@@ -24,18 +24,19 @@ CREATE TABLE `tbl_users` (
     `College` VARCHAR(100) DEFAULT NULL,
     `SecurityQuestion` VARCHAR(255) DEFAULT 'What was the name of your first pet?',
     `SecurityAnswer` VARCHAR(255) DEFAULT 'dog',
+    `is_verified` TINYINT(1) DEFAULT 0,
     `is_blacklisted` TINYINT(1) DEFAULT 0,
     `BanReason` VARCHAR(255) DEFAULT NULL,
     `CreatedAt` DATETIME DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
 -- Populate ONLY the 5 specific users (Password: 12345678)
-INSERT INTO `tbl_users` (`UserId`, `FullName`, `Email`, `Password`, `Role`, `SecurityQuestion`, `SecurityAnswer`) VALUES
-(1, 'Zach Plata', 'plata.zachbenedict@ue.edu.ph', '12345678', 'Student', 'What was the name of your first pet?', 'dog'),
-(2, 'Trowa Bugarin', 'bugarin.trowabarton@ue.edu.ph', '12345678', 'Student', 'What was the name of your first pet?', 'dog'),
-(3, 'Gabs Katipunan', 'katipunan.karisgabriel@ue.edu.ph', '12345678', 'Student', 'What was the name of your first pet?', 'dog'),
-(4, 'Andrei Sarmiento', 'sarmiento.andrei@ue.edu.ph', '12345678', 'Student', 'What was the name of your first pet?', 'dog'),
-(5, 'Miguel Borja', 'borja.miguelantonio@ue.edu.ph', '12345678', 'Admin', 'What was the name of your first pet?', 'dog');
+INSERT INTO `tbl_users` (`UserId`, `FullName`, `Email`, `Password`, `Role`, `SecurityQuestion`, `SecurityAnswer`, `is_verified`) VALUES
+(1, 'Zach Plata', 'plata.zachbenedict@ue.edu.ph', '12345678', 'Student', 'What was the name of your first pet?', 'dog', 1),
+(2, 'Trowa Bugarin', 'bugarin.trowabarton@ue.edu.ph', '12345678', 'Student', 'What was the name of your first pet?', 'dog', 1),
+(3, 'Gabs Katipunan', 'katipunan.karisgabriel@ue.edu.ph', '12345678', 'Student', 'What was the name of your first pet?', 'dog', 1),
+(4, 'Andrei Sarmiento', 'sarmiento.andrei@ue.edu.ph', '12345678', 'Student', 'What was the name of your first pet?', 'dog', 1),
+(5, 'Miguel Borja', 'borja.miguelantonio@ue.edu.ph', '12345678', 'Admin', 'What was the name of your first pet?', 'dog', 1);
 
 -- -----------------------------------------------------------------------------
 -- 2. Table: tbl_categories

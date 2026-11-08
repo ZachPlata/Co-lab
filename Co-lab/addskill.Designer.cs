@@ -38,7 +38,6 @@ namespace Co_LAB
             btnCancel = new Button();
             pnlSeparator = new Panel();
             SuspendLayout();
-
             // 
             // lblTitle
             // 
@@ -47,10 +46,9 @@ namespace Co_LAB
             lblTitle.ForeColor = Color.White;
             lblTitle.Location = new Point(24, 18);
             lblTitle.Name = "lblTitle";
-            lblTitle.Size = new Size(99, 28);
+            lblTitle.Size = new Size(96, 28);
             lblTitle.TabIndex = 0;
             lblTitle.Text = "Add Skill";
-
             // 
             // lblSubtitle
             // 
@@ -59,19 +57,9 @@ namespace Co_LAB
             lblSubtitle.ForeColor = Color.FromArgb(209, 250, 229);
             lblSubtitle.Location = new Point(26, 48);
             lblSubtitle.Name = "lblSubtitle";
-            lblSubtitle.Size = new Size(346, 15);
+            lblSubtitle.Size = new Size(353, 15);
             lblSubtitle.TabIndex = 1;
             lblSubtitle.Text = "Select a skill category and enter the skill you can offer to students.";
-
-            // 
-            // pnlSeparator
-            // 
-            pnlSeparator.BackColor = Color.FromArgb(4, 120, 87);
-            pnlSeparator.Location = new Point(26, 72);
-            pnlSeparator.Name = "pnlSeparator";
-            pnlSeparator.Size = new Size(410, 2);
-            pnlSeparator.TabIndex = 2;
-
             // 
             // lblCategory
             // 
@@ -83,7 +71,6 @@ namespace Co_LAB
             lblCategory.Size = new Size(98, 17);
             lblCategory.TabIndex = 3;
             lblCategory.Text = "Skill Category:";
-
             // 
             // cmbCategory
             // 
@@ -93,20 +80,11 @@ namespace Co_LAB
             cmbCategory.Font = new Font("Segoe UI", 9.5F);
             cmbCategory.ForeColor = Color.White;
             cmbCategory.FormattingEnabled = true;
-            cmbCategory.Items.AddRange(new object[] {
-                "Computer Science & IT",
-                "Graphic & Visual Design",
-                "Engineering & Math",
-                "Music & Arts",
-                "Language & Writing",
-                "Business & Marketing",
-                "Video Editing & Multimedia"
-            });
+            cmbCategory.Items.AddRange(new object[] { "Computer Science & IT", "Graphic & Visual Design", "Engineering & Math", "Music & Arts", "Language & Writing", "Business & Marketing", "Video Editing & Multimedia" });
             cmbCategory.Location = new Point(26, 110);
             cmbCategory.Name = "cmbCategory";
             cmbCategory.Size = new Size(410, 25);
             cmbCategory.TabIndex = 4;
-
             // 
             // lblSkillOffer
             // 
@@ -115,10 +93,9 @@ namespace Co_LAB
             lblSkillOffer.ForeColor = Color.White;
             lblSkillOffer.Location = new Point(24, 150);
             lblSkillOffer.Name = "lblSkillOffer";
-            lblSkillOffer.Size = new Size(130, 17);
+            lblSkillOffer.Size = new Size(125, 17);
             lblSkillOffer.TabIndex = 5;
             lblSkillOffer.Text = "Skill you can offer:";
-
             // 
             // txtSkillOffer
             // 
@@ -132,7 +109,6 @@ namespace Co_LAB
             txtSkillOffer.Size = new Size(410, 25);
             txtSkillOffer.TabIndex = 6;
             txtSkillOffer.KeyDown += txtSkillOffer_KeyDown;
-
             // 
             // btnAdd
             // 
@@ -149,7 +125,6 @@ namespace Co_LAB
             btnAdd.Text = "+ Add Skill";
             btnAdd.UseVisualStyleBackColor = false;
             btnAdd.Click += btnAdd_Click;
-
             // 
             // btnCancel
             // 
@@ -166,13 +141,20 @@ namespace Co_LAB
             btnCancel.Text = "Cancel";
             btnCancel.UseVisualStyleBackColor = false;
             btnCancel.Click += btnCancel_Click;
-
+            // 
+            // pnlSeparator
+            // 
+            pnlSeparator.BackColor = Color.FromArgb(4, 120, 87);
+            pnlSeparator.Location = new Point(26, 72);
+            pnlSeparator.Name = "pnlSeparator";
+            pnlSeparator.Size = new Size(410, 2);
+            pnlSeparator.TabIndex = 2;
             // 
             // uc_addskill
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(6, 95, 70);
+            BackColor = Color.FromArgb(24, 24, 27);
             Controls.Add(pnlSeparator);
             Controls.Add(btnCancel);
             Controls.Add(btnAdd);

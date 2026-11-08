@@ -245,5 +245,10 @@ namespace Co_LAB
                 parentForm.Close();
             }
         }
+
+        private void cmbReturnSkill_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

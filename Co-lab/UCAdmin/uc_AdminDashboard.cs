@@ -12,6 +12,7 @@ namespace Co_LAB
         public uc_AdminDashboard()
         {
             InitializeComponent();
+            SetupDataGrids();
         }
 
         private void uc_AdminDashboard_Load(object sender, EventArgs e)
@@ -64,91 +65,196 @@ namespace Co_LAB
         }
 
         // =====================================================
+        // DATAGRIDVIEW SETUP & STYLING
+        // =====================================================
+        private void SetupDataGrids()
+        {
+            SetupDataGridStyle(dgv_PendingStudentVerification);
+            SetupDataGridStyle(dgv_CurrentlyBlackLister);
+            SetupDataGridStyle(dgv_DeclineStudent);
+
+            // 1. Pending Student Verification DataGridView
+            if (dgv_PendingStudentVerification.Columns.Count == 0)
+            {
+                dgv_PendingStudentVerification.Columns.Add(new DataGridViewTextBoxColumn
+                {
+                    Name = "colPendingId",
+                    HeaderText = "ID",
+                    Visible = false
+                });
+                dgv_PendingStudentVerification.Columns.Add(new DataGridViewTextBoxColumn
+                {
+                    Name = "colPendingName",
+                    HeaderText = "Student Name",
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
+                    MinimumWidth = 100
+                });
+                dgv_PendingStudentVerification.Columns.Add(new DataGridViewTextBoxColumn
+                {
+                    Name = "colPendingEmail",
+                    HeaderText = "Email",
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
+                    MinimumWidth = 120
+                });
+                dgv_PendingStudentVerification.Columns.Add(new DataGridViewButtonColumn
+                {
+                    Name = "colPendingApprove",
+                    HeaderText = "Action",
+                    Text = "Approve",
+                    UseColumnTextForButtonValue = true,
+                    Width = 70,
+                    FlatStyle = FlatStyle.Flat
+                });
+            }
+            dgv_PendingStudentVerification.CellContentClick -= dgv_PendingStudentVerification_CellContentClick;
+            dgv_PendingStudentVerification.CellContentClick += dgv_PendingStudentVerification_CellContentClick;
+
+            // 2. Currently Blacklisted DataGridView
+            if (dgv_CurrentlyBlackLister.Columns.Count == 0)
+            {
+                dgv_CurrentlyBlackLister.Columns.Add(new DataGridViewTextBoxColumn
+                {
+                    Name = "colBlacklistId",
+                    HeaderText = "ID",
+                    Visible = false
+                });
+                dgv_CurrentlyBlackLister.Columns.Add(new DataGridViewTextBoxColumn
+                {
+                    Name = "colBlacklistName",
+                    HeaderText = "Student Name",
+                    Width = 110
+                });
+                dgv_CurrentlyBlackLister.Columns.Add(new DataGridViewTextBoxColumn
+                {
+                    Name = "colBlacklistReason",
+                    HeaderText = "Reason",
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
+                    MinimumWidth = 120
+                });
+                dgv_CurrentlyBlackLister.Columns.Add(new DataGridViewButtonColumn
+                {
+                    Name = "colBlacklistUnban",
+                    HeaderText = "Action",
+                    Text = "Unban",
+                    UseColumnTextForButtonValue = true,
+                    Width = 65,
+                    FlatStyle = FlatStyle.Flat
+                });
+            }
+            dgv_CurrentlyBlackLister.CellContentClick -= dgv_CurrentlyBlackLister_CellContentClick;
+            dgv_CurrentlyBlackLister.CellContentClick += dgv_CurrentlyBlackLister_CellContentClick;
+
+            // 3. Declined Students DataGridView
+            if (dgv_DeclineStudent.Columns.Count == 0)
+            {
+                dgv_DeclineStudent.Columns.Add(new DataGridViewTextBoxColumn
+                {
+                    Name = "colDeclinedName",
+                    HeaderText = "Student Name",
+                    Width = 115
+                });
+                dgv_DeclineStudent.Columns.Add(new DataGridViewTextBoxColumn
+                {
+                    Name = "colDeclinedReason",
+                    HeaderText = "Reason / Notes",
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
+                    MinimumWidth = 120
+                });
+                dgv_DeclineStudent.Columns.Add(new DataGridViewTextBoxColumn
+                {
+                    Name = "colDeclinedStatus",
+                    HeaderText = "Status",
+                    Width = 75
+                });
+            }
+        }
+
+        private void SetupDataGridStyle(DataGridView dgv)
+        {
+            if (dgv == null) return;
+            dgv.BackgroundColor = Color.FromArgb(6, 95, 70);
+            dgv.GridColor = Color.FromArgb(16, 185, 129);
+            dgv.BorderStyle = BorderStyle.None;
+            dgv.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+            dgv.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            dgv.EnableHeadersVisualStyles = false;
+            dgv.RowHeadersVisible = false;
+            dgv.AllowUserToAddRows = false;
+            dgv.AllowUserToDeleteRows = false;
+            dgv.AllowUserToResizeRows = false;
+            dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgv.MultiSelect = false;
+
+            dgv.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(4, 75, 55);
+            dgv.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9f, FontStyle.Bold);
+            dgv.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dgv.ColumnHeadersHeight = 26;
+
+            dgv.DefaultCellStyle.BackColor = Color.FromArgb(16, 185, 129);
+            dgv.DefaultCellStyle.ForeColor = Color.Black;
+            dgv.DefaultCellStyle.SelectionBackColor = Color.FromArgb(52, 211, 153);
+            dgv.DefaultCellStyle.SelectionForeColor = Color.Black;
+            dgv.DefaultCellStyle.Font = new Font("Segoe UI", 8.5f);
+            dgv.RowTemplate.Height = 24;
+        }
+
+        // =====================================================
         // PENDING STUDENT VERIFICATIONS
         // =====================================================
+        private static bool _verifiedColumnChecked = false;
+
+        private void EnsureVerificationColumnExists()
+        {
+            if (_verifiedColumnChecked) return;
+            try
+            {
+                DatabaseHelper.ExecuteNonQuery(
+                    "ALTER TABLE tbl_users ADD COLUMN IF NOT EXISTS is_verified TINYINT(1) DEFAULT 0");
+                _verifiedColumnChecked = true;
+            }
+            catch
+            {
+                // Column may already exist or DB offline
+            }
+        }
+
         private void LoadPendingVerifications()
         {
             try
             {
-                DataTable dt = DatabaseHelper.ExecuteQuery(
-                    "SELECT UserId, FullName, Email FROM tbl_users WHERE Role = 'Student' AND is_blacklisted = 0 ORDER BY UserId DESC LIMIT 4");
+                EnsureVerificationColumnExists();
 
-                flpPendingVerification.Controls.Clear();
+                DataTable dt = DatabaseHelper.ExecuteQuery(
+                    "SELECT UserId, FullName, Email FROM tbl_users WHERE Role = 'Student' AND is_verified = 0 AND is_blacklisted = 0 ORDER BY UserId DESC LIMIT 10");
+
+                dgv_PendingStudentVerification.Rows.Clear();
                 foreach (DataRow row in dt.Rows)
                 {
-                    flpPendingVerification.Controls.Add(
-                        CreateVerificationCard(
-                            row["UserId"].ToString()!,
-                            row["FullName"].ToString()!,
-                            row["Email"].ToString()!));
+                    string userId = row["UserId"].ToString()!;
+                    string fullName = row["FullName"].ToString()!;
+                    string email = row["Email"].ToString()!;
+
+                    dgv_PendingStudentVerification.Rows.Add(userId, fullName, email);
                 }
             }
             catch
             {
-                // DB offline — show nothing
+                // DB offline — leave table empty
             }
         }
 
-        private Panel CreateVerificationCard(string userId, string name, string email)
+        private void dgv_PendingStudentVerification_CellContentClick(object? sender, DataGridViewCellEventArgs e)
         {
-            var card = new Panel
-            {
-                Width = 210,
-                Height = 55,
-                BackColor = Color.FromArgb(14, 160, 110),
-                Margin = new Padding(4),
-                Cursor = Cursors.Default
-            };
+            if (e.RowIndex < 0) return;
 
-            var lblName = new Label
+            if (e.ColumnIndex == dgv_PendingStudentVerification.Columns["colPendingApprove"]?.Index)
             {
-                Text = name,
-                Font = new Font("Segoe UI", 9f, FontStyle.Bold),
-                ForeColor = Color.Black,
-                Location = new Point(6, 6),
-                AutoSize = false,
-                Width = 135,
-                Height = 20
-            };
+                string userId = dgv_PendingStudentVerification.Rows[e.RowIndex].Cells["colPendingId"].Value?.ToString() ?? "";
+                string fullName = dgv_PendingStudentVerification.Rows[e.RowIndex].Cells["colPendingName"].Value?.ToString() ?? "";
 
-            var lblEmail = new Label
-            {
-                Text = email,
-                Font = new Font("Segoe UI", 7.5f),
-                ForeColor = Color.FromArgb(20, 50, 35),
-                Location = new Point(6, 27),
-                AutoSize = false,
-                Width = 135,
-                Height = 18
-            };
-
-            var btnApprove = new Button
-            {
-                Text = "Approve",
-                Font = new Font("Segoe UI", 8f, FontStyle.Bold),
-                ForeColor = Color.White,
-                BackColor = Color.FromArgb(22, 101, 67),
-                FlatStyle = FlatStyle.Flat,
-                Size = new Size(62, 28),
-                Location = new Point(143, 13),
-                Cursor = Cursors.Hand,
-                Tag = userId
-            };
-            btnApprove.FlatAppearance.BorderSize = 0;
-            btnApprove.Click += BtnApproveStudent_Click;
-
-            card.Controls.Add(lblName);
-            card.Controls.Add(lblEmail);
-            card.Controls.Add(btnApprove);
-            return card;
-        }
-
-        private void BtnApproveStudent_Click(object sender, EventArgs e)
-        {
-            if (sender is Button btn && btn.Tag is string userId)
-            {
                 var result = MessageBox.Show(
-                    "Approve this student account?",
+                    $"Approve and verify student account for '{fullName}'?",
                     "Confirm Approval",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Question);
@@ -158,10 +264,10 @@ namespace Co_LAB
                     try
                     {
                         DatabaseHelper.ExecuteNonQuery(
-                            "UPDATE tbl_users SET is_blacklisted = 0 WHERE UserId = @id",
+                            "UPDATE tbl_users SET is_verified = 1 WHERE UserId = @id",
                             new MySqlParameter("@id", userId));
 
-                        MessageBox.Show("Student approved successfully.", "Approved",
+                        MessageBox.Show($"Student account for '{fullName}' approved and verified successfully.", "Approved",
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
                         LoadDashboard();
                     }
@@ -182,57 +288,58 @@ namespace Co_LAB
             try
             {
                 DataTable dt = DatabaseHelper.ExecuteQuery(
-                    "SELECT FullName, BanReason FROM tbl_users WHERE is_blacklisted = 1 ORDER BY UserId DESC LIMIT 4");
+                    "SELECT UserId, FullName, Email, COALESCE(BanReason, 'Blacklisted via Report') AS BanReason FROM tbl_users WHERE is_blacklisted = 1 ORDER BY UserId DESC LIMIT 10");
 
-                flpBlacklisted.Controls.Clear();
+                dgv_CurrentlyBlackLister.Rows.Clear();
                 foreach (DataRow row in dt.Rows)
                 {
-                    flpBlacklisted.Controls.Add(
-                        CreateBlacklistRow(
-                            row["FullName"].ToString()!,
-                            row["BanReason"]?.ToString() ?? "No reason provided"));
-                }
+                    string userId = row["UserId"].ToString()!;
+                    string fullName = row["FullName"].ToString()!;
+                    string banReason = row["BanReason"].ToString()!;
 
-                if (dt.Rows.Count == 0)
-                {
-                    flpBlacklisted.Controls.Add(new Label
-                    {
-                        Text = "No blacklisted students.",
-                        ForeColor = Color.FromArgb(20, 50, 35),
-                        Font = new Font("Segoe UI", 9f),
-                        AutoSize = true,
-                        Margin = new Padding(6, 8, 0, 0)
-                    });
+                    dgv_CurrentlyBlackLister.Rows.Add(userId, fullName, banReason);
                 }
             }
             catch
             {
-                // DB offline
+                // DB offline — leave table empty
             }
         }
 
-        private Panel CreateBlacklistRow(string name, string reason)
+        private void dgv_CurrentlyBlackLister_CellContentClick(object? sender, DataGridViewCellEventArgs e)
         {
-            var row = new Panel
-            {
-                Width = 390,
-                Height = 30,
-                BackColor = Color.FromArgb(14, 160, 110),
-                Margin = new Padding(4, 3, 4, 0)
-            };
+            if (e.RowIndex < 0) return;
 
-            var lbl = new Label
+            if (e.ColumnIndex == dgv_CurrentlyBlackLister.Columns["colBlacklistUnban"]?.Index)
             {
-                Text = $"{name}  —  {reason}",
-                Font = new Font("Segoe UI", 8.5f),
-                ForeColor = Color.Black,
-                Dock = DockStyle.Fill,
-                TextAlign = ContentAlignment.MiddleLeft,
-                Padding = new Padding(8, 0, 0, 0)
-            };
+                string userId = dgv_CurrentlyBlackLister.Rows[e.RowIndex].Cells["colBlacklistId"].Value?.ToString() ?? "";
+                string fullName = dgv_CurrentlyBlackLister.Rows[e.RowIndex].Cells["colBlacklistName"].Value?.ToString() ?? "";
 
-            row.Controls.Add(lbl);
-            return row;
+                var result = MessageBox.Show(
+                    $"Unban student '{fullName}'?",
+                    "Confirm Unban",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (result == DialogResult.Yes)
+                {
+                    try
+                    {
+                        DatabaseHelper.ExecuteNonQuery(
+                            "UPDATE tbl_users SET is_blacklisted = 0, BanReason = NULL WHERE UserId = @id",
+                            new MySqlParameter("@id", userId));
+
+                        MessageBox.Show($"Student '{fullName}' has been unbanned.", "Unbanned",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        LoadDashboard();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error: {ex.Message}", "Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
         }
 
         // =====================================================
@@ -243,75 +350,25 @@ namespace Co_LAB
             try
             {
                 DataTable dt = DatabaseHelper.ExecuteQuery(
-                    "SELECT UserId, FullName, Email FROM tbl_users WHERE is_blacklisted = 1 ORDER BY UserId DESC LIMIT 4");
+                    "SELECT ReportedUser AS StudentName, Reason, Status FROM tbl_reports WHERE Status IN ('Dismissed', 'Declined') " +
+                    "UNION ALL " +
+                    "SELECT SenderName AS StudentName, CONCAT('Proposal: ', OfferedSkillTitle) AS Reason, Status FROM tbl_traderequests WHERE Status = 'Declined' " +
+                    "LIMIT 10");
 
-                flpDeclined.Controls.Clear();
+                dgv_DeclineStudent.Rows.Clear();
                 foreach (DataRow row in dt.Rows)
                 {
-                    flpDeclined.Controls.Add(
-                        CreateDeclinedCard(
-                            row["UserId"].ToString()!,
-                            row["FullName"].ToString()!,
-                            row["Email"].ToString()!));
+                    string studentName = row["StudentName"]?.ToString() ?? "";
+                    string reason = row["Reason"]?.ToString() ?? "";
+                    string status = row["Status"]?.ToString() ?? "";
+
+                    dgv_DeclineStudent.Rows.Add(studentName, reason, status);
                 }
             }
             catch
             {
-                // DB offline?
+                // DB offline — leave table empty
             }
-        }
-
-        private Panel CreateDeclinedCard(string userId, string name, string email)
-        {
-            var card = new Panel
-            {
-                Width = 210,
-                Height = 55,
-                BackColor = Color.FromArgb(14, 160, 110),
-                Margin = new Padding(4),
-                Cursor = Cursors.Default
-            };
-
-            var lblName = new Label
-            {
-                Text = name,
-                Font = new Font("Segoe UI", 9f, FontStyle.Bold),
-                ForeColor = Color.Black,
-                Location = new Point(6, 6),
-                AutoSize = false,
-                Width = 135,
-                Height = 20
-            };
-
-            var lblEmail = new Label
-            {
-                Text = email,
-                Font = new Font("Segoe UI", 7.5f),
-                ForeColor = Color.FromArgb(20, 50, 35),
-                Location = new Point(6, 27),
-                AutoSize = false,
-                Width = 135,
-                Height = 18
-            };
-
-            var btnDeclined = new Button
-            {
-                Text = "DECLINED",
-                Font = new Font("Segoe UI", 7.5f, FontStyle.Bold),
-                ForeColor = Color.White,
-                BackColor = Color.FromArgb(200, 30, 30),
-                FlatStyle = FlatStyle.Flat,
-                Size = new Size(62, 28),
-                Location = new Point(143, 13),
-                Cursor = Cursors.Default,
-                Enabled = false
-            };
-            btnDeclined.FlatAppearance.BorderSize = 0;
-
-            card.Controls.Add(lblName);
-            card.Controls.Add(lblEmail);
-            card.Controls.Add(btnDeclined);
-            return card;
         }
 
         // =====================================================
