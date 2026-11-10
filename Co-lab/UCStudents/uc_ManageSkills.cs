@@ -101,13 +101,13 @@ namespace Co_LAB
 
                 string query = @"SELECT 
                                     SkillId, 
-                                    SkillTitle AS [Offered Skill], 
+                                    SkillTitle AS `Offered Skill`, 
                                     Category, 
-                                    DesiredSkill AS [Wanted In Exchange], 
-                                    DeliveryMode AS [Mode], 
-                                    Location AS [Meeting Place / Tool], 
+                                    DesiredSkill AS `Wanted In Exchange`, 
+                                    DeliveryMode AS `Mode`, 
+                                    Location AS `Meeting Place / Tool`, 
                                     Status, 
-                                    CreatedAt AS [Date Posted] 
+                                    CreatedAt AS `Date Posted` 
                                  FROM tbl_skills 
                                  WHERE (UserId = @uid OR OfferedBy = @name) AND Status != 'Archived' 
                                  ORDER BY SkillId DESC";
@@ -118,9 +118,9 @@ namespace Co_LAB
 
                 dgvMyListings.DataSource = dt;
 
-                if (dgvMyListings.Columns["SkillId"] != null)
+                if (dgvMyListings.Columns["SkillId"] is DataGridViewColumn colSkill)
                 {
-                    dgvMyListings.Columns["SkillId"].Visible = false;
+                    colSkill.Visible = false;
                 }
 
                 int activeCount = 0;
@@ -239,7 +239,8 @@ namespace Co_LAB
             }
 
             var row = dgvMyListings.SelectedRows[0];
-            if (row.Cells["SkillId"]?.Value == null || !int.TryParse(row.Cells["SkillId"].Value.ToString(), out int skillId))
+            var idVal = row.Cells["SkillId"]?.Value;
+            if (idVal == null || !int.TryParse(idVal.ToString(), out int skillId))
             {
                 MessageBox.Show("Invalid listing selected.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -276,7 +277,8 @@ namespace Co_LAB
             }
 
             var row = dgvMyListings.SelectedRows[0];
-            if (row.Cells["SkillId"]?.Value == null || !int.TryParse(row.Cells["SkillId"].Value.ToString(), out int skillId))
+            var idVal = row.Cells["SkillId"]?.Value;
+            if (idVal == null || !int.TryParse(idVal.ToString(), out int skillId))
             {
                 MessageBox.Show("Invalid listing selected.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;

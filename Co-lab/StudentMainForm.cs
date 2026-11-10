@@ -94,8 +94,8 @@ namespace Co_LAB
             {
                 if (btn == activeButton)
                 {
-                    btn.BackColor = Color.FromArgb(28, 28, 33);
-                    btn.ForeColor = Color.FromArgb(16, 185, 129); // Emerald Green
+                    btn.BackColor = Color.FromArgb(20, 28, 23);
+                    btn.ForeColor = Color.FromArgb(74, 222, 128); // Emerald Green
                     pnlNavIndicator.Visible = true;
                     pnlNavIndicator.Location = new Point(0, btn.Top);
                     pnlNavIndicator.Height = btn.Height;

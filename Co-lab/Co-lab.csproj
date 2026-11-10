@@ -213,16 +213,6 @@
     <EmbeddedResource Update="UCAdmin\uc_ReportedStudents.resx">
       <DependentUpon>uc_ReportedStudents.cs</DependentUpon>
     </EmbeddedResource>
-
-    <Compile Update="UCAdmin\uc_UpdateTOS.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="UCAdmin\uc_UpdateTOS.Designer.cs">
-      <DependentUpon>uc_UpdateTOS.cs</DependentUpon>
-    </Compile>
-    <EmbeddedResource Update="UCAdmin\uc_UpdateTOS.resx">
-      <DependentUpon>uc_UpdateTOS.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>

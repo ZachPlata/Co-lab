@@ -31,7 +31,7 @@ namespace Co_LAB
             // 
             // pnlFilterBar
             // 
-            pnlFilterBar.BackColor = Color.FromArgb(28, 28, 33);
+            pnlFilterBar.BackColor = Color.FromArgb(20, 28, 23);
             pnlFilterBar.Controls.Add(lblListingCount);
             pnlFilterBar.Controls.Add(btnReset);
             pnlFilterBar.Controls.Add(btnSearch);
@@ -51,7 +51,7 @@ namespace Co_LAB
             lblListingCount.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblListingCount.AutoSize = true;
             lblListingCount.Font = new Font("Segoe UI", 9F, FontStyle.Italic);
-            lblListingCount.ForeColor = Color.FromArgb(161, 161, 170);
+            lblListingCount.ForeColor = Color.FromArgb(130, 175, 145);
             lblListingCount.Location = new Point(810, 26);
             lblListingCount.Name = "lblListingCount";
             lblListingCount.Size = new Size(93, 15);
@@ -61,12 +61,13 @@ namespace Co_LAB
             // 
             // btnReset
             // 
-            btnReset.BackColor = Color.FromArgb(39, 39, 42);
+            btnReset.BackColor = Color.FromArgb(28, 38, 30);
             btnReset.Cursor = Cursors.Hand;
-            btnReset.FlatAppearance.BorderSize = 0;
+            btnReset.FlatAppearance.BorderColor = Color.FromArgb(42, 60, 48);
+            btnReset.FlatAppearance.BorderSize = 1;
             btnReset.FlatStyle = FlatStyle.Flat;
             btnReset.Font = new Font("Segoe UI Semibold", 9F);
-            btnReset.ForeColor = Color.White;
+            btnReset.ForeColor = Color.FromArgb(220, 235, 225);
             btnReset.Location = new Point(660, 20);
             btnReset.Name = "btnReset";
             btnReset.Size = new Size(80, 29);
@@ -77,7 +78,7 @@ namespace Co_LAB
             // 
             // btnSearch
             // 
-            btnSearch.BackColor = Color.FromArgb(16, 185, 129);
+            btnSearch.BackColor = Color.FromArgb(46, 125, 70);
             btnSearch.Cursor = Cursors.Hand;
             btnSearch.FlatAppearance.BorderSize = 0;
             btnSearch.FlatStyle = FlatStyle.Flat;
@@ -93,7 +94,7 @@ namespace Co_LAB
             // 
             // cmbCategory
             // 
-            cmbCategory.BackColor = Color.FromArgb(39, 39, 42);
+            cmbCategory.BackColor = Color.FromArgb(14, 20, 16);
             cmbCategory.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbCategory.FlatStyle = FlatStyle.Flat;
             cmbCategory.Font = new Font("Segoe UI", 9.5F);
@@ -109,7 +110,7 @@ namespace Co_LAB
             // 
             lblCategory.AutoSize = true;
             lblCategory.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lblCategory.ForeColor = Color.FromArgb(161, 161, 170);
+            lblCategory.ForeColor = Color.FromArgb(130, 175, 145);
             lblCategory.Location = new Point(325, 25);
             lblCategory.Name = "lblCategory";
             lblCategory.Size = new Size(60, 15);
@@ -118,7 +119,7 @@ namespace Co_LAB
             // 
             // txtSearch
             // 
-            txtSearch.BackColor = Color.FromArgb(39, 39, 42);
+            txtSearch.BackColor = Color.FromArgb(14, 20, 16);
             txtSearch.BorderStyle = BorderStyle.FixedSingle;
             txtSearch.Font = new Font("Segoe UI", 9.5F);
             txtSearch.ForeColor = Color.White;
@@ -133,7 +134,7 @@ namespace Co_LAB
             // 
             lblSearch.AutoSize = true;
             lblSearch.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lblSearch.ForeColor = Color.FromArgb(161, 161, 170);
+            lblSearch.ForeColor = Color.FromArgb(130, 175, 145);
             lblSearch.Location = new Point(22, 25);
             lblSearch.Name = "lblSearch";
             lblSearch.Size = new Size(48, 15);
@@ -143,7 +144,7 @@ namespace Co_LAB
             // flpMarketplace
             // 
             flpMarketplace.AutoScroll = true;
-            flpMarketplace.BackColor = Color.FromArgb(24, 24, 27);
+            flpMarketplace.BackColor = Color.FromArgb(14, 20, 16);
             flpMarketplace.Dock = DockStyle.Fill;
             flpMarketplace.Location = new Point(0, 68);
             flpMarketplace.Name = "flpMarketplace";
@@ -156,7 +157,7 @@ namespace Co_LAB
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(24, 24, 27);
+            BackColor = Color.FromArgb(14, 20, 16);
             Controls.Add(flpMarketplace);
             Controls.Add(pnlFilterBar);
             Name = "uc_SkillExchange";

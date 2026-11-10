@@ -34,7 +34,7 @@ namespace Co_LAB
             // 
             // pnlBrand
             // 
-            pnlBrand.BackColor = Color.FromArgb(15, 15, 17);
+            pnlBrand.BackColor = Color.FromArgb(12, 17, 14);
             pnlBrand.Controls.Add(pnlBrandBorder);
             pnlBrand.Controls.Add(lblUniversity);
             pnlBrand.Controls.Add(lblFeature3);
@@ -53,7 +53,7 @@ namespace Co_LAB
             // 
             // pnlBrandBorder
             // 
-            pnlBrandBorder.BackColor = Color.FromArgb(39, 39, 42);
+            pnlBrandBorder.BackColor = Color.FromArgb(30, 44, 34);
             pnlBrandBorder.Dock = DockStyle.Right;
             pnlBrandBorder.Location = new Point(309, 0);
             pnlBrandBorder.Name = "pnlBrandBorder";
@@ -64,7 +64,7 @@ namespace Co_LAB
             // 
             lblUniversity.AutoSize = true;
             lblUniversity.Font = new Font("Segoe UI", 8.25F);
-            lblUniversity.ForeColor = Color.FromArgb(113, 113, 122);
+            lblUniversity.ForeColor = Color.FromArgb(110, 145, 125);
             lblUniversity.Location = new Point(30, 535);
             lblUniversity.Name = "lblUniversity";
             lblUniversity.Size = new Size(130, 26);
@@ -74,7 +74,7 @@ namespace Co_LAB
             // lblFeature3
             // 
             lblFeature3.Font = new Font("Segoe UI", 9.5F);
-            lblFeature3.ForeColor = Color.FromArgb(161, 161, 170);
+            lblFeature3.ForeColor = Color.FromArgb(180, 215, 195);
             lblFeature3.Location = new Point(30, 280);
             lblFeature3.Name = "lblFeature3";
             lblFeature3.Size = new Size(250, 42);
@@ -84,7 +84,7 @@ namespace Co_LAB
             // lblFeature2
             // 
             lblFeature2.Font = new Font("Segoe UI", 9.5F);
-            lblFeature2.ForeColor = Color.FromArgb(161, 161, 170);
+            lblFeature2.ForeColor = Color.FromArgb(180, 215, 195);
             lblFeature2.Location = new Point(30, 225);
             lblFeature2.Name = "lblFeature2";
             lblFeature2.Size = new Size(250, 45);
@@ -94,7 +94,7 @@ namespace Co_LAB
             // lblFeature1
             // 
             lblFeature1.Font = new Font("Segoe UI", 9.5F);
-            lblFeature1.ForeColor = Color.FromArgb(161, 161, 170);
+            lblFeature1.ForeColor = Color.FromArgb(180, 215, 195);
             lblFeature1.Location = new Point(30, 175);
             lblFeature1.Name = "lblFeature1";
             lblFeature1.Size = new Size(250, 42);
@@ -114,7 +114,7 @@ namespace Co_LAB
             // 
             // pnlBrandDivider
             // 
-            pnlBrandDivider.BackColor = Color.FromArgb(39, 39, 42);
+            pnlBrandDivider.BackColor = Color.FromArgb(30, 44, 34);
             pnlBrandDivider.Location = new Point(30, 115);
             pnlBrandDivider.Name = "pnlBrandDivider";
             pnlBrandDivider.Size = new Size(250, 1);
@@ -124,7 +124,7 @@ namespace Co_LAB
             // 
             lblBrandSubtitle.AutoSize = true;
             lblBrandSubtitle.Font = new Font("Segoe UI", 10F);
-            lblBrandSubtitle.ForeColor = Color.FromArgb(161, 161, 170);
+            lblBrandSubtitle.ForeColor = Color.FromArgb(130, 175, 145);
             lblBrandSubtitle.Location = new Point(30, 80);
             lblBrandSubtitle.Name = "lblBrandSubtitle";
             lblBrandSubtitle.Size = new Size(167, 19);
@@ -135,7 +135,7 @@ namespace Co_LAB
             // 
             lblBrandTitle.AutoSize = true;
             lblBrandTitle.Font = new Font("Segoe UI", 24F, FontStyle.Bold);
-            lblBrandTitle.ForeColor = Color.FromArgb(16, 185, 129);
+            lblBrandTitle.ForeColor = Color.FromArgb(74, 222, 128);
             lblBrandTitle.Location = new Point(24, 30);
             lblBrandTitle.Name = "lblBrandTitle";
             lblBrandTitle.Size = new Size(141, 45);
@@ -144,7 +144,7 @@ namespace Co_LAB
             // 
             // pnlBrandAccentBar
             // 
-            pnlBrandAccentBar.BackColor = Color.FromArgb(16, 185, 129);
+            pnlBrandAccentBar.BackColor = Color.FromArgb(74, 222, 128);
             pnlBrandAccentBar.Dock = DockStyle.Left;
             pnlBrandAccentBar.Location = new Point(0, 0);
             pnlBrandAccentBar.Name = "pnlBrandAccentBar";
@@ -153,7 +153,7 @@ namespace Co_LAB
             // 
             // panelContent
             // 
-            panelContent.BackColor = Color.FromArgb(24, 24, 27);
+            panelContent.BackColor = Color.FromArgb(14, 20, 16);
             panelContent.Dock = DockStyle.Fill;
             panelContent.Location = new Point(310, 0);
             panelContent.Name = "panelContent";
@@ -164,7 +164,7 @@ namespace Co_LAB
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(15, 15, 17);
+            BackColor = Color.FromArgb(12, 17, 14);
             ClientSize = new Size(900, 600);
             Controls.Add(panelContent);
             Controls.Add(pnlBrand);

@@ -237,7 +237,7 @@ namespace Co_LAB
             }
         }
 
-        private void btnCancel_Click(object sender, EventArgs e)
+        private void btnCancel_Click(object? sender, EventArgs e)
         {
             if (ParentForm is Form parentForm)
             {
@@ -246,7 +246,7 @@ namespace Co_LAB
             }
         }
 
-        private void cmbReturnSkill_SelectedIndexChanged(object sender, EventArgs e)
+        private void cmbReturnSkill_SelectedIndexChanged(object? sender, EventArgs e)
         {
 
         }

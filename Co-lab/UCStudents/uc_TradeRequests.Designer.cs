@@ -26,7 +26,7 @@ namespace Co_LAB
             // panel1
             // 
             panel1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            panel1.BackColor = Color.FromArgb(24, 24, 27);
+            panel1.BackColor = Color.FromArgb(14, 20, 16);
             panel1.Location = new Point(0, 32);
             panel1.Name = "panel1";
             panel1.Size = new Size(950, 600);
@@ -35,14 +35,14 @@ namespace Co_LAB
             // 
             // button1
             // 
-            button1.BackColor = Color.FromArgb(28, 28, 33);
+            button1.BackColor = Color.FromArgb(20, 28, 23);
             button1.Cursor = Cursors.Hand;
             button1.FlatAppearance.BorderSize = 0;
             button1.FlatAppearance.MouseDownBackColor = Color.FromArgb(35, 35, 42);
-            button1.FlatAppearance.MouseOverBackColor = Color.FromArgb(28, 28, 33);
+            button1.FlatAppearance.MouseOverBackColor = Color.FromArgb(28, 38, 30);
             button1.FlatStyle = FlatStyle.Flat;
             button1.Font = new Font("Segoe UI Semibold", 9.5F);
-            button1.ForeColor = Color.FromArgb(16, 185, 129);
+            button1.ForeColor = Color.FromArgb(74, 222, 128);
             button1.Location = new Point(5, 0);
             button1.Name = "button1";
             button1.Size = new Size(175, 29);
@@ -57,7 +57,7 @@ namespace Co_LAB
             button2.Cursor = Cursors.Hand;
             button2.FlatAppearance.BorderSize = 0;
             button2.FlatAppearance.MouseDownBackColor = Color.FromArgb(35, 35, 42);
-            button2.FlatAppearance.MouseOverBackColor = Color.FromArgb(28, 28, 33);
+            button2.FlatAppearance.MouseOverBackColor = Color.FromArgb(28, 38, 30);
             button2.FlatStyle = FlatStyle.Flat;
             button2.Font = new Font("Segoe UI Semibold", 9.5F);
             button2.ForeColor = Color.FromArgb(161, 161, 170);
@@ -71,7 +71,7 @@ namespace Co_LAB
             // 
             // pnlTabIndicator
             // 
-            pnlTabIndicator.BackColor = Color.FromArgb(16, 185, 129);
+            pnlTabIndicator.BackColor = Color.FromArgb(74, 222, 128);
             pnlTabIndicator.Location = new Point(5, 29);
             pnlTabIndicator.Name = "pnlTabIndicator";
             pnlTabIndicator.Size = new Size(175, 3);
@@ -80,7 +80,7 @@ namespace Co_LAB
             // uc_TradeRequests
             // 
             AutoScaleMode = AutoScaleMode.None;
-            BackColor = Color.FromArgb(24, 24, 27);
+            BackColor = Color.FromArgb(14, 20, 16);
             Controls.Add(pnlTabIndicator);
             Controls.Add(button2);
             Controls.Add(button1);

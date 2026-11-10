@@ -23,7 +23,7 @@ namespace Co_LAB
             // flpRequests
             // 
             flpRequests.AutoScroll = true;
-            flpRequests.BackColor = Color.FromArgb(24, 24, 27);
+            flpRequests.BackColor = Color.FromArgb(14, 20, 16);
             flpRequests.Dock = DockStyle.Fill;
             flpRequests.FlowDirection = FlowDirection.TopDown;
             flpRequests.Location = new Point(0, 0);
@@ -38,7 +38,7 @@ namespace Co_LAB
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(24, 24, 27);
+            BackColor = Color.FromArgb(14, 20, 16);
             Controls.Add(flpRequests);
             Name = "uc_SentRequests";
             Size = new Size(940, 600);

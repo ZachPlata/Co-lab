@@ -17,10 +17,10 @@ namespace Co_LAB
 
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle9 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle10 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle11 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle12 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
             lblTitle = new Label();
             lblSubtitle = new Label();
             pnlUserBadge = new Panel();
@@ -77,9 +77,9 @@ namespace Co_LAB
             lblTitle.AutoSize = true;
             lblTitle.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
             lblTitle.ForeColor = Color.White;
-            lblTitle.Location = new Point(24, 12);
+            lblTitle.Location = new Point(24, 14);
             lblTitle.Name = "lblTitle";
-            lblTitle.Size = new Size(286, 32);
+            lblTitle.Size = new Size(325, 37);
             lblTitle.TabIndex = 0;
             lblTitle.Text = "Student Trade Overview";
             // 
@@ -88,9 +88,9 @@ namespace Co_LAB
             lblSubtitle.AutoSize = true;
             lblSubtitle.Font = new Font("Segoe UI", 9F);
             lblSubtitle.ForeColor = Color.FromArgb(161, 161, 170);
-            lblSubtitle.Location = new Point(26, 44);
+            lblSubtitle.Location = new Point(26, 50);
             lblSubtitle.Name = "lblSubtitle";
-            lblSubtitle.Size = new Size(134, 15);
+            lblSubtitle.Size = new Size(154, 19);
             lblSubtitle.TabIndex = 1;
             lblSubtitle.Text = "Welcome back, student!";
             // 
@@ -99,9 +99,9 @@ namespace Co_LAB
             pnlUserBadge.BackColor = Color.FromArgb(28, 38, 31);
             pnlUserBadge.Controls.Add(lblUserPrefix);
             pnlUserBadge.Controls.Add(lblUserName);
-            pnlUserBadge.Location = new Point(726, 14);
+            pnlUserBadge.Location = new Point(726, 16);
             pnlUserBadge.Name = "pnlUserBadge";
-            pnlUserBadge.Size = new Size(200, 36);
+            pnlUserBadge.Size = new Size(200, 41);
             pnlUserBadge.TabIndex = 2;
             pnlUserBadge.Paint += RoundPanel_Paint;
             // 
@@ -110,9 +110,9 @@ namespace Co_LAB
             lblUserPrefix.AutoSize = true;
             lblUserPrefix.Font = new Font("Segoe UI", 9F);
             lblUserPrefix.ForeColor = Color.FromArgb(161, 161, 170);
-            lblUserPrefix.Location = new Point(14, 10);
+            lblUserPrefix.Location = new Point(14, 11);
             lblUserPrefix.Name = "lblUserPrefix";
-            lblUserPrefix.Size = new Size(33, 15);
+            lblUserPrefix.Size = new Size(40, 19);
             lblUserPrefix.TabIndex = 0;
             lblUserPrefix.Text = "User:";
             // 
@@ -121,9 +121,9 @@ namespace Co_LAB
             lblUserName.AutoSize = true;
             lblUserName.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             lblUserName.ForeColor = Color.White;
-            lblUserName.Location = new Point(48, 9);
+            lblUserName.Location = new Point(48, 10);
             lblUserName.Name = "lblUserName";
-            lblUserName.Size = new Size(100, 17);
+            lblUserName.Size = new Size(107, 19);
             lblUserName.TabIndex = 1;
             lblUserName.Text = "Juan Dela Cruz";
             // 
@@ -132,9 +132,9 @@ namespace Co_LAB
             pnlCard1.BackColor = Color.FromArgb(24, 34, 27);
             pnlCard1.Controls.Add(lblCard1Title);
             pnlCard1.Controls.Add(lblCard1Value);
-            pnlCard1.Location = new Point(24, 68);
+            pnlCard1.Location = new Point(24, 77);
             pnlCard1.Name = "pnlCard1";
-            pnlCard1.Size = new Size(215, 105);
+            pnlCard1.Size = new Size(215, 119);
             pnlCard1.TabIndex = 3;
             pnlCard1.Paint += RoundPanel_Paint;
             // 
@@ -145,8 +145,8 @@ namespace Co_LAB
             lblCard1Title.ForeColor = Color.FromArgb(116, 168, 126);
             lblCard1Title.Location = new Point(0, 0);
             lblCard1Title.Name = "lblCard1Title";
-            lblCard1Title.Padding = new Padding(0, 12, 0, 0);
-            lblCard1Title.Size = new Size(215, 42);
+            lblCard1Title.Padding = new Padding(0, 14, 0, 0);
+            lblCard1Title.Size = new Size(215, 48);
             lblCard1Title.TabIndex = 0;
             lblCard1Title.Text = "MY KNOWN SKILLS\r\n(PROFILE BIO)";
             lblCard1Title.TextAlign = ContentAlignment.TopCenter;
@@ -158,7 +158,7 @@ namespace Co_LAB
             lblCard1Value.ForeColor = Color.White;
             lblCard1Value.Location = new Point(0, 0);
             lblCard1Value.Name = "lblCard1Value";
-            lblCard1Value.Size = new Size(215, 105);
+            lblCard1Value.Size = new Size(215, 119);
             lblCard1Value.TabIndex = 1;
             lblCard1Value.Text = "0";
             lblCard1Value.TextAlign = ContentAlignment.MiddleCenter;
@@ -168,9 +168,9 @@ namespace Co_LAB
             pnlCard2.BackColor = Color.FromArgb(24, 34, 27);
             pnlCard2.Controls.Add(lblCard2Title);
             pnlCard2.Controls.Add(lblCard2Value);
-            pnlCard2.Location = new Point(253, 68);
+            pnlCard2.Location = new Point(253, 77);
             pnlCard2.Name = "pnlCard2";
-            pnlCard2.Size = new Size(215, 105);
+            pnlCard2.Size = new Size(215, 119);
             pnlCard2.TabIndex = 4;
             pnlCard2.Paint += RoundPanel_Paint;
             // 
@@ -181,8 +181,8 @@ namespace Co_LAB
             lblCard2Title.ForeColor = Color.FromArgb(234, 179, 8);
             lblCard2Title.Location = new Point(0, 0);
             lblCard2Title.Name = "lblCard2Title";
-            lblCard2Title.Padding = new Padding(0, 12, 0, 0);
-            lblCard2Title.Size = new Size(215, 42);
+            lblCard2Title.Padding = new Padding(0, 14, 0, 0);
+            lblCard2Title.Size = new Size(215, 48);
             lblCard2Title.TabIndex = 0;
             lblCard2Title.Text = "PENDING INCOMING\r\nREQUESTS";
             lblCard2Title.TextAlign = ContentAlignment.TopCenter;
@@ -195,7 +195,7 @@ namespace Co_LAB
             lblCard2Value.ForeColor = Color.FromArgb(234, 179, 8);
             lblCard2Value.Location = new Point(0, 0);
             lblCard2Value.Name = "lblCard2Value";
-            lblCard2Value.Size = new Size(215, 105);
+            lblCard2Value.Size = new Size(215, 119);
             lblCard2Value.TabIndex = 1;
             lblCard2Value.Text = "0";
             lblCard2Value.TextAlign = ContentAlignment.MiddleCenter;
@@ -206,9 +206,9 @@ namespace Co_LAB
             pnlCard3.BackColor = Color.FromArgb(24, 34, 27);
             pnlCard3.Controls.Add(lblCard3Title);
             pnlCard3.Controls.Add(lblCard3Value);
-            pnlCard3.Location = new Point(482, 68);
+            pnlCard3.Location = new Point(482, 77);
             pnlCard3.Name = "pnlCard3";
-            pnlCard3.Size = new Size(215, 105);
+            pnlCard3.Size = new Size(215, 119);
             pnlCard3.TabIndex = 5;
             pnlCard3.Paint += RoundPanel_Paint;
             // 
@@ -219,8 +219,8 @@ namespace Co_LAB
             lblCard3Title.ForeColor = Color.FromArgb(116, 168, 126);
             lblCard3Title.Location = new Point(0, 0);
             lblCard3Title.Name = "lblCard3Title";
-            lblCard3Title.Padding = new Padding(0, 12, 0, 0);
-            lblCard3Title.Size = new Size(215, 42);
+            lblCard3Title.Padding = new Padding(0, 14, 0, 0);
+            lblCard3Title.Size = new Size(215, 48);
             lblCard3Title.TabIndex = 0;
             lblCard3Title.Text = "ACCEPTED TRADES\r\n(ACTIVE)";
             lblCard3Title.TextAlign = ContentAlignment.TopCenter;
@@ -232,7 +232,7 @@ namespace Co_LAB
             lblCard3Value.ForeColor = Color.FromArgb(94, 204, 122);
             lblCard3Value.Location = new Point(0, 0);
             lblCard3Value.Name = "lblCard3Value";
-            lblCard3Value.Size = new Size(215, 105);
+            lblCard3Value.Size = new Size(215, 119);
             lblCard3Value.TabIndex = 1;
             lblCard3Value.Text = "0";
             lblCard3Value.TextAlign = ContentAlignment.MiddleCenter;
@@ -242,9 +242,9 @@ namespace Co_LAB
             pnlCard4.BackColor = Color.FromArgb(24, 34, 27);
             pnlCard4.Controls.Add(lblCard4Title);
             pnlCard4.Controls.Add(lblCard4Value);
-            pnlCard4.Location = new Point(711, 68);
+            pnlCard4.Location = new Point(711, 77);
             pnlCard4.Name = "pnlCard4";
-            pnlCard4.Size = new Size(215, 105);
+            pnlCard4.Size = new Size(215, 119);
             pnlCard4.TabIndex = 6;
             pnlCard4.Paint += RoundPanel_Paint;
             // 
@@ -255,8 +255,8 @@ namespace Co_LAB
             lblCard4Title.ForeColor = Color.FromArgb(180, 195, 185);
             lblCard4Title.Location = new Point(0, 0);
             lblCard4Title.Name = "lblCard4Title";
-            lblCard4Title.Padding = new Padding(0, 12, 0, 0);
-            lblCard4Title.Size = new Size(215, 42);
+            lblCard4Title.Padding = new Padding(0, 14, 0, 0);
+            lblCard4Title.Size = new Size(215, 48);
             lblCard4Title.TabIndex = 0;
             lblCard4Title.Text = "OUTGOING\r\nREQUESTS";
             lblCard4Title.TextAlign = ContentAlignment.TopCenter;
@@ -268,7 +268,7 @@ namespace Co_LAB
             lblCard4Value.ForeColor = Color.White;
             lblCard4Value.Location = new Point(0, 0);
             lblCard4Value.Name = "lblCard4Value";
-            lblCard4Value.Size = new Size(215, 105);
+            lblCard4Value.Size = new Size(215, 119);
             lblCard4Value.TabIndex = 1;
             lblCard4Value.Text = "0";
             lblCard4Value.TextAlign = ContentAlignment.MiddleCenter;
@@ -281,9 +281,9 @@ namespace Co_LAB
             pnlShortcuts.Controls.Add(btnBrowseMarketplace);
             pnlShortcuts.Controls.Add(btnPostSkill);
             pnlShortcuts.Controls.Add(lblShortcutsTitle);
-            pnlShortcuts.Location = new Point(24, 184);
+            pnlShortcuts.Location = new Point(24, 209);
             pnlShortcuts.Name = "pnlShortcuts";
-            pnlShortcuts.Size = new Size(902, 80);
+            pnlShortcuts.Size = new Size(902, 91);
             pnlShortcuts.TabIndex = 7;
             pnlShortcuts.Paint += RoundPanel_Paint;
             // 
@@ -296,9 +296,9 @@ namespace Co_LAB
             btnTradeHistory.FlatStyle = FlatStyle.Flat;
             btnTradeHistory.Font = new Font("Segoe UI Semibold", 9F);
             btnTradeHistory.ForeColor = Color.White;
-            btnTradeHistory.Location = new Point(656, 36);
+            btnTradeHistory.Location = new Point(656, 41);
             btnTradeHistory.Name = "btnTradeHistory";
-            btnTradeHistory.Size = new Size(168, 32);
+            btnTradeHistory.Size = new Size(168, 36);
             btnTradeHistory.TabIndex = 4;
             btnTradeHistory.Text = "My Trade History";
             btnTradeHistory.UseVisualStyleBackColor = false;
@@ -313,9 +313,9 @@ namespace Co_LAB
             btnReadRegulations.FlatStyle = FlatStyle.Flat;
             btnReadRegulations.Font = new Font("Segoe UI Semibold", 9F);
             btnReadRegulations.ForeColor = Color.White;
-            btnReadRegulations.Location = new Point(464, 36);
+            btnReadRegulations.Location = new Point(464, 41);
             btnReadRegulations.Name = "btnReadRegulations";
-            btnReadRegulations.Size = new Size(172, 32);
+            btnReadRegulations.Size = new Size(172, 36);
             btnReadRegulations.TabIndex = 3;
             btnReadRegulations.Text = "Read Regulations";
             btnReadRegulations.UseVisualStyleBackColor = false;
@@ -330,9 +330,9 @@ namespace Co_LAB
             btnBrowseMarketplace.FlatStyle = FlatStyle.Flat;
             btnBrowseMarketplace.Font = new Font("Segoe UI Semibold", 9F);
             btnBrowseMarketplace.ForeColor = Color.White;
-            btnBrowseMarketplace.Location = new Point(266, 36);
+            btnBrowseMarketplace.Location = new Point(266, 41);
             btnBrowseMarketplace.Name = "btnBrowseMarketplace";
-            btnBrowseMarketplace.Size = new Size(178, 32);
+            btnBrowseMarketplace.Size = new Size(178, 36);
             btnBrowseMarketplace.TabIndex = 2;
             btnBrowseMarketplace.Text = "Browse Marketplace";
             btnBrowseMarketplace.UseVisualStyleBackColor = false;
@@ -347,9 +347,9 @@ namespace Co_LAB
             btnPostSkill.FlatStyle = FlatStyle.Flat;
             btnPostSkill.Font = new Font("Segoe UI Semibold", 9F);
             btnPostSkill.ForeColor = Color.White;
-            btnPostSkill.Location = new Point(78, 36);
+            btnPostSkill.Location = new Point(78, 41);
             btnPostSkill.Name = "btnPostSkill";
-            btnPostSkill.Size = new Size(180, 32);
+            btnPostSkill.Size = new Size(180, 36);
             btnPostSkill.TabIndex = 1;
             btnPostSkill.Text = "➕ Offer Skill (My Listings)";
             btnPostSkill.UseVisualStyleBackColor = false;
@@ -360,9 +360,9 @@ namespace Co_LAB
             lblShortcutsTitle.AutoSize = true;
             lblShortcutsTitle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lblShortcutsTitle.ForeColor = Color.White;
-            lblShortcutsTitle.Location = new Point(20, 10);
+            lblShortcutsTitle.Location = new Point(20, 11);
             lblShortcutsTitle.Name = "lblShortcutsTitle";
-            lblShortcutsTitle.Size = new Size(126, 19);
+            lblShortcutsTitle.Size = new Size(135, 20);
             lblShortcutsTitle.TabIndex = 0;
             lblShortcutsTitle.Text = "Student Shortcuts";
             // 
@@ -374,9 +374,9 @@ namespace Co_LAB
             pnlIncoming.Controls.Add(dgvIncoming);
             pnlIncoming.Controls.Add(lblIncomingSub);
             pnlIncoming.Controls.Add(lblIncomingTitle);
-            pnlIncoming.Location = new Point(24, 275);
+            pnlIncoming.Location = new Point(24, 312);
             pnlIncoming.Name = "pnlIncoming";
-            pnlIncoming.Size = new Size(443, 342);
+            pnlIncoming.Size = new Size(443, 388);
             pnlIncoming.TabIndex = 8;
             pnlIncoming.Paint += RoundPanel_Paint;
             // 
@@ -389,9 +389,9 @@ namespace Co_LAB
             btnDecline.FlatStyle = FlatStyle.Flat;
             btnDecline.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             btnDecline.ForeColor = Color.White;
-            btnDecline.Location = new Point(353, 184);
+            btnDecline.Location = new Point(353, 209);
             btnDecline.Name = "btnDecline";
-            btnDecline.Size = new Size(78, 32);
+            btnDecline.Size = new Size(78, 36);
             btnDecline.TabIndex = 4;
             btnDecline.Text = "Decline";
             btnDecline.UseVisualStyleBackColor = false;
@@ -406,9 +406,9 @@ namespace Co_LAB
             btnAccept.FlatStyle = FlatStyle.Flat;
             btnAccept.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             btnAccept.ForeColor = Color.White;
-            btnAccept.Location = new Point(353, 142);
+            btnAccept.Location = new Point(353, 161);
             btnAccept.Name = "btnAccept";
-            btnAccept.Size = new Size(78, 32);
+            btnAccept.Size = new Size(78, 36);
             btnAccept.TabIndex = 3;
             btnAccept.Text = "Accept";
             btnAccept.UseVisualStyleBackColor = false;
@@ -422,38 +422,38 @@ namespace Co_LAB
             dgvIncoming.BackgroundColor = Color.FromArgb(19, 26, 21);
             dgvIncoming.BorderStyle = BorderStyle.None;
             dgvIncoming.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
-            dataGridViewCellStyle9.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle9.BackColor = Color.FromArgb(28, 38, 31);
-            dataGridViewCellStyle9.Font = new Font("Segoe UI Semibold", 8.5F, FontStyle.Bold);
-            dataGridViewCellStyle9.ForeColor = Color.White;
-            dataGridViewCellStyle9.Padding = new Padding(4, 0, 0, 0);
-            dataGridViewCellStyle9.SelectionBackColor = Color.FromArgb(28, 38, 31);
-            dataGridViewCellStyle9.SelectionForeColor = Color.White;
-            dataGridViewCellStyle9.WrapMode = DataGridViewTriState.False;
-            dgvIncoming.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = Color.FromArgb(28, 38, 31);
+            dataGridViewCellStyle1.Font = new Font("Segoe UI Semibold", 8.5F, FontStyle.Bold);
+            dataGridViewCellStyle1.ForeColor = Color.White;
+            dataGridViewCellStyle1.Padding = new Padding(4, 0, 0, 0);
+            dataGridViewCellStyle1.SelectionBackColor = Color.FromArgb(28, 38, 31);
+            dataGridViewCellStyle1.SelectionForeColor = Color.White;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.False;
+            dgvIncoming.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dgvIncoming.ColumnHeadersHeight = 28;
             dgvIncoming.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            dataGridViewCellStyle10.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle10.BackColor = Color.FromArgb(22, 30, 24);
-            dataGridViewCellStyle10.Font = new Font("Segoe UI", 8.5F);
-            dataGridViewCellStyle10.ForeColor = Color.FromArgb(228, 228, 231);
-            dataGridViewCellStyle10.Padding = new Padding(4, 0, 0, 0);
-            dataGridViewCellStyle10.SelectionBackColor = Color.FromArgb(38, 58, 45);
-            dataGridViewCellStyle10.SelectionForeColor = Color.White;
-            dataGridViewCellStyle10.WrapMode = DataGridViewTriState.False;
-            dgvIncoming.DefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = Color.FromArgb(22, 30, 24);
+            dataGridViewCellStyle2.Font = new Font("Segoe UI", 8.5F);
+            dataGridViewCellStyle2.ForeColor = Color.FromArgb(228, 228, 231);
+            dataGridViewCellStyle2.Padding = new Padding(4, 0, 0, 0);
+            dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(38, 58, 45);
+            dataGridViewCellStyle2.SelectionForeColor = Color.White;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
+            dgvIncoming.DefaultCellStyle = dataGridViewCellStyle2;
             dgvIncoming.EnableHeadersVisualStyles = false;
             dgvIncoming.GridColor = Color.FromArgb(42, 58, 46);
-            dgvIncoming.Location = new Point(14, 38);
+            dgvIncoming.Location = new Point(14, 43);
             dgvIncoming.MultiSelect = false;
             dgvIncoming.Name = "dgvIncoming";
             dgvIncoming.ReadOnly = true;
             dgvIncoming.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
-            dgvIncoming.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
+            dgvIncoming.RowHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dgvIncoming.RowHeadersWidth = 24;
             dgvIncoming.RowTemplate.Height = 26;
             dgvIncoming.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvIncoming.Size = new Size(330, 288);
+            dgvIncoming.Size = new Size(330, 326);
             dgvIncoming.TabIndex = 2;
             // 
             // lblIncomingSub
@@ -461,9 +461,9 @@ namespace Co_LAB
             lblIncomingSub.AutoSize = true;
             lblIncomingSub.Font = new Font("Segoe UI", 8.5F);
             lblIncomingSub.ForeColor = Color.FromArgb(140, 160, 145);
-            lblIncomingSub.Location = new Point(190, 15);
+            lblIncomingSub.Location = new Point(190, 17);
             lblIncomingSub.Name = "lblIncomingSub";
-            lblIncomingSub.Size = new Size(150, 15);
+            lblIncomingSub.Size = new Size(166, 17);
             lblIncomingSub.TabIndex = 1;
             lblIncomingSub.Text = "(Waiting for your approval)";
             // 
@@ -472,9 +472,9 @@ namespace Co_LAB
             lblIncomingTitle.AutoSize = true;
             lblIncomingTitle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lblIncomingTitle.ForeColor = Color.White;
-            lblIncomingTitle.Location = new Point(14, 12);
+            lblIncomingTitle.Location = new Point(14, 14);
             lblIncomingTitle.Name = "lblIncomingTitle";
-            lblIncomingTitle.Size = new Size(176, 19);
+            lblIncomingTitle.Size = new Size(186, 20);
             lblIncomingTitle.TabIndex = 0;
             lblIncomingTitle.Text = "Incoming Trade Requests";
             // 
@@ -490,9 +490,9 @@ namespace Co_LAB
             pnlMySkills.Controls.Add(txtSkillName);
             pnlMySkills.Controls.Add(lblMySkillsSub);
             pnlMySkills.Controls.Add(lblMySkillsTitle);
-            pnlMySkills.Location = new Point(483, 275);
+            pnlMySkills.Location = new Point(483, 312);
             pnlMySkills.Name = "pnlMySkills";
-            pnlMySkills.Size = new Size(443, 342);
+            pnlMySkills.Size = new Size(443, 388);
             pnlMySkills.TabIndex = 9;
             pnlMySkills.Paint += RoundPanel_Paint;
             // 
@@ -504,9 +504,9 @@ namespace Co_LAB
             btnOfferInMarket.FlatStyle = FlatStyle.Flat;
             btnOfferInMarket.Font = new Font("Segoe UI Semibold", 8.5F, FontStyle.Bold);
             btnOfferInMarket.ForeColor = Color.FromArgb(16, 185, 129);
-            btnOfferInMarket.Location = new Point(234, 302);
+            btnOfferInMarket.Location = new Point(234, 342);
             btnOfferInMarket.Name = "btnOfferInMarket";
-            btnOfferInMarket.Size = new Size(195, 28);
+            btnOfferInMarket.Size = new Size(195, 32);
             btnOfferInMarket.TabIndex = 8;
             btnOfferInMarket.Text = "🚀 Offer in My Listings ➔";
             btnOfferInMarket.UseVisualStyleBackColor = false;
@@ -520,9 +520,9 @@ namespace Co_LAB
             btnDeleteSkill.FlatStyle = FlatStyle.Flat;
             btnDeleteSkill.Font = new Font("Segoe UI Semibold", 8.5F, FontStyle.Bold);
             btnDeleteSkill.ForeColor = Color.White;
-            btnDeleteSkill.Location = new Point(14, 302);
+            btnDeleteSkill.Location = new Point(14, 342);
             btnDeleteSkill.Name = "btnDeleteSkill";
-            btnDeleteSkill.Size = new Size(130, 28);
+            btnDeleteSkill.Size = new Size(130, 32);
             btnDeleteSkill.TabIndex = 7;
             btnDeleteSkill.Text = "🗑️ Remove Skill";
             btnDeleteSkill.UseVisualStyleBackColor = false;
@@ -537,39 +537,39 @@ namespace Co_LAB
             dgvMySkills.BackgroundColor = Color.FromArgb(19, 26, 21);
             dgvMySkills.BorderStyle = BorderStyle.None;
             dgvMySkills.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
-            dataGridViewCellStyle11.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle11.BackColor = Color.FromArgb(28, 38, 31);
-            dataGridViewCellStyle11.Font = new Font("Segoe UI Semibold", 8.5F, FontStyle.Bold);
-            dataGridViewCellStyle11.ForeColor = Color.White;
-            dataGridViewCellStyle11.Padding = new Padding(4, 0, 0, 0);
-            dataGridViewCellStyle11.SelectionBackColor = Color.FromArgb(28, 38, 31);
-            dataGridViewCellStyle11.SelectionForeColor = Color.White;
-            dataGridViewCellStyle11.WrapMode = DataGridViewTriState.False;
-            dgvMySkills.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle11;
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = Color.FromArgb(28, 38, 31);
+            dataGridViewCellStyle3.Font = new Font("Segoe UI Semibold", 8.5F, FontStyle.Bold);
+            dataGridViewCellStyle3.ForeColor = Color.White;
+            dataGridViewCellStyle3.Padding = new Padding(4, 0, 0, 0);
+            dataGridViewCellStyle3.SelectionBackColor = Color.FromArgb(28, 38, 31);
+            dataGridViewCellStyle3.SelectionForeColor = Color.White;
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.False;
+            dgvMySkills.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dgvMySkills.ColumnHeadersHeight = 28;
             dgvMySkills.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            dataGridViewCellStyle12.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle12.BackColor = Color.FromArgb(22, 30, 24);
-            dataGridViewCellStyle12.Font = new Font("Segoe UI", 8.5F);
-            dataGridViewCellStyle12.ForeColor = Color.FromArgb(228, 228, 231);
-            dataGridViewCellStyle12.Padding = new Padding(4, 0, 0, 0);
-            dataGridViewCellStyle12.SelectionBackColor = Color.FromArgb(38, 58, 45);
-            dataGridViewCellStyle12.SelectionForeColor = Color.White;
-            dataGridViewCellStyle12.WrapMode = DataGridViewTriState.False;
-            dgvMySkills.DefaultCellStyle = dataGridViewCellStyle12;
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = Color.FromArgb(22, 30, 24);
+            dataGridViewCellStyle4.Font = new Font("Segoe UI", 8.5F);
+            dataGridViewCellStyle4.ForeColor = Color.FromArgb(228, 228, 231);
+            dataGridViewCellStyle4.Padding = new Padding(4, 0, 0, 0);
+            dataGridViewCellStyle4.SelectionBackColor = Color.FromArgb(38, 58, 45);
+            dataGridViewCellStyle4.SelectionForeColor = Color.White;
+            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.False;
+            dgvMySkills.DefaultCellStyle = dataGridViewCellStyle4;
             dgvMySkills.EnableHeadersVisualStyles = false;
             dgvMySkills.GridColor = Color.FromArgb(42, 58, 46);
-            dgvMySkills.Location = new Point(14, 95);
+            dgvMySkills.Location = new Point(14, 108);
             dgvMySkills.MultiSelect = false;
             dgvMySkills.Name = "dgvMySkills";
             dgvMySkills.ReadOnly = true;
             dgvMySkills.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
-            dgvMySkills.RowHeadersDefaultCellStyle = dataGridViewCellStyle11;
+            dgvMySkills.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dgvMySkills.RowHeadersVisible = false;
             dgvMySkills.RowHeadersWidth = 24;
             dgvMySkills.RowTemplate.Height = 26;
             dgvMySkills.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvMySkills.Size = new Size(415, 200);
+            dgvMySkills.Size = new Size(415, 227);
             dgvMySkills.TabIndex = 6;
             // 
             // btnAddSkill
@@ -580,9 +580,9 @@ namespace Co_LAB
             btnAddSkill.FlatStyle = FlatStyle.Flat;
             btnAddSkill.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             btnAddSkill.ForeColor = Color.White;
-            btnAddSkill.Location = new Point(275, 62);
+            btnAddSkill.Location = new Point(275, 70);
             btnAddSkill.Name = "btnAddSkill";
-            btnAddSkill.Size = new Size(154, 25);
+            btnAddSkill.Size = new Size(154, 28);
             btnAddSkill.TabIndex = 5;
             btnAddSkill.Text = "➕ Add to Bio";
             btnAddSkill.UseVisualStyleBackColor = false;
@@ -597,9 +597,9 @@ namespace Co_LAB
             cmbCategory.ForeColor = Color.White;
             cmbCategory.FormattingEnabled = true;
             cmbCategory.Items.AddRange(new object[] { "Computer Science & IT", "Graphic & Visual Design", "Engineering & Math", "Music & Arts", "Language & Writing", "Business & Marketing", "Video Editing & Multimedia" });
-            cmbCategory.Location = new Point(14, 63);
+            cmbCategory.Location = new Point(14, 71);
             cmbCategory.Name = "cmbCategory";
-            cmbCategory.Size = new Size(255, 23);
+            cmbCategory.Size = new Size(255, 25);
             cmbCategory.TabIndex = 4;
             // 
             // cmbProficiency
@@ -611,9 +611,9 @@ namespace Co_LAB
             cmbProficiency.ForeColor = Color.White;
             cmbProficiency.FormattingEnabled = true;
             cmbProficiency.Items.AddRange(new object[] { "Beginner", "Intermediate", "Advanced", "Expert" });
-            cmbProficiency.Location = new Point(275, 34);
+            cmbProficiency.Location = new Point(275, 39);
             cmbProficiency.Name = "cmbProficiency";
-            cmbProficiency.Size = new Size(154, 23);
+            cmbProficiency.Size = new Size(154, 25);
             cmbProficiency.TabIndex = 3;
             // 
             // txtSkillName
@@ -622,10 +622,10 @@ namespace Co_LAB
             txtSkillName.BorderStyle = BorderStyle.FixedSingle;
             txtSkillName.Font = new Font("Segoe UI", 9F);
             txtSkillName.ForeColor = Color.White;
-            txtSkillName.Location = new Point(14, 34);
+            txtSkillName.Location = new Point(14, 39);
             txtSkillName.Name = "txtSkillName";
             txtSkillName.PlaceholderText = "Skill name (e.g. C# Programming, Guitar)";
-            txtSkillName.Size = new Size(255, 23);
+            txtSkillName.Size = new Size(255, 25);
             txtSkillName.TabIndex = 2;
             // 
             // lblMySkillsSub
@@ -633,9 +633,9 @@ namespace Co_LAB
             lblMySkillsSub.AutoSize = true;
             lblMySkillsSub.Font = new Font("Segoe UI", 8.5F);
             lblMySkillsSub.ForeColor = Color.FromArgb(140, 160, 145);
-            lblMySkillsSub.Location = new Point(205, 12);
+            lblMySkillsSub.Location = new Point(205, 14);
             lblMySkillsSub.Name = "lblMySkillsSub";
-            lblMySkillsSub.Size = new Size(126, 15);
+            lblMySkillsSub.Size = new Size(136, 17);
             lblMySkillsSub.TabIndex = 1;
             lblMySkillsSub.Text = "(Skills you know/offer)";
             // 
@@ -644,16 +644,18 @@ namespace Co_LAB
             lblMySkillsTitle.AutoSize = true;
             lblMySkillsTitle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lblMySkillsTitle.ForeColor = Color.White;
-            lblMySkillsTitle.Location = new Point(14, 10);
+            lblMySkillsTitle.Location = new Point(14, 11);
             lblMySkillsTitle.Name = "lblMySkillsTitle";
-            lblMySkillsTitle.Size = new Size(202, 19);
+            lblMySkillsTitle.Size = new Size(212, 20);
             lblMySkillsTitle.TabIndex = 0;
             lblMySkillsTitle.Text = "My Known Skills (Profile Bio)";
             // 
             // uc_UserDashboard
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
+            AutoScroll = true;
+            AutoScrollMinSize = new Size(902, 716);
             BackColor = Color.FromArgb(14, 20, 16);
             Controls.Add(pnlMySkills);
             Controls.Add(pnlIncoming);
@@ -666,8 +668,9 @@ namespace Co_LAB
             Controls.Add(lblSubtitle);
             Controls.Add(lblTitle);
             Name = "uc_UserDashboard";
-            Size = new Size(950, 632);
+            Size = new Size(950, 716);
             Load += uc_UserDashboard_Load;
+            Resize += uc_UserDashboard_Resize;
             pnlUserBadge.ResumeLayout(false);
             pnlUserBadge.PerformLayout();
             pnlCard1.ResumeLayout(false);

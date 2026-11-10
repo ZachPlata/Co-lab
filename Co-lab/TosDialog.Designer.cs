@@ -35,7 +35,7 @@ namespace Co_LAB
             // 
             // pnlHeader
             // 
-            pnlHeader.BackColor = Color.FromArgb(24, 24, 27);
+            pnlHeader.BackColor = Color.FromArgb(18, 25, 20);
             pnlHeader.Controls.Add(pnlDividerHeader);
             pnlHeader.Controls.Add(lblSubtitle);
             pnlHeader.Controls.Add(lblTitle);
@@ -47,7 +47,7 @@ namespace Co_LAB
             // 
             // pnlDividerHeader
             // 
-            pnlDividerHeader.BackColor = Color.FromArgb(39, 39, 42);
+            pnlDividerHeader.BackColor = Color.FromArgb(30, 44, 34);
             pnlDividerHeader.Dock = DockStyle.Bottom;
             pnlDividerHeader.Location = new Point(0, 69);
             pnlDividerHeader.Name = "pnlDividerHeader";
@@ -58,7 +58,7 @@ namespace Co_LAB
             // 
             lblSubtitle.AutoSize = true;
             lblSubtitle.Font = new Font("Segoe UI", 9F);
-            lblSubtitle.ForeColor = Color.FromArgb(161, 161, 170);
+            lblSubtitle.ForeColor = Color.FromArgb(130, 175, 145);
             lblSubtitle.Location = new Point(24, 42);
             lblSubtitle.Name = "lblSubtitle";
             lblSubtitle.Size = new Size(276, 15);
@@ -69,7 +69,7 @@ namespace Co_LAB
             // 
             lblTitle.AutoSize = true;
             lblTitle.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
-            lblTitle.ForeColor = Color.FromArgb(16, 185, 129);
+            lblTitle.ForeColor = Color.FromArgb(74, 222, 128);
             lblTitle.Location = new Point(22, 12);
             lblTitle.Name = "lblTitle";
             lblTitle.Size = new Size(174, 28);
@@ -78,7 +78,7 @@ namespace Co_LAB
             // 
             // pnlFooter
             // 
-            pnlFooter.BackColor = Color.FromArgb(24, 24, 27);
+            pnlFooter.BackColor = Color.FromArgb(18, 25, 20);
             pnlFooter.Controls.Add(pnlDividerFooter);
             pnlFooter.Controls.Add(btnClose);
             pnlFooter.Controls.Add(btnDecline);
@@ -91,7 +91,7 @@ namespace Co_LAB
             // 
             // pnlDividerFooter
             // 
-            pnlDividerFooter.BackColor = Color.FromArgb(39, 39, 42);
+            pnlDividerFooter.BackColor = Color.FromArgb(30, 44, 34);
             pnlDividerFooter.Dock = DockStyle.Top;
             pnlDividerFooter.Location = new Point(0, 0);
             pnlDividerFooter.Name = "pnlDividerFooter";
@@ -101,12 +101,13 @@ namespace Co_LAB
             // btnClose
             // 
             btnClose.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btnClose.BackColor = Color.FromArgb(39, 39, 42);
+            btnClose.BackColor = Color.FromArgb(28, 38, 30);
             btnClose.Cursor = Cursors.Hand;
-            btnClose.FlatAppearance.BorderSize = 0;
+            btnClose.FlatAppearance.BorderColor = Color.FromArgb(42, 60, 48);
+            btnClose.FlatAppearance.BorderSize = 1;
             btnClose.FlatStyle = FlatStyle.Flat;
             btnClose.Font = new Font("Segoe UI", 9.5F);
-            btnClose.ForeColor = Color.White;
+            btnClose.ForeColor = Color.FromArgb(220, 235, 225);
             btnClose.Location = new Point(436, 15);
             btnClose.Name = "btnClose";
             btnClose.Size = new Size(100, 36);
@@ -119,12 +120,13 @@ namespace Co_LAB
             // btnDecline
             // 
             btnDecline.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btnDecline.BackColor = Color.FromArgb(39, 39, 42);
+            btnDecline.BackColor = Color.FromArgb(28, 38, 30);
             btnDecline.Cursor = Cursors.Hand;
-            btnDecline.FlatAppearance.BorderSize = 0;
+            btnDecline.FlatAppearance.BorderColor = Color.FromArgb(42, 60, 48);
+            btnDecline.FlatAppearance.BorderSize = 1;
             btnDecline.FlatStyle = FlatStyle.Flat;
             btnDecline.Font = new Font("Segoe UI", 9.5F);
-            btnDecline.ForeColor = Color.White;
+            btnDecline.ForeColor = Color.FromArgb(220, 235, 225);
             btnDecline.Location = new Point(436, 15);
             btnDecline.Name = "btnDecline";
             btnDecline.Size = new Size(100, 36);
@@ -136,12 +138,12 @@ namespace Co_LAB
             // btnAccept
             // 
             btnAccept.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btnAccept.BackColor = Color.FromArgb(16, 185, 129);
+            btnAccept.BackColor = Color.FromArgb(46, 125, 70);
             btnAccept.Cursor = Cursors.Hand;
             btnAccept.FlatAppearance.BorderSize = 0;
             btnAccept.FlatStyle = FlatStyle.Flat;
             btnAccept.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
-            btnAccept.ForeColor = Color.FromArgb(15, 15, 17);
+            btnAccept.ForeColor = Color.White;
             btnAccept.Location = new Point(316, 15);
             btnAccept.Name = "btnAccept";
             btnAccept.Size = new Size(110, 36);
@@ -152,7 +154,7 @@ namespace Co_LAB
             // 
             // pnlContent
             // 
-            pnlContent.BackColor = Color.FromArgb(15, 15, 17);
+            pnlContent.BackColor = Color.FromArgb(14, 20, 16);
             pnlContent.Controls.Add(txtTosContent);
             pnlContent.Dock = DockStyle.Fill;
             pnlContent.Location = new Point(0, 70);
@@ -163,11 +165,11 @@ namespace Co_LAB
             // 
             // txtTosContent
             // 
-            txtTosContent.BackColor = Color.FromArgb(28, 28, 33);
+            txtTosContent.BackColor = Color.FromArgb(14, 20, 16);
             txtTosContent.BorderStyle = BorderStyle.None;
             txtTosContent.Dock = DockStyle.Fill;
             txtTosContent.Font = new Font("Segoe UI", 10F);
-            txtTosContent.ForeColor = Color.FromArgb(244, 244, 245);
+            txtTosContent.ForeColor = Color.FromArgb(220, 235, 225);
             txtTosContent.Location = new Point(24, 20);
             txtTosContent.Multiline = true;
             txtTosContent.Name = "txtTosContent";
@@ -180,7 +182,7 @@ namespace Co_LAB
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(15, 15, 17);
+            BackColor = Color.FromArgb(14, 20, 16);
             ClientSize = new Size(560, 600);
             Controls.Add(pnlContent);
             Controls.Add(pnlFooter);

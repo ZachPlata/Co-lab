@@ -1,4 +1,4 @@
-﻿namespace Co_LAB
+namespace Co_LAB
 {
     [System.ComponentModel.DesignerCategory("Form")]
     public partial class AdminMainForm : Form
@@ -22,6 +22,7 @@
         {
             uc_AdminDashboard frm = new uc_AdminDashboard();
             panelContent.Controls.Clear();
+            frm.Dock = DockStyle.Fill;
             panelContent.Controls.Add(frm);
             frm.Show();
             SetActiveButton(btn_AdminDashboard);
@@ -32,6 +33,7 @@
         {
             uc_SkillCategories frm = new uc_SkillCategories();
             panelContent.Controls.Clear();
+            frm.Dock = DockStyle.Fill;
             panelContent.Controls.Add(frm);
             frm.Show();
             SetActiveButton(btn_SkillCategories);
@@ -42,6 +44,7 @@
         {
             uc_ModerateListings frm = new uc_ModerateListings();
             panelContent.Controls.Clear();
+            frm.Dock = DockStyle.Fill;
             panelContent.Controls.Add(frm);
             frm.Show();
             SetActiveButton(btn_ModerateListings);
@@ -52,31 +55,22 @@
         {
             uc_ReportedStudents frm = new uc_ReportedStudents();
             panelContent.Controls.Clear();
+            frm.Dock = DockStyle.Fill;
             panelContent.Controls.Add(frm);
             frm.Show();
             SetActiveButton(btn_ReportedStudents);
             lblHeaderTitle.Text = "Reports & Blacklist";
         }
 
-        private void btn_UpdateTOS_Click(object sender, EventArgs e)
-        {
-            uc_UpdateTOS frm = new uc_UpdateTOS();
-            panelContent.Controls.Clear();
-            panelContent.Controls.Add(frm);
-            frm.Show();
-            SetActiveButton(btn_UpdateTOS);
-            lblHeaderTitle.Text = "Update Terms of Service";
-        }
-
         private void SetActiveButton(Button activeButton)
         {
-            Button[] navButtons = { btn_AdminDashboard, btn_SkillCategories, btn_ModerateListings, btn_ReportedStudents, btn_UpdateTOS };
+            Button[] navButtons = { btn_AdminDashboard, btn_SkillCategories, btn_ModerateListings, btn_ReportedStudents };
             foreach (var btn in navButtons)
             {
                 if (btn == activeButton)
                 {
-                    btn.BackColor = Color.FromArgb(28, 28, 33);
-                    btn.ForeColor = Color.FromArgb(16, 185, 129); // Emerald Green
+                    btn.BackColor = Color.FromArgb(20, 28, 23);
+                    btn.ForeColor = Color.FromArgb(74, 222, 128); // Emerald Green
                     pnlNavIndicator.Location = new Point(0, btn.Top);
                     pnlNavIndicator.Height = btn.Height;
                 }

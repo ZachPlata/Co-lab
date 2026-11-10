@@ -1,4 +1,4 @@
-﻿namespace Co_LAB.UCStudents
+namespace Co_LAB.UCStudents
 {
     partial class uc_Requestdetails
     {
@@ -48,12 +48,13 @@
             // 
             // btnCancel
             // 
-            btnCancel.BackColor = Color.FromArgb(185, 45, 45);
+            btnCancel.BackColor = Color.FromArgb(28, 38, 30);
             btnCancel.Cursor = Cursors.Hand;
-            btnCancel.FlatAppearance.BorderSize = 0;
+            btnCancel.FlatAppearance.BorderColor = Color.FromArgb(42, 60, 48);
+            btnCancel.FlatAppearance.BorderSize = 1;
             btnCancel.FlatStyle = FlatStyle.Flat;
             btnCancel.Font = new Font("Segoe UI Semibold", 9.5F, FontStyle.Bold);
-            btnCancel.ForeColor = Color.White;
+            btnCancel.ForeColor = Color.FromArgb(220, 235, 225);
             btnCancel.Location = new Point(360, 439);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(90, 32);
@@ -82,8 +83,10 @@
             // 
             // txtNotes
             // 
+            txtNotes.BackColor = Color.FromArgb(14, 20, 16);
+            txtNotes.BorderStyle = BorderStyle.FixedSingle;
             txtNotes.Font = new Font("Segoe UI", 9F);
-            txtNotes.ForeColor = Color.Black;
+            txtNotes.ForeColor = Color.White;
             txtNotes.Location = new Point(20, 313);
             txtNotes.Multiline = true;
             txtNotes.Name = "txtNotes";
@@ -148,7 +151,7 @@
             // 
             // pnlProfileCard
             // 
-            pnlProfileCard.BackColor = Color.FromArgb(12, 26, 18);
+            pnlProfileCard.BackColor = Color.FromArgb(20, 28, 23);
             pnlProfileCard.Controls.Add(lblRating);
             pnlProfileCard.Controls.Add(lblUserDept);
             pnlProfileCard.Controls.Add(lblUserName);
@@ -182,6 +185,10 @@
             // 
             // textBox1
             // 
+            textBox1.BackColor = Color.FromArgb(14, 20, 16);
+            textBox1.BorderStyle = BorderStyle.FixedSingle;
+            textBox1.Font = new Font("Segoe UI", 9F);
+            textBox1.ForeColor = Color.White;
             textBox1.Location = new Point(21, 137);
             textBox1.Name = "textBox1";
             textBox1.Size = new Size(429, 23);
@@ -189,6 +196,10 @@
             // 
             // textBox2
             // 
+            textBox2.BackColor = Color.FromArgb(14, 20, 16);
+            textBox2.BorderStyle = BorderStyle.FixedSingle;
+            textBox2.Font = new Font("Segoe UI", 9F);
+            textBox2.ForeColor = Color.White;
             textBox2.Location = new Point(20, 198);
             textBox2.Name = "textBox2";
             textBox2.Size = new Size(430, 23);
@@ -196,6 +207,10 @@
             // 
             // textBox3
             // 
+            textBox3.BackColor = Color.FromArgb(14, 20, 16);
+            textBox3.BorderStyle = BorderStyle.FixedSingle;
+            textBox3.Font = new Font("Segoe UI", 9F);
+            textBox3.ForeColor = Color.White;
             textBox3.Location = new Point(20, 258);
             textBox3.Name = "textBox3";
             textBox3.Size = new Size(430, 23);
@@ -205,7 +220,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(24, 24, 27);
+            BackColor = Color.FromArgb(14, 20, 16);
             Controls.Add(textBox3);
             Controls.Add(textBox2);
             Controls.Add(textBox1);

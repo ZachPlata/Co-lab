@@ -1,6 +1,7 @@
 using System;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 
@@ -12,11 +13,14 @@ namespace Co_LAB
         public uc_AdminDashboard()
         {
             InitializeComponent();
+            DoubleBuffered = true;
+            SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
             SetupDataGrids();
         }
 
         private void uc_AdminDashboard_Load(object sender, EventArgs e)
         {
+            uc_AdminDashboard_Resize(this, EventArgs.Empty);
             LoadDashboard();
         }
 
@@ -69,111 +73,207 @@ namespace Co_LAB
         // =====================================================
         private void SetupDataGrids()
         {
-            SetupDataGridStyle(dgv_PendingStudentVerification);
-            SetupDataGridStyle(dgv_CurrentlyBlackLister);
-            SetupDataGridStyle(dgv_DeclineStudent);
-
             // 1. Pending Student Verification DataGridView
-            if (dgv_PendingStudentVerification.Columns.Count == 0)
+            SetupDataGridStyle(dgv_PendingStudentVerification);
+            dgv_PendingStudentVerification.Columns.Clear();
+            dgv_PendingStudentVerification.Columns.Add(new DataGridViewTextBoxColumn
             {
-                dgv_PendingStudentVerification.Columns.Add(new DataGridViewTextBoxColumn
-                {
-                    Name = "colPendingId",
-                    HeaderText = "ID",
-                    Visible = false
-                });
-                dgv_PendingStudentVerification.Columns.Add(new DataGridViewTextBoxColumn
-                {
-                    Name = "colPendingName",
-                    HeaderText = "Student Name",
-                    AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
-                    MinimumWidth = 100
-                });
-                dgv_PendingStudentVerification.Columns.Add(new DataGridViewTextBoxColumn
-                {
-                    Name = "colPendingEmail",
-                    HeaderText = "Email",
-                    AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
-                    MinimumWidth = 120
-                });
-                dgv_PendingStudentVerification.Columns.Add(new DataGridViewButtonColumn
-                {
-                    Name = "colPendingApprove",
-                    HeaderText = "Action",
-                    Text = "Approve",
-                    UseColumnTextForButtonValue = true,
-                    Width = 70,
-                    FlatStyle = FlatStyle.Flat
-                });
-            }
+                Name = "colPendingId",
+                HeaderText = "ID",
+                Visible = false
+            });
+            dgv_PendingStudentVerification.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colPendingName",
+                HeaderText = "Student Name",
+                Width = 160
+            });
+            dgv_PendingStudentVerification.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colPendingEmail",
+                HeaderText = "Email Address",
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
+                MinimumWidth = 140
+            });
+            var colPendingApprove = new DataGridViewButtonColumn
+            {
+                Name = "colPendingApprove",
+                HeaderText = "Action",
+                Text = "✓ Approve",
+                UseColumnTextForButtonValue = true,
+                Width = 90,
+                FlatStyle = FlatStyle.Flat
+            };
+            colPendingApprove.DefaultCellStyle.BackColor = Color.FromArgb(46, 125, 70);
+            colPendingApprove.DefaultCellStyle.ForeColor = Color.White;
+            dgv_PendingStudentVerification.Columns.Add(colPendingApprove);
+
             dgv_PendingStudentVerification.CellContentClick -= dgv_PendingStudentVerification_CellContentClick;
             dgv_PendingStudentVerification.CellContentClick += dgv_PendingStudentVerification_CellContentClick;
+            dgv_PendingStudentVerification.CellFormatting += DgvApprove_CellFormatting;
 
             // 2. Currently Blacklisted DataGridView
-            if (dgv_CurrentlyBlackLister.Columns.Count == 0)
+            SetupDataGridStyle(dgv_CurrentlyBlackLister);
+            dgv_CurrentlyBlackLister.Columns.Clear();
+            dgv_CurrentlyBlackLister.Columns.Add(new DataGridViewTextBoxColumn
             {
-                dgv_CurrentlyBlackLister.Columns.Add(new DataGridViewTextBoxColumn
-                {
-                    Name = "colBlacklistId",
-                    HeaderText = "ID",
-                    Visible = false
-                });
-                dgv_CurrentlyBlackLister.Columns.Add(new DataGridViewTextBoxColumn
-                {
-                    Name = "colBlacklistName",
-                    HeaderText = "Student Name",
-                    Width = 110
-                });
-                dgv_CurrentlyBlackLister.Columns.Add(new DataGridViewTextBoxColumn
-                {
-                    Name = "colBlacklistReason",
-                    HeaderText = "Reason",
-                    AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
-                    MinimumWidth = 120
-                });
-                dgv_CurrentlyBlackLister.Columns.Add(new DataGridViewButtonColumn
-                {
-                    Name = "colBlacklistUnban",
-                    HeaderText = "Action",
-                    Text = "Unban",
-                    UseColumnTextForButtonValue = true,
-                    Width = 65,
-                    FlatStyle = FlatStyle.Flat
-                });
-            }
+                Name = "colBlacklistId",
+                HeaderText = "ID",
+                Visible = false
+            });
+            dgv_CurrentlyBlackLister.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colBlacklistName",
+                HeaderText = "Student Name",
+                Width = 130
+            });
+            dgv_CurrentlyBlackLister.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colBlacklistReason",
+                HeaderText = "Reason",
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
+                MinimumWidth = 130
+            });
+            var colBlacklistUnban = new DataGridViewButtonColumn
+            {
+                Name = "colBlacklistUnban",
+                HeaderText = "Action",
+                Text = "Unban",
+                UseColumnTextForButtonValue = true,
+                Width = 75,
+                FlatStyle = FlatStyle.Flat
+            };
+            colBlacklistUnban.DefaultCellStyle.BackColor = Color.FromArgb(28, 38, 30);
+            colBlacklistUnban.DefaultCellStyle.ForeColor = Color.FromArgb(74, 222, 128);
+            dgv_CurrentlyBlackLister.Columns.Add(colBlacklistUnban);
+
             dgv_CurrentlyBlackLister.CellContentClick -= dgv_CurrentlyBlackLister_CellContentClick;
             dgv_CurrentlyBlackLister.CellContentClick += dgv_CurrentlyBlackLister_CellContentClick;
 
             // 3. Declined Students DataGridView
-            if (dgv_DeclineStudent.Columns.Count == 0)
+            SetupDataGridStyle(dgv_DeclineStudent);
+            dgv_DeclineStudent.Columns.Clear();
+            dgv_DeclineStudent.Columns.Add(new DataGridViewTextBoxColumn
             {
-                dgv_DeclineStudent.Columns.Add(new DataGridViewTextBoxColumn
-                {
-                    Name = "colDeclinedName",
-                    HeaderText = "Student Name",
-                    Width = 115
-                });
-                dgv_DeclineStudent.Columns.Add(new DataGridViewTextBoxColumn
-                {
-                    Name = "colDeclinedReason",
-                    HeaderText = "Reason / Notes",
-                    AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
-                    MinimumWidth = 120
-                });
-                dgv_DeclineStudent.Columns.Add(new DataGridViewTextBoxColumn
-                {
-                    Name = "colDeclinedStatus",
-                    HeaderText = "Status",
-                    Width = 75
-                });
+                Name = "colDeclinedName",
+                HeaderText = "Student Name",
+                Width = 125
+            });
+            dgv_DeclineStudent.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colDeclinedReason",
+                HeaderText = "Reason / Notes",
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
+                MinimumWidth = 140
+            });
+            dgv_DeclineStudent.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colDeclinedStatus",
+                HeaderText = "Status",
+                Width = 85
+            });
+
+            // 4. Report Records DataGridView
+            SetupDataGridStyle(dgvReportRecords);
+            dgvReportRecords.Columns.Clear();
+            dgvReportRecords.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colReportId",
+                HeaderText = "ID",
+                Width = 55
+            });
+            dgvReportRecords.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colReportedStudent",
+                HeaderText = "Reported Student",
+                Width = 150
+            });
+            dgvReportRecords.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colReason",
+                HeaderText = "Reason of Report",
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
+                MinimumWidth = 180
+            });
+            dgvReportRecords.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colDate",
+                HeaderText = "Date",
+                Width = 95
+            });
+            dgvReportRecords.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colStatus",
+                HeaderText = "Status",
+                Width = 85
+            });
+            var colBlacklist = new DataGridViewButtonColumn
+            {
+                Name = "colBlacklist",
+                HeaderText = "Blacklist",
+                Text = "Blacklist",
+                UseColumnTextForButtonValue = true,
+                Width = 80,
+                FlatStyle = FlatStyle.Flat
+            };
+            colBlacklist.DefaultCellStyle.BackColor = Color.FromArgb(45, 24, 26);
+            colBlacklist.DefaultCellStyle.ForeColor = Color.FromArgb(248, 113, 113);
+            dgvReportRecords.Columns.Add(colBlacklist);
+
+            var colDismiss = new DataGridViewButtonColumn
+            {
+                Name = "colDismiss",
+                HeaderText = "Dismiss",
+                Text = "Dismiss",
+                UseColumnTextForButtonValue = true,
+                Width = 75,
+                FlatStyle = FlatStyle.Flat
+            };
+            colDismiss.DefaultCellStyle.BackColor = Color.FromArgb(28, 38, 30);
+            colDismiss.DefaultCellStyle.ForeColor = Color.FromArgb(200, 220, 208);
+            dgvReportRecords.Columns.Add(colDismiss);
+
+            dgvReportRecords.CellContentClick -= dgvReportRecords_CellContentClick;
+            dgvReportRecords.CellContentClick += dgvReportRecords_CellContentClick;
+            dgvReportRecords.CellFormatting += DgvReports_CellFormatting;
+        }
+
+        private void DgvApprove_CellFormatting(object? sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (e.RowIndex >= 0 && e.ColumnIndex == dgv_PendingStudentVerification.Columns["colPendingApprove"]?.Index)
+            {
+                e.CellStyle!.BackColor = Color.FromArgb(34, 85, 52);
+                e.CellStyle.ForeColor = Color.FromArgb(167, 243, 208);
+                e.CellStyle.SelectionBackColor = Color.FromArgb(46, 115, 70);
+                e.CellStyle.SelectionForeColor = Color.White;
+            }
+        }
+
+        private void DgvReports_CellFormatting(object? sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (e.RowIndex < 0) return;
+
+            if (e.ColumnIndex == dgvReportRecords.Columns["colBlacklist"]?.Index)
+            {
+                e.CellStyle!.BackColor = Color.FromArgb(50, 25, 28);
+                e.CellStyle.ForeColor = Color.FromArgb(248, 113, 113);
+                e.CellStyle.SelectionBackColor = Color.FromArgb(70, 30, 34);
+                e.CellStyle.SelectionForeColor = Color.White;
+            }
+            else if (e.ColumnIndex == dgvReportRecords.Columns["colDismiss"]?.Index)
+            {
+                e.CellStyle!.BackColor = Color.FromArgb(28, 38, 30);
+                e.CellStyle.ForeColor = Color.FromArgb(200, 220, 208);
+                e.CellStyle.SelectionBackColor = Color.FromArgb(42, 60, 48);
+                e.CellStyle.SelectionForeColor = Color.White;
             }
         }
 
         private void SetupDataGridStyle(DataGridView dgv)
         {
             if (dgv == null) return;
-            dgv.BackgroundColor = Color.FromArgb(6, 95, 70);
-            dgv.GridColor = Color.FromArgb(16, 185, 129);
+            dgv.BackgroundColor = Color.FromArgb(14, 20, 16);
+            dgv.GridColor = Color.FromArgb(30, 44, 34);
             dgv.BorderStyle = BorderStyle.None;
             dgv.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             dgv.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
@@ -185,18 +285,25 @@ namespace Co_LAB
             dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgv.MultiSelect = false;
 
-            dgv.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(4, 75, 55);
-            dgv.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-            dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9f, FontStyle.Bold);
+            dgv.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(20, 28, 23);
+            dgv.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(74, 222, 128);
+            dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             dgv.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dgv.ColumnHeadersHeight = 26;
+            dgv.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(20, 28, 23);
+            dgv.ColumnHeadersDefaultCellStyle.SelectionForeColor = Color.FromArgb(74, 222, 128);
+            dgv.ColumnHeadersHeight = 32;
 
-            dgv.DefaultCellStyle.BackColor = Color.FromArgb(16, 185, 129);
-            dgv.DefaultCellStyle.ForeColor = Color.Black;
-            dgv.DefaultCellStyle.SelectionBackColor = Color.FromArgb(52, 211, 153);
-            dgv.DefaultCellStyle.SelectionForeColor = Color.Black;
-            dgv.DefaultCellStyle.Font = new Font("Segoe UI", 8.5f);
-            dgv.RowTemplate.Height = 24;
+            dgv.DefaultCellStyle.BackColor = Color.FromArgb(18, 25, 20);
+            dgv.DefaultCellStyle.ForeColor = Color.FromArgb(228, 228, 231);
+            dgv.DefaultCellStyle.SelectionBackColor = Color.FromArgb(34, 52, 40);
+            dgv.DefaultCellStyle.SelectionForeColor = Color.White;
+            dgv.DefaultCellStyle.Font = new Font("Segoe UI", 9F);
+            dgv.RowTemplate.Height = 32;
+
+            dgv.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(15, 22, 17);
+            dgv.AlternatingRowsDefaultCellStyle.ForeColor = Color.FromArgb(228, 228, 231);
+            dgv.AlternatingRowsDefaultCellStyle.SelectionBackColor = Color.FromArgb(34, 52, 40);
+            dgv.AlternatingRowsDefaultCellStyle.SelectionForeColor = Color.White;
         }
 
         // =====================================================
@@ -402,52 +509,109 @@ namespace Co_LAB
         // =====================================================
         // QUICK ADMIN SHORTCUTS
         // =====================================================
-        private void BtnManageStudents_Click(object sender, EventArgs e)
+        private void BtnManageStudents_Click(object? sender, EventArgs e)
         {
             if (this.FindForm() is AdminMainForm form)
                 form.NavigateTo("StudentAccounts");
         }
 
-        private void BtnCategories_Click(object sender, EventArgs e)
+        private void BtnCategories_Click(object? sender, EventArgs e)
         {
             if (this.FindForm() is AdminMainForm form)
                 form.NavigateTo("SkillCategories");
         }
 
-        private void BtnModerateListings_Click(object sender, EventArgs e)
+        private void BtnModerateListings_Click(object? sender, EventArgs e)
         {
             if (this.FindForm() is AdminMainForm form)
                 form.NavigateTo("ModerateListings");
         }
 
-        private void BtnReviewTickets_Click(object sender, EventArgs e)
+        private void BtnReviewTickets_Click(object? sender, EventArgs e)
         {
             if (this.FindForm() is AdminMainForm form)
                 form.NavigateTo("ReviewTickets");
         }
 
-        private void BtnMonitorSwaps_Click(object sender, EventArgs e)
+        private void BtnMonitorSwaps_Click(object? sender, EventArgs e)
         {
-            MessageBox.Show("Monitor Swaps feature coming soon.", "Coming Soon",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            try
+            {
+                int total = Convert.ToInt32(DatabaseHelper.ExecuteScalar("SELECT COUNT(*) FROM tbl_traderequests") ?? 0);
+                int pending = Convert.ToInt32(DatabaseHelper.ExecuteScalar("SELECT COUNT(*) FROM tbl_traderequests WHERE Status = 'Pending' OR Status IS NULL") ?? 0);
+                int accepted = Convert.ToInt32(DatabaseHelper.ExecuteScalar("SELECT COUNT(*) FROM tbl_traderequests WHERE Status = 'Accepted'") ?? 0);
+                int declined = Convert.ToInt32(DatabaseHelper.ExecuteScalar("SELECT COUNT(*) FROM tbl_traderequests WHERE Status = 'Declined'") ?? 0);
+
+                MessageBox.Show(
+                    $"Co-LAB Skill Exchange Swap Summary:\n\n" +
+                    $"• Total Proposals: {total}\n" +
+                    $"• Pending Proposals: {pending}\n" +
+                    $"• Accepted Swaps: {accepted}\n" +
+                    $"• Declined Proposals: {declined}",
+                    "Monitor Swaps",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Could not fetch swap statistics: {ex.Message}", "Database Notice",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
-        private void BtnExportReports_Click(object sender, EventArgs e)
+        private void BtnExportReports_Click(object? sender, EventArgs e)
         {
-            MessageBox.Show("Export Reports feature coming soon.", "Coming Soon",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            try
+            {
+                DataTable dt = DatabaseHelper.ExecuteQuery(
+                    "SELECT ReportId, ReportedUser, Reason, ReportDate, Status FROM tbl_reports ORDER BY ReportId DESC");
+
+                using var sfd = new SaveFileDialog
+                {
+                    Title = "Export Reports to CSV",
+                    Filter = "CSV Files (*.csv)|*.csv",
+                    FileName = $"CoLab_Reports_{DateTime.Now:yyyyMMdd_HHmm}.csv"
+                };
+
+                if (sfd.ShowDialog(this) == DialogResult.OK)
+                {
+                    var lines = new System.Collections.Generic.List<string>
+                    {
+                        "ReportId,ReportedUser,Reason,ReportDate,Status"
+                    };
+
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        string id = row["ReportId"]?.ToString() ?? "";
+                        string user = (row["ReportedUser"]?.ToString() ?? "").Replace("\"", "\"\"");
+                        string reason = (row["Reason"]?.ToString() ?? "").Replace("\"", "\"\"");
+                        string date = row["ReportDate"]?.ToString() ?? "";
+                        string status = row["Status"]?.ToString() ?? "";
+                        lines.Add($"{id},\"{user}\",\"{reason}\",\"{date}\",{status}");
+                    }
+
+                    System.IO.File.WriteAllLines(sfd.FileName, lines);
+                    MessageBox.Show($"Exported {dt.Rows.Count} report(s) to:\n{sfd.FileName}", "Export Complete",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error exporting reports: {ex.Message}", "Export Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         // =====================================================
         // REPORT RECORDS: BLACKLIST / DISMISS BUTTONS
         // =====================================================
-        private void dgvReportRecords_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void dgvReportRecords_CellContentClick(object? sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0) return;
 
             if (e.ColumnIndex == dgvReportRecords.Columns["colBlacklist"]?.Index)
             {
-                string reportedUser = dgvReportRecords.Rows[e.RowIndex].Cells["colReportedUser"].Value?.ToString() ?? "";
+                string reportedUser = dgvReportRecords.Rows[e.RowIndex].Cells["colReportedStudent"].Value?.ToString() ?? "";
                 string reportId = dgvReportRecords.Rows[e.RowIndex].Cells["colReportId"].Value?.ToString() ?? "";
 
                 var result = MessageBox.Show(
@@ -501,36 +665,79 @@ namespace Co_LAB
         }
 
         // =====================================================
-        // UNUSED DESIGNER EVENT STUBS
+        // RESPONSIVE LAYOUT (MINIMIZED & MAXIMIZED MODES)
         // =====================================================
-        private void label1_Click(object sender, EventArgs e) { }
-        private void label6_Click(object sender, EventArgs e) { }
-        private void label7_Click(object sender, EventArgs e) { }
-        private void panel1_Paint(object sender, PaintEventArgs e) { }
-
-        private void lblReportsTitle_Click(object sender, EventArgs e)
+        private void uc_AdminDashboard_Resize(object? sender, EventArgs e)
         {
+            int padding = 24;
+            int availWidth = Math.Max(920, ClientSize.Width - (padding * 2) - (VScroll ? SystemInformation.VerticalScrollBarWidth : 0));
 
+            // 1. Stat cards: 4 columns
+            int cardGap = 16;
+            int cardWidth = (availWidth - (cardGap * 3)) / 4;
+            pnlStatStudents.Location = new Point(padding, 78);
+            pnlStatStudents.Width = cardWidth;
+
+            pnlStatSkills.Location = new Point(pnlStatStudents.Right + cardGap, 78);
+            pnlStatSkills.Width = cardWidth;
+
+            pnlStatPending.Location = new Point(pnlStatSkills.Right + cardGap, 78);
+            pnlStatPending.Width = cardWidth;
+
+            pnlStatReports.Location = new Point(pnlStatPending.Right + cardGap, 78);
+            pnlStatReports.Width = availWidth - (pnlStatReports.Left - padding);
+
+            // 2. Row 2: Shortcuts & Pending Verification
+            pnlShortcuts.Location = new Point(padding, 185);
+            int shortcutsWidth = 350;
+            pnlShortcuts.Width = shortcutsWidth;
+
+            pnlPendingVerif.Location = new Point(pnlShortcuts.Right + cardGap, 185);
+            pnlPendingVerif.Width = availWidth - shortcutsWidth - cardGap;
+            dgv_PendingStudentVerification.Width = Math.Max(200, pnlPendingVerif.Width - 32);
+
+            // 3. Row 3: Blacklisted & Declined
+            int halfWidth = (availWidth - cardGap) / 2;
+            pnlBlacklisted.Location = new Point(padding, 402);
+            pnlBlacklisted.Width = halfWidth;
+            dgv_CurrentlyBlackLister.Width = Math.Max(200, pnlBlacklisted.Width - 32);
+
+            pnlDeclined.Location = new Point(pnlBlacklisted.Right + cardGap, 402);
+            pnlDeclined.Width = availWidth - halfWidth - cardGap;
+            dgv_DeclineStudent.Width = Math.Max(200, pnlDeclined.Width - 32);
+
+            // 4. Row 4: Reports
+            pnlReports.Location = new Point(padding, 629);
+            pnlReports.Width = availWidth;
+            dgvReportRecords.Width = Math.Max(200, pnlReports.Width - 32);
+
+            Invalidate(true);
         }
 
-        private void flpBlacklisted_Paint(object sender, PaintEventArgs e)
+        // =====================================================
+        // ROUNDED CARD PAINTING
+        // =====================================================
+        private void RoundPanel_Paint(object? sender, PaintEventArgs e)
         {
+            if (sender is not Control ctrl) return;
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
+            var rect = new Rectangle(0, 0, ctrl.Width - 1, ctrl.Height - 1);
+            using var path = CreateRoundedRectanglePath(rect, 8);
+            using var borderPen = new Pen(Color.FromArgb(34, 48, 38), 1f);
+            e.Graphics.DrawPath(borderPen, path);
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private static GraphicsPath CreateRoundedRectanglePath(Rectangle rect, int radius)
         {
-
-        }
-
-        private void button1_Click_1(object sender, EventArgs e)
-        {
-
-        }
-
-        private void pnlStatPending_Paint(object sender, PaintEventArgs e)
-        {
-
+            GraphicsPath path = new GraphicsPath();
+            int diameter = radius * 2;
+            path.AddArc(rect.X, rect.Y, diameter, diameter, 180, 90);
+            path.AddArc(rect.Right - diameter, rect.Y, diameter, diameter, 270, 90);
+            path.AddArc(rect.Right - diameter, rect.Bottom - diameter, diameter, diameter, 0, 90);
+            path.AddArc(rect.X, rect.Bottom - diameter, diameter, diameter, 90, 90);
+            path.CloseFigure();
+            return path;
         }
     }
 }

@@ -61,7 +61,8 @@ namespace Co_LAB
             // 
             // panel1 (Header Banner Card)
             // 
-            panel1.BackColor = Color.FromArgb(6, 95, 70);
+            panel1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            panel1.BackColor = Color.FromArgb(20, 28, 23);
             panel1.Controls.Add(lblHeaderTitle);
             panel1.Controls.Add(lblHeaderSubtitle);
             panel1.Controls.Add(pnlAdminBadge);
@@ -69,6 +70,7 @@ namespace Co_LAB
             panel1.Name = "panel1";
             panel1.Size = new Size(1020, 92);
             panel1.TabIndex = 0;
+            panel1.Paint += RoundPanel_Paint;
 
             // 
             // lblHeaderTitle
@@ -87,7 +89,7 @@ namespace Co_LAB
             // 
             lblHeaderSubtitle.AutoSize = true;
             lblHeaderSubtitle.Font = new Font("Segoe UI", 9.5F);
-            lblHeaderSubtitle.ForeColor = Color.FromArgb(209, 250, 229);
+            lblHeaderSubtitle.ForeColor = Color.FromArgb(130, 175, 145);
             lblHeaderSubtitle.Location = new Point(26, 50);
             lblHeaderSubtitle.Name = "lblHeaderSubtitle";
             lblHeaderSubtitle.Size = new Size(618, 17);
@@ -98,20 +100,21 @@ namespace Co_LAB
             // pnlAdminBadge
             // 
             pnlAdminBadge.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            pnlAdminBadge.BackColor = Color.FromArgb(4, 120, 87);
+            pnlAdminBadge.BackColor = Color.FromArgb(28, 38, 31);
             pnlAdminBadge.Controls.Add(lblDot);
             pnlAdminBadge.Controls.Add(lblAdminBadge);
             pnlAdminBadge.Location = new Point(835, 24);
             pnlAdminBadge.Name = "pnlAdminBadge";
             pnlAdminBadge.Size = new Size(160, 42);
             pnlAdminBadge.TabIndex = 2;
+            pnlAdminBadge.Paint += RoundPanel_Paint;
 
             // 
             // lblDot
             // 
             lblDot.AutoSize = true;
             lblDot.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            lblDot.ForeColor = Color.FromArgb(16, 185, 129);
+            lblDot.ForeColor = Color.FromArgb(34, 197, 94);
             lblDot.Location = new Point(12, 10);
             lblDot.Name = "lblDot";
             lblDot.Size = new Size(21, 21);
@@ -133,7 +136,8 @@ namespace Co_LAB
             // 
             // panel2 (Main Content Card)
             // 
-            panel2.BackColor = Color.FromArgb(6, 95, 70);
+            panel2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            panel2.BackColor = Color.FromArgb(20, 28, 23);
             panel2.Controls.Add(panel3);
             panel2.Controls.Add(dataGridViewReports);
             panel2.Controls.Add(pnlFooter);
@@ -141,12 +145,13 @@ namespace Co_LAB
             panel2.Name = "panel2";
             panel2.Size = new Size(1020, 680);
             panel2.TabIndex = 1;
-            panel2.Paint += panel2_Paint;
+            panel2.Paint += RoundPanel_Paint;
 
             // 
             // panel3 (Search & Action Toolbar)
             // 
-            panel3.BackColor = Color.FromArgb(4, 120, 87);
+            panel3.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            panel3.BackColor = Color.FromArgb(18, 25, 20);
             panel3.Controls.Add(lblTitle);
             panel3.Controls.Add(lblReportsCount);
             panel3.Controls.Add(txtSearch);
@@ -163,7 +168,7 @@ namespace Co_LAB
             // 
             lblTitle.AutoSize = true;
             lblTitle.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            lblTitle.ForeColor = Color.White;
+            lblTitle.ForeColor = Color.FromArgb(74, 222, 128);
             lblTitle.Location = new Point(16, 15);
             lblTitle.Name = "lblTitle";
             lblTitle.Size = new Size(185, 21);
@@ -175,7 +180,7 @@ namespace Co_LAB
             // 
             lblReportsCount.AutoSize = true;
             lblReportsCount.Font = new Font("Segoe UI", 9F, FontStyle.Italic);
-            lblReportsCount.ForeColor = Color.FromArgb(209, 250, 229);
+            lblReportsCount.ForeColor = Color.FromArgb(130, 175, 145);
             lblReportsCount.Location = new Point(208, 19);
             lblReportsCount.Name = "lblReportsCount";
             lblReportsCount.Size = new Size(95, 15);
@@ -186,7 +191,7 @@ namespace Co_LAB
             // txtSearch
             // 
             txtSearch.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            txtSearch.BackColor = Color.FromArgb(24, 24, 27);
+            txtSearch.BackColor = Color.FromArgb(14, 20, 16);
             txtSearch.BorderStyle = BorderStyle.FixedSingle;
             txtSearch.Font = new Font("Segoe UI", 9.5F);
             txtSearch.ForeColor = Color.White;
@@ -201,7 +206,7 @@ namespace Co_LAB
             // btnSearch
             // 
             btnSearch.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnSearch.BackColor = Color.FromArgb(16, 185, 129);
+            btnSearch.BackColor = Color.FromArgb(46, 125, 70);
             btnSearch.Cursor = Cursors.Hand;
             btnSearch.FlatAppearance.BorderSize = 0;
             btnSearch.FlatStyle = FlatStyle.Flat;
@@ -219,12 +224,13 @@ namespace Co_LAB
             // btnRefresh
             // 
             btnRefresh.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnRefresh.BackColor = Color.FromArgb(24, 24, 27);
+            btnRefresh.BackColor = Color.FromArgb(28, 38, 30);
             btnRefresh.Cursor = Cursors.Hand;
-            btnRefresh.FlatAppearance.BorderSize = 0;
+            btnRefresh.FlatAppearance.BorderColor = Color.FromArgb(42, 60, 48);
+            btnRefresh.FlatAppearance.BorderSize = 1;
             btnRefresh.FlatStyle = FlatStyle.Flat;
             btnRefresh.Font = new Font("Segoe UI Semibold", 9F);
-            btnRefresh.ForeColor = Color.White;
+            btnRefresh.ForeColor = Color.FromArgb(220, 235, 225);
             btnRefresh.Location = new Point(828, 12);
             btnRefresh.Name = "btnRefresh";
             btnRefresh.Size = new Size(88, 30);
@@ -237,9 +243,10 @@ namespace Co_LAB
             // btnClearSearch
             // 
             btnClearSearch.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnClearSearch.BackColor = Color.FromArgb(24, 24, 27);
+            btnClearSearch.BackColor = Color.FromArgb(28, 38, 30);
             btnClearSearch.Cursor = Cursors.Hand;
-            btnClearSearch.FlatAppearance.BorderSize = 0;
+            btnClearSearch.FlatAppearance.BorderColor = Color.FromArgb(42, 60, 48);
+            btnClearSearch.FlatAppearance.BorderSize = 1;
             btnClearSearch.FlatStyle = FlatStyle.Flat;
             btnClearSearch.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             btnClearSearch.ForeColor = Color.FromArgb(161, 161, 170);
@@ -257,19 +264,20 @@ namespace Co_LAB
             dataGridViewReports.AllowUserToAddRows = false;
             dataGridViewReports.AllowUserToDeleteRows = false;
             dataGridViewReports.AllowUserToResizeRows = false;
+            dataGridViewReports.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dataGridViewReports.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dataGridViewReports.BackgroundColor = Color.FromArgb(24, 24, 27);
+            dataGridViewReports.BackgroundColor = Color.FromArgb(14, 20, 16);
             dataGridViewReports.BorderStyle = BorderStyle.None;
             dataGridViewReports.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             dataGridViewReports.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
 
             dgvHeaderStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dgvHeaderStyle.BackColor = Color.FromArgb(4, 120, 87);
+            dgvHeaderStyle.BackColor = Color.FromArgb(20, 28, 23);
             dgvHeaderStyle.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
-            dgvHeaderStyle.ForeColor = Color.White;
+            dgvHeaderStyle.ForeColor = Color.FromArgb(74, 222, 128);
             dgvHeaderStyle.Padding = new Padding(10, 0, 0, 0);
-            dgvHeaderStyle.SelectionBackColor = Color.FromArgb(4, 120, 87);
-            dgvHeaderStyle.SelectionForeColor = Color.White;
+            dgvHeaderStyle.SelectionBackColor = Color.FromArgb(20, 28, 23);
+            dgvHeaderStyle.SelectionForeColor = Color.FromArgb(74, 222, 128);
             dgvHeaderStyle.WrapMode = DataGridViewTriState.True;
             dataGridViewReports.ColumnHeadersDefaultCellStyle = dgvHeaderStyle;
             dataGridViewReports.ColumnHeadersHeight = 44;
@@ -285,27 +293,27 @@ namespace Co_LAB
             });
 
             dgvRowStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dgvRowStyle.BackColor = Color.FromArgb(24, 24, 27);
+            dgvRowStyle.BackColor = Color.FromArgb(18, 25, 20);
             dgvRowStyle.Font = new Font("Segoe UI", 9.5F);
-            dgvRowStyle.ForeColor = Color.FromArgb(244, 244, 245);
+            dgvRowStyle.ForeColor = Color.FromArgb(228, 228, 231);
             dgvRowStyle.Padding = new Padding(10, 0, 0, 0);
-            dgvRowStyle.SelectionBackColor = Color.FromArgb(6, 95, 70);
+            dgvRowStyle.SelectionBackColor = Color.FromArgb(34, 52, 40);
             dgvRowStyle.SelectionForeColor = Color.White;
             dgvRowStyle.WrapMode = DataGridViewTriState.False;
             dataGridViewReports.DefaultCellStyle = dgvRowStyle;
 
             dgvRowStyleAlt.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dgvRowStyleAlt.BackColor = Color.FromArgb(32, 32, 36);
+            dgvRowStyleAlt.BackColor = Color.FromArgb(15, 22, 17);
             dgvRowStyleAlt.Font = new Font("Segoe UI", 9.5F);
-            dgvRowStyleAlt.ForeColor = Color.FromArgb(244, 244, 245);
+            dgvRowStyleAlt.ForeColor = Color.FromArgb(228, 228, 231);
             dgvRowStyleAlt.Padding = new Padding(10, 0, 0, 0);
-            dgvRowStyleAlt.SelectionBackColor = Color.FromArgb(6, 95, 70);
+            dgvRowStyleAlt.SelectionBackColor = Color.FromArgb(34, 52, 40);
             dgvRowStyleAlt.SelectionForeColor = Color.White;
             dgvRowStyleAlt.WrapMode = DataGridViewTriState.False;
             dataGridViewReports.AlternatingRowsDefaultCellStyle = dgvRowStyleAlt;
 
             dataGridViewReports.EnableHeadersVisualStyles = false;
-            dataGridViewReports.GridColor = Color.FromArgb(44, 44, 48);
+            dataGridViewReports.GridColor = Color.FromArgb(30, 44, 34);
             dataGridViewReports.Location = new Point(24, 88);
             dataGridViewReports.MultiSelect = false;
             dataGridViewReports.Name = "dataGridViewReports";
@@ -371,9 +379,9 @@ namespace Co_LAB
             // colBlacklist
             // 
             dgvButtonColStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dgvButtonColStyle.BackColor = Color.FromArgb(185, 28, 28);
-            dgvButtonColStyle.ForeColor = Color.White;
-            dgvButtonColStyle.SelectionBackColor = Color.FromArgb(153, 27, 27);
+            dgvButtonColStyle.BackColor = Color.FromArgb(50, 25, 28);
+            dgvButtonColStyle.ForeColor = Color.FromArgb(248, 113, 113);
+            dgvButtonColStyle.SelectionBackColor = Color.FromArgb(70, 30, 34);
             dgvButtonColStyle.SelectionForeColor = Color.White;
             colBlacklist.DefaultCellStyle = dgvButtonColStyle;
             colBlacklist.FillWeight = 16F;
@@ -389,7 +397,8 @@ namespace Co_LAB
             // 
             // pnlFooter (Policy Info & Guidance)
             // 
-            pnlFooter.BackColor = Color.FromArgb(4, 120, 87);
+            pnlFooter.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            pnlFooter.BackColor = Color.FromArgb(18, 25, 20);
             pnlFooter.Controls.Add(lblLegend);
             pnlFooter.Controls.Add(lblActiveFilter);
             pnlFooter.Location = new Point(24, 618);
@@ -402,7 +411,7 @@ namespace Co_LAB
             // 
             lblLegend.AutoSize = true;
             lblLegend.Font = new Font("Segoe UI", 9F);
-            lblLegend.ForeColor = Color.FromArgb(209, 250, 229);
+            lblLegend.ForeColor = Color.FromArgb(130, 175, 145);
             lblLegend.Location = new Point(16, 14);
             lblLegend.Name = "lblLegend";
             lblLegend.Size = new Size(590, 15);
@@ -415,7 +424,7 @@ namespace Co_LAB
             lblActiveFilter.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblActiveFilter.AutoSize = true;
             lblActiveFilter.Font = new Font("Segoe UI", 8.5F, FontStyle.Italic);
-            lblActiveFilter.ForeColor = Color.FromArgb(167, 243, 208);
+            lblActiveFilter.ForeColor = Color.FromArgb(74, 222, 128);
             lblActiveFilter.Location = new Point(738, 14);
             lblActiveFilter.Name = "lblActiveFilter";
             lblActiveFilter.Size = new Size(220, 15);
@@ -427,7 +436,7 @@ namespace Co_LAB
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(24, 24, 27);
+            BackColor = Color.FromArgb(14, 20, 16);
             Controls.Add(panel2);
             Controls.Add(panel1);
             Margin = new Padding(3, 4, 3, 4);
