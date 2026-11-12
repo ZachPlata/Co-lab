@@ -47,6 +47,11 @@ namespace Co_LAB
         {
             LoadView(new uc_ForgotPassword());
         }
+
+        private void lblUniversity_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
 

@@ -67,9 +67,10 @@ namespace Co_LAB
             lblUniversity.ForeColor = Color.FromArgb(110, 145, 125);
             lblUniversity.Location = new Point(30, 535);
             lblUniversity.Name = "lblUniversity";
-            lblUniversity.Size = new Size(130, 26);
+            lblUniversity.Size = new Size(115, 26);
             lblUniversity.TabIndex = 8;
             lblUniversity.Text = "University of the East\r\nManila • Caloocan";
+            lblUniversity.Click += lblUniversity_Click;
             // 
             // lblFeature3
             // 
@@ -79,7 +80,7 @@ namespace Co_LAB
             lblFeature3.Name = "lblFeature3";
             lblFeature3.Size = new Size(250, 42);
             lblFeature3.TabIndex = 7;
-            lblFeature3.Text = "🤝  Collaborate, teach, and learn campus-wide.";
+            lblFeature3.Text = "\U0001f91d  Collaborate, teach, and learn campus-wide.";
             // 
             // lblFeature2
             // 
@@ -108,7 +109,7 @@ namespace Co_LAB
             lblDescriptionTitle.ForeColor = Color.White;
             lblDescriptionTitle.Location = new Point(30, 140);
             lblDescriptionTitle.Name = "lblDescriptionTitle";
-            lblDescriptionTitle.Size = new Size(160, 20);
+            lblDescriptionTitle.Size = new Size(161, 20);
             lblDescriptionTitle.TabIndex = 4;
             lblDescriptionTitle.Text = "Empowering Warriors";
             // 
@@ -127,7 +128,7 @@ namespace Co_LAB
             lblBrandSubtitle.ForeColor = Color.FromArgb(130, 175, 145);
             lblBrandSubtitle.Location = new Point(30, 80);
             lblBrandSubtitle.Name = "lblBrandSubtitle";
-            lblBrandSubtitle.Size = new Size(167, 19);
+            lblBrandSubtitle.Size = new Size(166, 19);
             lblBrandSubtitle.TabIndex = 2;
             lblBrandSubtitle.Text = "UE Student Skill Exchange";
             // 
@@ -138,7 +139,7 @@ namespace Co_LAB
             lblBrandTitle.ForeColor = Color.FromArgb(74, 222, 128);
             lblBrandTitle.Location = new Point(24, 30);
             lblBrandTitle.Name = "lblBrandTitle";
-            lblBrandTitle.Size = new Size(141, 45);
+            lblBrandTitle.Size = new Size(134, 45);
             lblBrandTitle.TabIndex = 1;
             lblBrandTitle.Text = "Co-LAB";
             // 
