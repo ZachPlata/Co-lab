@@ -149,7 +149,7 @@ namespace Co_LAB
             using Form dlg = new Form
             {
                 Text = "Propose Skill Exchange",
-                Size = new Size(490, 585),
+                ClientSize = new Size(470, 545),
                 StartPosition = FormStartPosition.CenterParent,
                 BackColor = Color.FromArgb(20, 24, 21),
                 FormBorderStyle = FormBorderStyle.FixedDialog,
