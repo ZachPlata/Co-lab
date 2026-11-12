@@ -28,6 +28,8 @@ namespace Co_LAB
         {
             if (DesignMode) return;
 
+            uc_UserDashboard_Resize(this, EventArgs.Empty);
+
             if (!string.IsNullOrWhiteSpace(UserSession.FullName))
             {
                 CurrentStudentName = UserSession.FullName;
@@ -145,7 +147,7 @@ namespace Co_LAB
                     @"SELECT 
                         r.RequestId, 
                         r.SenderName AS Requester, 
-                        r.OfferedSkillTitle AS [Their Offer Back], 
+                        r.OfferedSkillTitle AS `Their Offer Back`, 
                         r.MeetingMode AS Mode, 
                         r.Status 
                       FROM tbl_traderequests r 
@@ -171,16 +173,34 @@ namespace Co_LAB
         private void BindIncomingGrid(DataTable? dt)
         {
             dgvIncoming.DataSource = null;
-            dgvIncoming.AutoGenerateColumns = false;
+            dgvIncoming.AutoGenerateColumns = true;
+            dgvIncoming.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvIncoming.DataSource = dt;
+            if (dgvIncoming.Columns["RequestId"] is DataGridViewColumn colReq)
+            {
+                colReq.Visible = false;
+            }
             dgvIncoming.Refresh();
         }
 
         private void BindMySkillsGrid(DataTable? dt)
         {
             dgvMySkills.DataSource = null;
-            dgvMySkills.AutoGenerateColumns = false;
+            dgvMySkills.AutoGenerateColumns = true;
+            dgvMySkills.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvMySkills.DataSource = dt;
+            if (dgvMySkills.Columns["UserSkillId"] is DataGridViewColumn colId)
+            {
+                colId.Visible = false;
+            }
+            if (dgvMySkills.Columns["SkillName"] is DataGridViewColumn colName)
+            {
+                colName.HeaderText = "Skill Name";
+            }
+            if (dgvMySkills.Columns["ProficiencyLevel"] is DataGridViewColumn colProf)
+            {
+                colProf.HeaderText = "Proficiency";
+            }
             dgvMySkills.Refresh();
         }
 
@@ -252,8 +272,10 @@ namespace Co_LAB
 
             var row = dgvMySkills.SelectedRows[0];
             int userSkillId = 0;
-            if (row.Cells["colUserSkillId"]?.Value != null &&
-                int.TryParse(row.Cells["colUserSkillId"].Value.ToString(), out int parsedId))
+            var idCell = row.DataGridView?.Columns.Contains("UserSkillId") == true ? row.Cells["UserSkillId"] :
+                         (row.DataGridView?.Columns.Contains("colUserSkillId") == true ? row.Cells["colUserSkillId"] : null);
+            if (idCell?.Value != null &&
+                int.TryParse(idCell.Value.ToString(), out int parsedId))
             {
                 userSkillId = parsedId;
             }
@@ -264,7 +286,9 @@ namespace Co_LAB
                 return;
             }
 
-            string skillName = row.Cells["colSkillName"]?.Value?.ToString() ?? "this skill";
+            var nameCell = row.DataGridView?.Columns.Contains("SkillName") == true ? row.Cells["SkillName"] :
+                           (row.DataGridView?.Columns.Contains("colSkillName") == true ? row.Cells["colSkillName"] : null);
+            string skillName = nameCell?.Value?.ToString() ?? "this skill";
 
             if (MessageBox.Show($"Are you sure you want to remove '{skillName}' from your profile bio?", "Confirm Remove", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
@@ -412,6 +436,75 @@ namespace Co_LAB
         {
             using var dlg = new TosDialog(readOnlyMode: true);
             dlg.ShowDialog(this);
+        }
+
+        // ==========================================
+        // RESPONSIVE LAYOUT (MINIMIZED & MAXIMIZED MODES)
+        // ==========================================
+        private void uc_UserDashboard_Resize(object? sender, EventArgs e)
+        {
+            int padding = 24;
+            int availWidth = Math.Max(902, ClientSize.Width - (padding * 2) - (VScroll ? SystemInformation.VerticalScrollBarWidth : 0));
+
+            // 1. Stat cards: 4 columns
+            int cardGap = 16;
+            int cardWidth = (availWidth - (cardGap * 3)) / 4;
+            pnlCard1.Location = new Point(padding, 77);
+            pnlCard1.Width = cardWidth;
+
+            pnlCard2.Location = new Point(pnlCard1.Right + cardGap, 77);
+            pnlCard2.Width = cardWidth;
+
+            pnlCard3.Location = new Point(pnlCard2.Right + cardGap, 77);
+            pnlCard3.Width = cardWidth;
+
+            pnlCard4.Location = new Point(pnlCard3.Right + cardGap, 77);
+            pnlCard4.Width = availWidth - (pnlCard4.Left - padding);
+
+            // 2. Row 2: Shortcuts
+            pnlShortcuts.Location = new Point(padding, 209);
+            pnlShortcuts.Width = availWidth;
+
+            int shortcutBtnGap = 16;
+            int shortcutBtnWidth = Math.Max(160, (pnlShortcuts.Width - 40 - (shortcutBtnGap * 3)) / 4);
+            btnPostSkill.Location = new Point(20, 41);
+            btnPostSkill.Width = shortcutBtnWidth;
+
+            btnBrowseMarketplace.Location = new Point(btnPostSkill.Right + shortcutBtnGap, 41);
+            btnBrowseMarketplace.Width = shortcutBtnWidth;
+
+            btnReadRegulations.Location = new Point(btnBrowseMarketplace.Right + shortcutBtnGap, 41);
+            btnReadRegulations.Width = shortcutBtnWidth;
+
+            btnTradeHistory.Location = new Point(btnReadRegulations.Right + shortcutBtnGap, 41);
+            btnTradeHistory.Width = Math.Max(160, pnlShortcuts.Width - 20 - btnTradeHistory.Left);
+
+            // 3. Row 3: Incoming & My Skills
+            int halfWidth = (availWidth - cardGap) / 2;
+            pnlIncoming.Location = new Point(padding, 312);
+            pnlIncoming.Width = halfWidth;
+
+            btnAccept.Left = pnlIncoming.Width - 14 - btnAccept.Width;
+            btnDecline.Left = pnlIncoming.Width - 14 - btnDecline.Width;
+            dgvIncoming.Width = Math.Max(200, btnAccept.Left - 24);
+
+            pnlMySkills.Location = new Point(pnlIncoming.Right + cardGap, 312);
+            pnlMySkills.Width = availWidth - halfWidth - cardGap;
+
+            int rightWidth = 154;
+            int leftWidth = Math.Max(150, pnlMySkills.Width - 14 - 10 - rightWidth - 14);
+            txtSkillName.Width = leftWidth;
+            cmbCategory.Width = leftWidth;
+            cmbProficiency.Left = txtSkillName.Right + 10;
+            cmbProficiency.Width = rightWidth;
+            btnAddSkill.Left = cmbCategory.Right + 10;
+            btnAddSkill.Width = rightWidth;
+
+            dgvMySkills.Width = Math.Max(200, pnlMySkills.Width - 28);
+            btnOfferInMarket.Left = pnlMySkills.Width - 14 - btnOfferInMarket.Width;
+            btnDeleteSkill.Left = 14;
+
+            Invalidate(true);
         }
 
         // ==========================================

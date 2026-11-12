@@ -31,7 +31,7 @@ namespace Co_LAB.UCStudents
             // 
             lblCategoryBadge.AutoSize = true;
             lblCategoryBadge.Font = new Font("Segoe UI Semibold", 7.5F, FontStyle.Bold);
-            lblCategoryBadge.ForeColor = Color.FromArgb(16, 185, 129);
+            lblCategoryBadge.ForeColor = Color.FromArgb(74, 222, 128);
             lblCategoryBadge.Location = new Point(14, 12);
             lblCategoryBadge.Name = "lblCategoryBadge";
             lblCategoryBadge.Size = new Size(55, 12);
@@ -86,7 +86,7 @@ namespace Co_LAB.UCStudents
             // 
             // pnlDivider
             // 
-            pnlDivider.BackColor = Color.FromArgb(45, 45, 50);
+            pnlDivider.BackColor = Color.FromArgb(30, 44, 34);
             pnlDivider.Location = new Point(14, 175);
             pnlDivider.Name = "pnlDivider";
             pnlDivider.Size = new Size(252, 1);
@@ -94,7 +94,7 @@ namespace Co_LAB.UCStudents
             // 
             // btnRequestTrade
             // 
-            btnRequestTrade.BackColor = Color.FromArgb(16, 185, 129);
+            btnRequestTrade.BackColor = Color.FromArgb(46, 125, 70);
             btnRequestTrade.Cursor = Cursors.Hand;
             btnRequestTrade.FlatAppearance.BorderSize = 0;
             btnRequestTrade.FlatStyle = FlatStyle.Flat;
@@ -104,18 +104,19 @@ namespace Co_LAB.UCStudents
             btnRequestTrade.Name = "btnRequestTrade";
             btnRequestTrade.Size = new Size(160, 32);
             btnRequestTrade.TabIndex = 6;
-            btnRequestTrade.Text = "\U0001f91d Request Trade";
+            btnRequestTrade.Text = "🤝 Request Trade";
             btnRequestTrade.UseVisualStyleBackColor = false;
             btnRequestTrade.Click += btnRequestTrade_Click;
             // 
             // btnReport
             // 
-            btnReport.BackColor = Color.FromArgb(45, 45, 50);
+            btnReport.BackColor = Color.FromArgb(28, 38, 30);
             btnReport.Cursor = Cursors.Hand;
-            btnReport.FlatAppearance.BorderSize = 0;
+            btnReport.FlatAppearance.BorderColor = Color.FromArgb(42, 60, 48);
+            btnReport.FlatAppearance.BorderSize = 1;
             btnReport.FlatStyle = FlatStyle.Flat;
             btnReport.Font = new Font("Segoe UI", 8F);
-            btnReport.ForeColor = Color.FromArgb(239, 68, 68);
+            btnReport.ForeColor = Color.FromArgb(248, 113, 113);
             btnReport.Location = new Point(184, 185);
             btnReport.Name = "btnReport";
             btnReport.Size = new Size(82, 32);
@@ -128,7 +129,7 @@ namespace Co_LAB.UCStudents
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(32, 32, 36);
+            BackColor = Color.FromArgb(20, 28, 23);
             Controls.Add(btnReport);
             Controls.Add(btnRequestTrade);
             Controls.Add(pnlDivider);

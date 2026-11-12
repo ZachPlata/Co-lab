@@ -36,7 +36,7 @@ namespace Co_LAB.UCStudents
         private void ApplyReadOnlyTheme(TextBox tb)
         {
             tb.ReadOnly = true;
-            tb.BackColor = Color.FromArgb(39, 39, 45);
+            tb.BackColor = Color.FromArgb(14, 20, 16);
             tb.ForeColor = Color.White;
             tb.BorderStyle = BorderStyle.FixedSingle;
         }

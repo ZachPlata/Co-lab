@@ -311,8 +311,31 @@ namespace Co_LAB
         }
 
         // =========================================================================
-        // COMPATIBILITY STUBS
+        // COMPATIBILITY STUBS & ROUNDED PANELS
         // =========================================================================
+
+        private void RoundPanel_Paint(object? sender, PaintEventArgs e)
+        {
+            if (sender is not Control ctrl) return;
+            e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+
+            var rect = new Rectangle(0, 0, ctrl.Width - 1, ctrl.Height - 1);
+            using var path = CreateRoundedRectanglePath(rect, 8);
+            using var borderPen = new Pen(Color.FromArgb(34, 48, 38), 1f);
+            e.Graphics.DrawPath(borderPen, path);
+        }
+
+        private static System.Drawing.Drawing2D.GraphicsPath CreateRoundedRectanglePath(Rectangle rect, int radius)
+        {
+            var path = new System.Drawing.Drawing2D.GraphicsPath();
+            int diameter = radius * 2;
+            path.AddArc(rect.X, rect.Y, diameter, diameter, 180, 90);
+            path.AddArc(rect.Right - diameter, rect.Y, diameter, diameter, 270, 90);
+            path.AddArc(rect.Right - diameter, rect.Bottom - diameter, diameter, diameter, 0, 90);
+            path.AddArc(rect.X, rect.Bottom - diameter, diameter, diameter, 90, 90);
+            path.CloseFigure();
+            return path;
+        }
 
         private void flowLayoutPanel2_Paint(object? sender, PaintEventArgs e)
         {

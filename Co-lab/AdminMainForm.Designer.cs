@@ -20,7 +20,6 @@ namespace Co_LAB
             pnlSidebar = new Panel();
             pnlNavContainer = new Panel();
             pnlNavIndicator = new Panel();
-            btn_UpdateTOS = new Button();
             btn_ReportedStudents = new Button();
             btn_ModerateListings = new Button();
             btn_SkillCategories = new Button();
@@ -46,7 +45,7 @@ namespace Co_LAB
             // 
             // pnlSidebar
             // 
-            pnlSidebar.BackColor = Color.FromArgb(15, 15, 17);
+            pnlSidebar.BackColor = Color.FromArgb(12, 17, 14);
             pnlSidebar.Controls.Add(pnlNavContainer);
             pnlSidebar.Controls.Add(pnlSidebarBottom);
             pnlSidebar.Controls.Add(pnlBrand);
@@ -60,7 +59,6 @@ namespace Co_LAB
             // pnlNavContainer
             // 
             pnlNavContainer.Controls.Add(pnlNavIndicator);
-            pnlNavContainer.Controls.Add(btn_UpdateTOS);
             pnlNavContainer.Controls.Add(btn_ReportedStudents);
             pnlNavContainer.Controls.Add(btn_ModerateListings);
             pnlNavContainer.Controls.Add(btn_SkillCategories);
@@ -81,27 +79,6 @@ namespace Co_LAB
             pnlNavIndicator.Name = "pnlNavIndicator";
             pnlNavIndicator.Size = new Size(5, 67);
             pnlNavIndicator.TabIndex = 5;
-            // 
-            // btn_UpdateTOS
-            // 
-            btn_UpdateTOS.Cursor = Cursors.Hand;
-            btn_UpdateTOS.Dock = DockStyle.Top;
-            btn_UpdateTOS.FlatAppearance.BorderSize = 0;
-            btn_UpdateTOS.FlatAppearance.MouseDownBackColor = Color.FromArgb(35, 35, 42);
-            btn_UpdateTOS.FlatAppearance.MouseOverBackColor = Color.FromArgb(28, 28, 33);
-            btn_UpdateTOS.FlatStyle = FlatStyle.Flat;
-            btn_UpdateTOS.Font = new Font("Segoe UI", 10F);
-            btn_UpdateTOS.ForeColor = Color.FromArgb(161, 161, 170);
-            btn_UpdateTOS.Location = new Point(0, 281);
-            btn_UpdateTOS.Margin = new Padding(3, 4, 3, 4);
-            btn_UpdateTOS.Name = "btn_UpdateTOS";
-            btn_UpdateTOS.Padding = new Padding(25, 0, 11, 0);
-            btn_UpdateTOS.Size = new Size(286, 67);
-            btn_UpdateTOS.TabIndex = 4;
-            btn_UpdateTOS.Text = "Update TOS";
-            btn_UpdateTOS.TextAlign = ContentAlignment.MiddleLeft;
-            btn_UpdateTOS.UseVisualStyleBackColor = true;
-            btn_UpdateTOS.Click += btn_UpdateTOS_Click;
             // 
             // btn_ReportedStudents
             // 
@@ -221,7 +198,7 @@ namespace Co_LAB
             // 
             // pnlDividerBottom
             // 
-            pnlDividerBottom.BackColor = Color.FromArgb(39, 39, 42);
+            pnlDividerBottom.BackColor = Color.FromArgb(30, 44, 34);
             pnlDividerBottom.Dock = DockStyle.Top;
             pnlDividerBottom.Location = new Point(0, 0);
             pnlDividerBottom.Margin = new Padding(3, 4, 3, 4);
@@ -243,7 +220,7 @@ namespace Co_LAB
             // 
             // pnlDividerTop
             // 
-            pnlDividerTop.BackColor = Color.FromArgb(39, 39, 42);
+            pnlDividerTop.BackColor = Color.FromArgb(30, 44, 34);
             pnlDividerTop.Dock = DockStyle.Bottom;
             pnlDividerTop.Location = new Point(0, 112);
             pnlDividerTop.Margin = new Padding(3, 4, 3, 4);
@@ -255,7 +232,7 @@ namespace Co_LAB
             // 
             lblBrandSubtitle.AutoSize = true;
             lblBrandSubtitle.Font = new Font("Segoe UI", 8.25F);
-            lblBrandSubtitle.ForeColor = Color.FromArgb(161, 161, 170);
+            lblBrandSubtitle.ForeColor = Color.FromArgb(130, 175, 145);
             lblBrandSubtitle.Location = new Point(25, 64);
             lblBrandSubtitle.Name = "lblBrandSubtitle";
             lblBrandSubtitle.Size = new Size(166, 19);
@@ -266,7 +243,7 @@ namespace Co_LAB
             // 
             lblBrandTitle.AutoSize = true;
             lblBrandTitle.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
-            lblBrandTitle.ForeColor = Color.FromArgb(16, 185, 129);
+            lblBrandTitle.ForeColor = Color.FromArgb(74, 222, 128);
             lblBrandTitle.Location = new Point(23, 24);
             lblBrandTitle.Name = "lblBrandTitle";
             lblBrandTitle.Size = new Size(116, 37);
@@ -275,7 +252,7 @@ namespace Co_LAB
             // 
             // pnlHeader
             // 
-            pnlHeader.BackColor = Color.FromArgb(18, 18, 20);
+            pnlHeader.BackColor = Color.FromArgb(18, 25, 20);
             pnlHeader.Controls.Add(pnlDividerHeader);
             pnlHeader.Controls.Add(lblAdminProfile);
             pnlHeader.Controls.Add(lblHeaderTitle);
@@ -288,7 +265,7 @@ namespace Co_LAB
             // 
             // pnlDividerHeader
             // 
-            pnlDividerHeader.BackColor = Color.FromArgb(39, 39, 42);
+            pnlDividerHeader.BackColor = Color.FromArgb(30, 44, 34);
             pnlDividerHeader.Dock = DockStyle.Bottom;
             pnlDividerHeader.Location = new Point(0, 112);
             pnlDividerHeader.Margin = new Padding(3, 4, 3, 4);
@@ -301,7 +278,7 @@ namespace Co_LAB
             lblAdminProfile.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblAdminProfile.AutoSize = true;
             lblAdminProfile.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold);
-            lblAdminProfile.ForeColor = Color.FromArgb(16, 185, 129);
+            lblAdminProfile.ForeColor = Color.FromArgb(74, 222, 128);
             lblAdminProfile.Location = new Point(890, 43);
             lblAdminProfile.Name = "lblAdminProfile";
             lblAdminProfile.Size = new Size(160, 23);
@@ -321,7 +298,7 @@ namespace Co_LAB
             // 
             // panelContent
             // 
-            panelContent.BackColor = Color.FromArgb(24, 24, 27);
+            panelContent.BackColor = Color.FromArgb(14, 20, 16);
             panelContent.Dock = DockStyle.Fill;
             panelContent.Location = new Point(286, 113);
             panelContent.Margin = new Padding(3, 4, 3, 4);
@@ -333,7 +310,7 @@ namespace Co_LAB
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(15, 15, 17);
+            BackColor = Color.FromArgb(14, 20, 16);
             ClientSize = new Size(1371, 960);
             Controls.Add(panelContent);
             Controls.Add(pnlHeader);
@@ -366,7 +343,6 @@ namespace Co_LAB
         private Button btn_SkillCategories;
         private Button btn_ModerateListings;
         private Button btn_ReportedStudents;
-        private Button btn_UpdateTOS;
         private Panel pnlNavIndicator;
         private Panel pnlSidebarBottom;
         private Panel pnlDividerBottom;

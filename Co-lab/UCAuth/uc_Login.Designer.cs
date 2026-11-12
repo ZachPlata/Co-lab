@@ -64,18 +64,18 @@ namespace Co_LAB.UCAuth
             // 
             // lnkTos
             // 
-            lnkTos.ActiveLinkColor = Color.FromArgb(16, 185, 129);
+            lnkTos.ActiveLinkColor = Color.FromArgb(74, 222, 128);
             lnkTos.AutoSize = true;
             lnkTos.Font = new Font("Segoe UI", 9F);
             lnkTos.LinkBehavior = LinkBehavior.HoverUnderline;
-            lnkTos.LinkColor = Color.FromArgb(161, 161, 170);
+            lnkTos.LinkColor = Color.FromArgb(130, 175, 145);
             lnkTos.Location = new Point(152, 480);
             lnkTos.Name = "lnkTos";
             lnkTos.Size = new Size(95, 15);
             lnkTos.TabIndex = 14;
             lnkTos.TabStop = true;
             lnkTos.Text = "Terms of Service";
-            lnkTos.VisitedLinkColor = Color.FromArgb(161, 161, 170);
+            lnkTos.VisitedLinkColor = Color.FromArgb(130, 175, 145);
             lnkTos.LinkClicked += lnkTos_LinkClicked;
             // 
             // lblDivider
@@ -90,18 +90,18 @@ namespace Co_LAB.UCAuth
             // 
             // lnkRegister
             // 
-            lnkRegister.ActiveLinkColor = Color.FromArgb(52, 211, 153);
+            lnkRegister.ActiveLinkColor = Color.FromArgb(110, 235, 150);
             lnkRegister.AutoSize = true;
             lnkRegister.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             lnkRegister.LinkBehavior = LinkBehavior.HoverUnderline;
-            lnkRegister.LinkColor = Color.FromArgb(16, 185, 129);
+            lnkRegister.LinkColor = Color.FromArgb(74, 222, 128);
             lnkRegister.Location = new Point(250, 437);
             lnkRegister.Name = "lnkRegister";
             lnkRegister.Size = new Size(92, 15);
             lnkRegister.TabIndex = 12;
             lnkRegister.TabStop = true;
             lnkRegister.Text = "Create account";
-            lnkRegister.VisitedLinkColor = Color.FromArgb(16, 185, 129);
+            lnkRegister.VisitedLinkColor = Color.FromArgb(74, 222, 128);
             lnkRegister.LinkClicked += lnkRegister_LinkClicked;
             // 
             // lblNoAccount
@@ -117,12 +117,12 @@ namespace Co_LAB.UCAuth
             // 
             // btnLogin
             // 
-            btnLogin.BackColor = Color.FromArgb(16, 185, 129);
+            btnLogin.BackColor = Color.FromArgb(46, 125, 70);
             btnLogin.Cursor = Cursors.Hand;
             btnLogin.FlatAppearance.BorderSize = 0;
             btnLogin.FlatStyle = FlatStyle.Flat;
             btnLogin.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
-            btnLogin.ForeColor = Color.FromArgb(15, 15, 17);
+            btnLogin.ForeColor = Color.White;
             btnLogin.Location = new Point(0, 360);
             btnLogin.Name = "btnLogin";
             btnLogin.Size = new Size(400, 42);
@@ -154,9 +154,10 @@ namespace Co_LAB.UCAuth
             // 
             // btnTogglePassword
             // 
-            btnTogglePassword.BackColor = Color.FromArgb(45, 45, 50);
+            btnTogglePassword.BackColor = Color.FromArgb(28, 38, 30);
             btnTogglePassword.Cursor = Cursors.Hand;
-            btnTogglePassword.FlatAppearance.BorderSize = 0;
+            btnTogglePassword.FlatAppearance.BorderColor = Color.FromArgb(42, 60, 48);
+            btnTogglePassword.FlatAppearance.BorderSize = 1;
             btnTogglePassword.FlatStyle = FlatStyle.Flat;
             btnTogglePassword.Font = new Font("Segoe UI", 9F);
             btnTogglePassword.ForeColor = Color.White;
@@ -170,7 +171,7 @@ namespace Co_LAB.UCAuth
             // 
             // txtPassword
             // 
-            txtPassword.BackColor = Color.FromArgb(39, 39, 42);
+            txtPassword.BackColor = Color.FromArgb(20, 28, 23);
             txtPassword.BorderStyle = BorderStyle.FixedSingle;
             txtPassword.Font = new Font("Segoe UI", 11F);
             txtPassword.ForeColor = Color.White;
@@ -183,25 +184,25 @@ namespace Co_LAB.UCAuth
             // 
             // lnkForgotPassword
             // 
-            lnkForgotPassword.ActiveLinkColor = Color.FromArgb(52, 211, 153);
+            lnkForgotPassword.ActiveLinkColor = Color.FromArgb(110, 235, 150);
             lnkForgotPassword.AutoSize = true;
             lnkForgotPassword.Font = new Font("Segoe UI", 8.5F);
             lnkForgotPassword.LinkBehavior = LinkBehavior.HoverUnderline;
-            lnkForgotPassword.LinkColor = Color.FromArgb(16, 185, 129);
+            lnkForgotPassword.LinkColor = Color.FromArgb(74, 222, 128);
             lnkForgotPassword.Location = new Point(300, 255);
             lnkForgotPassword.Name = "lnkForgotPassword";
             lnkForgotPassword.Size = new Size(100, 15);
             lnkForgotPassword.TabIndex = 7;
             lnkForgotPassword.TabStop = true;
             lnkForgotPassword.Text = "Forgot password?";
-            lnkForgotPassword.VisitedLinkColor = Color.FromArgb(16, 185, 129);
+            lnkForgotPassword.VisitedLinkColor = Color.FromArgb(74, 222, 128);
             lnkForgotPassword.LinkClicked += lnkForgotPassword_LinkClicked;
             // 
             // lblPassword
             // 
             lblPassword.AutoSize = true;
             lblPassword.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lblPassword.ForeColor = Color.FromArgb(161, 161, 170);
+            lblPassword.ForeColor = Color.FromArgb(180, 215, 195);
             lblPassword.Location = new Point(0, 255);
             lblPassword.Name = "lblPassword";
             lblPassword.Size = new Size(59, 15);
@@ -222,7 +223,7 @@ namespace Co_LAB.UCAuth
             // 
             // txtEmail
             // 
-            txtEmail.BackColor = Color.FromArgb(39, 39, 42);
+            txtEmail.BackColor = Color.FromArgb(20, 28, 23);
             txtEmail.BorderStyle = BorderStyle.FixedSingle;
             txtEmail.Font = new Font("Segoe UI", 11F);
             txtEmail.ForeColor = Color.White;
@@ -236,7 +237,7 @@ namespace Co_LAB.UCAuth
             // 
             lblEmail.AutoSize = true;
             lblEmail.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lblEmail.ForeColor = Color.FromArgb(161, 161, 170);
+            lblEmail.ForeColor = Color.FromArgb(180, 215, 195);
             lblEmail.Location = new Point(0, 168);
             lblEmail.Name = "lblEmail";
             lblEmail.Size = new Size(106, 15);
@@ -258,7 +259,7 @@ namespace Co_LAB.UCAuth
             // 
             lblSubtitle.AutoSize = true;
             lblSubtitle.Font = new Font("Segoe UI", 9.5F);
-            lblSubtitle.ForeColor = Color.FromArgb(161, 161, 170);
+            lblSubtitle.ForeColor = Color.FromArgb(130, 175, 145);
             lblSubtitle.Location = new Point(0, 48);
             lblSubtitle.Name = "lblSubtitle";
             lblSubtitle.Size = new Size(244, 17);
@@ -280,7 +281,7 @@ namespace Co_LAB.UCAuth
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(24, 24, 27);
+            BackColor = Color.FromArgb(14, 20, 16);
             Controls.Add(pnlCenter);
             Name = "uc_Login";
             Size = new Size(590, 600);

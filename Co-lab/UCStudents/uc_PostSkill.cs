@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 
@@ -15,6 +16,8 @@ namespace Co_LAB
 
         private void uc_PostSkill_Load(object? sender, EventArgs e)
         {
+            uc_PostSkill_Resize(this, EventArgs.Empty);
+
             // Reflect the active student name from session
             if (!string.IsNullOrWhiteSpace(StudentMainForm.CurrentStudentName))
             {
@@ -188,6 +191,75 @@ namespace Co_LAB
                 cmbProficiency.SelectedIndex = 0;
 
             txtSkillTitle.Focus();
+        }
+
+        // ==========================================
+        // RESPONSIVE LAYOUT (MINIMIZED & MAXIMIZED MODES)
+        // ==========================================
+        private void uc_PostSkill_Resize(object? sender, EventArgs e)
+        {
+            int padding = 25;
+            int availWidth = Math.Max(960, ClientSize.Width - (padding * 2) - (VScroll ? SystemInformation.VerticalScrollBarWidth : 0));
+
+            pnlHeaderCard.Location = new Point(padding, 20);
+            pnlHeaderCard.Width = availWidth;
+
+            pnlPolicyNotice.Location = new Point(padding, 120);
+            pnlPolicyNotice.Width = availWidth;
+
+            int gap = 20;
+            int colWidth = (availWidth - gap) / 2;
+
+            pnlOfferDetails.Location = new Point(padding, 175);
+            pnlOfferDetails.Width = colWidth;
+
+            int innerWidth1 = Math.Max(300, colWidth - 40);
+            txtSkillTitle.Width = innerWidth1;
+            cmbCategory.Width = innerWidth1;
+            cmbProficiency.Width = innerWidth1;
+            txtDescription.Width = innerWidth1;
+
+            pnlExchangeDetails.Location = new Point(pnlOfferDetails.Right + gap, 175);
+            pnlExchangeDetails.Width = availWidth - colWidth - gap;
+
+            int innerWidth2 = Math.Max(300, pnlExchangeDetails.Width - 40);
+            txtDesiredSkill.Width = innerWidth2;
+            pnlDeliveryMode.Width = innerWidth2;
+            txtLocation.Width = innerWidth2;
+            txtAvailability.Width = innerWidth2;
+            pnlTip.Width = innerWidth2;
+
+            pnlActionBar.Location = new Point(padding, 680);
+            pnlActionBar.Width = availWidth;
+            btnPostSkill.Left = pnlActionBar.Width - 20 - btnPostSkill.Width;
+            btnClear.Left = btnPostSkill.Left - 15 - btnClear.Width;
+
+            Invalidate(true);
+        }
+
+        private void RoundPanel_Paint(object? sender, PaintEventArgs e)
+        {
+            if (sender is not Control ctrl) return;
+
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+
+            var rect = new Rectangle(1, 1, ctrl.Width - 3, ctrl.Height - 3);
+            using var path = CreateRoundedRectanglePath(rect, 8);
+            using var borderPen = new Pen(Color.FromArgb(40, 56, 45), 1.5f);
+
+            e.Graphics.DrawPath(borderPen, path);
+        }
+
+        private static GraphicsPath CreateRoundedRectanglePath(Rectangle rect, int radius)
+        {
+            GraphicsPath path = new GraphicsPath();
+            int diameter = radius * 2;
+            path.AddArc(rect.X, rect.Y, diameter, diameter, 180, 90);
+            path.AddArc(rect.Right - diameter, rect.Y, diameter, diameter, 270, 90);
+            path.AddArc(rect.Right - diameter, rect.Bottom - diameter, diameter, diameter, 0, 90);
+            path.AddArc(rect.X, rect.Bottom - diameter, diameter, diameter, 90, 90);
+            path.CloseFigure();
+            return path;
         }
     }
 }

@@ -47,7 +47,7 @@ namespace Co_LAB
             // 
             // pnlSidebar
             // 
-            pnlSidebar.BackColor = Color.FromArgb(15, 15, 17);
+            pnlSidebar.BackColor = Color.FromArgb(12, 17, 14);
             pnlSidebar.Controls.Add(pnlNavContainer);
             pnlSidebar.Controls.Add(pnlSidebarBottom);
             pnlSidebar.Controls.Add(pnlBrand);
@@ -207,7 +207,7 @@ namespace Co_LAB
             // 
             // pnlDividerTop
             // 
-            pnlDividerTop.BackColor = Color.FromArgb(39, 39, 42);
+            pnlDividerTop.BackColor = Color.FromArgb(30, 44, 34);
             pnlDividerTop.Dock = DockStyle.Bottom;
             pnlDividerTop.Location = new Point(0, 84);
             pnlDividerTop.Name = "pnlDividerTop";
@@ -218,7 +218,7 @@ namespace Co_LAB
             // 
             lblBrandSubtitle.AutoSize = true;
             lblBrandSubtitle.Font = new Font("Segoe UI", 8.25F);
-            lblBrandSubtitle.ForeColor = Color.FromArgb(161, 161, 170);
+            lblBrandSubtitle.ForeColor = Color.FromArgb(130, 175, 145);
             lblBrandSubtitle.Location = new Point(22, 48);
             lblBrandSubtitle.Name = "lblBrandSubtitle";
             lblBrandSubtitle.Size = new Size(141, 13);
@@ -229,7 +229,7 @@ namespace Co_LAB
             // 
             lblBrandTitle.AutoSize = true;
             lblBrandTitle.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
-            lblBrandTitle.ForeColor = Color.FromArgb(16, 185, 129);
+            lblBrandTitle.ForeColor = Color.FromArgb(74, 222, 128);
             lblBrandTitle.Location = new Point(20, 18);
             lblBrandTitle.Name = "lblBrandTitle";
             lblBrandTitle.Size = new Size(93, 30);
@@ -238,7 +238,7 @@ namespace Co_LAB
             // 
             // pnlHeader
             // 
-            pnlHeader.BackColor = Color.FromArgb(18, 18, 20);
+            pnlHeader.BackColor = Color.FromArgb(18, 25, 20);
             pnlHeader.Controls.Add(pnlDividerHeader);
             pnlHeader.Controls.Add(lblWelcome);
             pnlHeader.Controls.Add(lblHeaderTitle);
@@ -250,7 +250,7 @@ namespace Co_LAB
             // 
             // pnlDividerHeader
             // 
-            pnlDividerHeader.BackColor = Color.FromArgb(39, 39, 42);
+            pnlDividerHeader.BackColor = Color.FromArgb(30, 44, 34);
             pnlDividerHeader.Dock = DockStyle.Bottom;
             pnlDividerHeader.Location = new Point(0, 84);
             pnlDividerHeader.Name = "pnlDividerHeader";
@@ -263,7 +263,7 @@ namespace Co_LAB
             lblWelcome.AutoSize = true;
             lblWelcome.Cursor = Cursors.Hand;
             lblWelcome.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold);
-            lblWelcome.ForeColor = Color.FromArgb(16, 185, 129);
+            lblWelcome.ForeColor = Color.FromArgb(74, 222, 128);
             lblWelcome.Location = new Point(780, 32);
             lblWelcome.Name = "lblWelcome";
             lblWelcome.Size = new Size(137, 17);
@@ -284,7 +284,7 @@ namespace Co_LAB
             // 
             // panelContent
             // 
-            panelContent.BackColor = Color.FromArgb(24, 24, 27);
+            panelContent.BackColor = Color.FromArgb(14, 20, 16);
             panelContent.Controls.Add(content_studpan);
             panelContent.Dock = DockStyle.Fill;
             panelContent.Location = new Point(250, 85);
@@ -303,7 +303,7 @@ namespace Co_LAB
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(15, 15, 17);
+            BackColor = Color.FromArgb(14, 20, 16);
             ClientSize = new Size(1200, 720);
             Controls.Add(panelContent);
             Controls.Add(pnlHeader);

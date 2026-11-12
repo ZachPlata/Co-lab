@@ -112,18 +112,18 @@ namespace Co_LAB.UCAuth
             // 
             // lnkBackToLogin
             // 
-            lnkBackToLogin.ActiveLinkColor = Color.FromArgb(52, 211, 153);
+            lnkBackToLogin.ActiveLinkColor = Color.FromArgb(110, 235, 150);
             lnkBackToLogin.AutoSize = true;
             lnkBackToLogin.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             lnkBackToLogin.LinkBehavior = LinkBehavior.HoverUnderline;
-            lnkBackToLogin.LinkColor = Color.FromArgb(16, 185, 129);
+            lnkBackToLogin.LinkColor = Color.FromArgb(74, 222, 128);
             lnkBackToLogin.Location = new Point(236, 3);
             lnkBackToLogin.Name = "lnkBackToLogin";
             lnkBackToLogin.Size = new Size(95, 15);
             lnkBackToLogin.TabIndex = 1;
             lnkBackToLogin.TabStop = true;
             lnkBackToLogin.Text = "Back to Sign In";
-            lnkBackToLogin.VisitedLinkColor = Color.FromArgb(16, 185, 129);
+            lnkBackToLogin.VisitedLinkColor = Color.FromArgb(74, 222, 128);
             lnkBackToLogin.LinkClicked += lnkBackToLogin_LinkClicked;
             // 
             // lblAlreadyHaveAccount
@@ -139,13 +139,13 @@ namespace Co_LAB.UCAuth
             // 
             // btnRegister
             // 
-            btnRegister.BackColor = Color.FromArgb(39, 39, 42);
+            btnRegister.BackColor = Color.FromArgb(28, 38, 30);
             btnRegister.Cursor = Cursors.Hand;
             btnRegister.Enabled = false;
             btnRegister.FlatAppearance.BorderSize = 0;
             btnRegister.FlatStyle = FlatStyle.Flat;
             btnRegister.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            btnRegister.ForeColor = Color.FromArgb(113, 113, 122);
+            btnRegister.ForeColor = Color.FromArgb(90, 115, 100);
             btnRegister.Location = new Point(0, 494);
             btnRegister.Name = "btnRegister";
             btnRegister.Size = new Size(410, 38);
@@ -165,18 +165,18 @@ namespace Co_LAB.UCAuth
             // 
             // lnkReadTos
             // 
-            lnkReadTos.ActiveLinkColor = Color.FromArgb(52, 211, 153);
+            lnkReadTos.ActiveLinkColor = Color.FromArgb(110, 235, 150);
             lnkReadTos.AutoSize = true;
             lnkReadTos.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
             lnkReadTos.LinkBehavior = LinkBehavior.HoverUnderline;
-            lnkReadTos.LinkColor = Color.FromArgb(16, 185, 129);
+            lnkReadTos.LinkColor = Color.FromArgb(74, 222, 128);
             lnkReadTos.Location = new Point(190, 4);
             lnkReadTos.Name = "lnkReadTos";
             lnkReadTos.Size = new Size(127, 15);
             lnkReadTos.TabIndex = 1;
             lnkReadTos.TabStop = true;
             lnkReadTos.Text = "(Read Terms of Service)";
-            lnkReadTos.VisitedLinkColor = Color.FromArgb(16, 185, 129);
+            lnkReadTos.VisitedLinkColor = Color.FromArgb(74, 222, 128);
             lnkReadTos.LinkClicked += lnkReadTos_LinkClicked;
             // 
             // chkTos
@@ -208,7 +208,7 @@ namespace Co_LAB.UCAuth
             // 
             // txtSecurityAnswer
             // 
-            txtSecurityAnswer.BackColor = Color.FromArgb(39, 39, 42);
+            txtSecurityAnswer.BackColor = Color.FromArgb(20, 28, 23);
             txtSecurityAnswer.BorderStyle = BorderStyle.FixedSingle;
             txtSecurityAnswer.Font = new Font("Segoe UI", 9.5F);
             txtSecurityAnswer.ForeColor = Color.White;
@@ -222,7 +222,7 @@ namespace Co_LAB.UCAuth
             // 
             lblSecurityAnswer.AutoSize = true;
             lblSecurityAnswer.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
-            lblSecurityAnswer.ForeColor = Color.FromArgb(161, 161, 170);
+            lblSecurityAnswer.ForeColor = Color.FromArgb(180, 215, 195);
             lblSecurityAnswer.Location = new Point(0, 402);
             lblSecurityAnswer.Name = "lblSecurityAnswer";
             lblSecurityAnswer.Size = new Size(95, 15);
@@ -243,7 +243,7 @@ namespace Co_LAB.UCAuth
             // 
             // cmbSecurityQuestion
             // 
-            cmbSecurityQuestion.BackColor = Color.FromArgb(39, 39, 42);
+            cmbSecurityQuestion.BackColor = Color.FromArgb(20, 28, 23);
             cmbSecurityQuestion.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbSecurityQuestion.FlatStyle = FlatStyle.Flat;
             cmbSecurityQuestion.Font = new Font("Segoe UI", 9F);
@@ -265,7 +265,7 @@ namespace Co_LAB.UCAuth
             // 
             lblSecurityQuestion.AutoSize = true;
             lblSecurityQuestion.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
-            lblSecurityQuestion.ForeColor = Color.FromArgb(161, 161, 170);
+            lblSecurityQuestion.ForeColor = Color.FromArgb(180, 215, 195);
             lblSecurityQuestion.Location = new Point(0, 340);
             lblSecurityQuestion.Name = "lblSecurityQuestion";
             lblSecurityQuestion.Size = new Size(106, 15);
@@ -295,7 +295,7 @@ namespace Co_LAB.UCAuth
             // 
             // btnToggleConfirm
             // 
-            btnToggleConfirm.BackColor = Color.FromArgb(45, 45, 50);
+            btnToggleConfirm.BackColor = Color.FromArgb(28, 38, 30);
             btnToggleConfirm.Cursor = Cursors.Hand;
             btnToggleConfirm.FlatAppearance.BorderSize = 0;
             btnToggleConfirm.FlatStyle = FlatStyle.Flat;
@@ -311,7 +311,7 @@ namespace Co_LAB.UCAuth
             // 
             // txtConfirmPassword
             // 
-            txtConfirmPassword.BackColor = Color.FromArgb(39, 39, 42);
+            txtConfirmPassword.BackColor = Color.FromArgb(20, 28, 23);
             txtConfirmPassword.BorderStyle = BorderStyle.FixedSingle;
             txtConfirmPassword.Font = new Font("Segoe UI", 9.5F);
             txtConfirmPassword.ForeColor = Color.White;
@@ -326,7 +326,7 @@ namespace Co_LAB.UCAuth
             // 
             lblConfirmPassword.AutoSize = true;
             lblConfirmPassword.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
-            lblConfirmPassword.ForeColor = Color.FromArgb(161, 161, 170);
+            lblConfirmPassword.ForeColor = Color.FromArgb(180, 215, 195);
             lblConfirmPassword.Location = new Point(210, 276);
             lblConfirmPassword.Name = "lblConfirmPassword";
             lblConfirmPassword.Size = new Size(107, 15);
@@ -356,7 +356,7 @@ namespace Co_LAB.UCAuth
             // 
             // btnTogglePassword
             // 
-            btnTogglePassword.BackColor = Color.FromArgb(45, 45, 50);
+            btnTogglePassword.BackColor = Color.FromArgb(28, 38, 30);
             btnTogglePassword.Cursor = Cursors.Hand;
             btnTogglePassword.FlatAppearance.BorderSize = 0;
             btnTogglePassword.FlatStyle = FlatStyle.Flat;
@@ -372,7 +372,7 @@ namespace Co_LAB.UCAuth
             // 
             // txtPassword
             // 
-            txtPassword.BackColor = Color.FromArgb(39, 39, 42);
+            txtPassword.BackColor = Color.FromArgb(20, 28, 23);
             txtPassword.BorderStyle = BorderStyle.FixedSingle;
             txtPassword.Font = new Font("Segoe UI", 9.5F);
             txtPassword.ForeColor = Color.White;
@@ -387,7 +387,7 @@ namespace Co_LAB.UCAuth
             // 
             lblPassword.AutoSize = true;
             lblPassword.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
-            lblPassword.ForeColor = Color.FromArgb(161, 161, 170);
+            lblPassword.ForeColor = Color.FromArgb(180, 215, 195);
             lblPassword.Location = new Point(0, 276);
             lblPassword.Name = "lblPassword";
             lblPassword.Size = new Size(59, 15);
@@ -408,7 +408,7 @@ namespace Co_LAB.UCAuth
             // 
             // txtEmail
             // 
-            txtEmail.BackColor = Color.FromArgb(39, 39, 42);
+            txtEmail.BackColor = Color.FromArgb(20, 28, 23);
             txtEmail.BorderStyle = BorderStyle.FixedSingle;
             txtEmail.Font = new Font("Segoe UI", 9.5F);
             txtEmail.ForeColor = Color.White;
@@ -422,7 +422,7 @@ namespace Co_LAB.UCAuth
             // 
             lblEmail.AutoSize = true;
             lblEmail.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
-            lblEmail.ForeColor = Color.FromArgb(161, 161, 170);
+            lblEmail.ForeColor = Color.FromArgb(180, 215, 195);
             lblEmail.Location = new Point(0, 213);
             lblEmail.Name = "lblEmail";
             lblEmail.Size = new Size(106, 15);
@@ -443,7 +443,7 @@ namespace Co_LAB.UCAuth
             // 
             // txtFullName
             // 
-            txtFullName.BackColor = Color.FromArgb(39, 39, 42);
+            txtFullName.BackColor = Color.FromArgb(20, 28, 23);
             txtFullName.BorderStyle = BorderStyle.FixedSingle;
             txtFullName.Font = new Font("Segoe UI", 9.5F);
             txtFullName.ForeColor = Color.White;
@@ -457,7 +457,7 @@ namespace Co_LAB.UCAuth
             // 
             lblFullName.AutoSize = true;
             lblFullName.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
-            lblFullName.ForeColor = Color.FromArgb(161, 161, 170);
+            lblFullName.ForeColor = Color.FromArgb(180, 215, 195);
             lblFullName.Location = new Point(0, 150);
             lblFullName.Name = "lblFullName";
             lblFullName.Size = new Size(62, 15);
@@ -479,7 +479,7 @@ namespace Co_LAB.UCAuth
             // 
             lblSubtitle.AutoSize = true;
             lblSubtitle.Font = new Font("Segoe UI", 9F);
-            lblSubtitle.ForeColor = Color.FromArgb(161, 161, 170);
+            lblSubtitle.ForeColor = Color.FromArgb(130, 175, 145);
             lblSubtitle.Location = new Point(0, 42);
             lblSubtitle.Name = "lblSubtitle";
             lblSubtitle.Size = new Size(236, 15);
@@ -501,7 +501,7 @@ namespace Co_LAB.UCAuth
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(24, 24, 27);
+            BackColor = Color.FromArgb(14, 20, 16);
             Controls.Add(pnlScrollContainer);
             Name = "uc_Register";
             Size = new Size(590, 600);

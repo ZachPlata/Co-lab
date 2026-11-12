@@ -1,4 +1,4 @@
-﻿namespace Co_LAB.UCStudents
+namespace Co_LAB.UCStudents
 {
     partial class uc_RequestConfirmation
     {
@@ -49,6 +49,10 @@
             // 
             // TradeModeTxtBox
             // 
+            TradeModeTxtBox.BackColor = Color.FromArgb(14, 20, 16);
+            TradeModeTxtBox.BorderStyle = BorderStyle.FixedSingle;
+            TradeModeTxtBox.Font = new Font("Segoe UI", 9F);
+            TradeModeTxtBox.ForeColor = Color.White;
             TradeModeTxtBox.Location = new Point(20, 265);
             TradeModeTxtBox.Name = "TradeModeTxtBox";
             TradeModeTxtBox.Size = new Size(430, 23);
@@ -56,6 +60,10 @@
             // 
             // YourOfferTxtBox
             // 
+            YourOfferTxtBox.BackColor = Color.FromArgb(14, 20, 16);
+            YourOfferTxtBox.BorderStyle = BorderStyle.FixedSingle;
+            YourOfferTxtBox.Font = new Font("Segoe UI", 9F);
+            YourOfferTxtBox.ForeColor = Color.White;
             YourOfferTxtBox.Location = new Point(20, 205);
             YourOfferTxtBox.Name = "YourOfferTxtBox";
             YourOfferTxtBox.Size = new Size(430, 23);
@@ -63,6 +71,10 @@
             // 
             // TheyOfferTxtBox
             // 
+            TheyOfferTxtBox.BackColor = Color.FromArgb(14, 20, 16);
+            TheyOfferTxtBox.BorderStyle = BorderStyle.FixedSingle;
+            TheyOfferTxtBox.Font = new Font("Segoe UI", 9F);
+            TheyOfferTxtBox.ForeColor = Color.White;
             TheyOfferTxtBox.Location = new Point(21, 144);
             TheyOfferTxtBox.Name = "TheyOfferTxtBox";
             TheyOfferTxtBox.Size = new Size(429, 23);
@@ -70,12 +82,13 @@
             // 
             // btnCancel
             // 
-            btnCancel.BackColor = Color.FromArgb(185, 45, 45);
+            btnCancel.BackColor = Color.FromArgb(28, 38, 30);
             btnCancel.Cursor = Cursors.Hand;
-            btnCancel.FlatAppearance.BorderSize = 0;
+            btnCancel.FlatAppearance.BorderColor = Color.FromArgb(42, 60, 48);
+            btnCancel.FlatAppearance.BorderSize = 1;
             btnCancel.FlatStyle = FlatStyle.Flat;
             btnCancel.Font = new Font("Segoe UI Semibold", 9.5F, FontStyle.Bold);
-            btnCancel.ForeColor = Color.White;
+            btnCancel.ForeColor = Color.FromArgb(220, 235, 225);
             btnCancel.Location = new Point(360, 446);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(90, 32);
@@ -85,8 +98,10 @@
             // 
             // txtNotes
             // 
+            txtNotes.BackColor = Color.FromArgb(14, 20, 16);
+            txtNotes.BorderStyle = BorderStyle.FixedSingle;
             txtNotes.Font = new Font("Segoe UI", 9F);
-            txtNotes.ForeColor = Color.Black;
+            txtNotes.ForeColor = Color.White;
             txtNotes.Location = new Point(20, 320);
             txtNotes.Multiline = true;
             txtNotes.Name = "txtNotes";
@@ -140,7 +155,7 @@
             // 
             // pnlProfileCard
             // 
-            pnlProfileCard.BackColor = Color.FromArgb(12, 26, 18);
+            pnlProfileCard.BackColor = Color.FromArgb(20, 28, 23);
             pnlProfileCard.Controls.Add(lblRating);
             pnlProfileCard.Controls.Add(lblUserDept);
             pnlProfileCard.Controls.Add(lblUserName);
@@ -204,7 +219,7 @@
             // 
             // btnSendRequest
             // 
-            btnSendRequest.BackColor = Color.FromArgb(85, 138, 110);
+            btnSendRequest.BackColor = Color.FromArgb(46, 125, 70);
             btnSendRequest.Cursor = Cursors.Hand;
             btnSendRequest.FlatAppearance.BorderSize = 0;
             btnSendRequest.FlatStyle = FlatStyle.Flat;
@@ -221,7 +236,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(24, 24, 27);
+            BackColor = Color.FromArgb(14, 20, 16);
             Controls.Add(btnSendRequest);
             Controls.Add(TradeModeTxtBox);
             Controls.Add(YourOfferTxtBox);

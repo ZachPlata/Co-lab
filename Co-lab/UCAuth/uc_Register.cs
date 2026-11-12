@@ -168,13 +168,13 @@ namespace Co_LAB.UCAuth
             btnRegister.Enabled = isValid;
             if (isValid)
             {
-                btnRegister.BackColor = Color.FromArgb(16, 185, 129);
-                btnRegister.ForeColor = Color.FromArgb(15, 15, 17);
+                btnRegister.BackColor = Color.FromArgb(46, 125, 70);
+                btnRegister.ForeColor = Color.White;
             }
             else
             {
-                btnRegister.BackColor = Color.FromArgb(39, 39, 42);
-                btnRegister.ForeColor = Color.FromArgb(113, 113, 122);
+                btnRegister.BackColor = Color.FromArgb(28, 38, 30);
+                btnRegister.ForeColor = Color.FromArgb(90, 115, 100);
             }
 
             return isValid;

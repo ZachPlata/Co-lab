@@ -99,7 +99,7 @@ namespace Co_LAB
             // 
             // pnlProfileCard
             // 
-            pnlProfileCard.BackColor = Color.FromArgb(12, 26, 18);
+            pnlProfileCard.BackColor = Color.FromArgb(20, 28, 23);
             pnlProfileCard.Controls.Add(lblRating);
             pnlProfileCard.Controls.Add(lblUserDept);
             pnlProfileCard.Controls.Add(lblUserName);
@@ -165,8 +165,11 @@ namespace Co_LAB
             // 
             // cmbReturnSkill
             // 
+            cmbReturnSkill.BackColor = Color.FromArgb(14, 20, 16);
+            cmbReturnSkill.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbReturnSkill.FlatStyle = FlatStyle.Flat;
             cmbReturnSkill.Font = new Font("Segoe UI", 9F);
-            cmbReturnSkill.ForeColor = Color.FromArgb(80, 80, 80);
+            cmbReturnSkill.ForeColor = Color.White;
             cmbReturnSkill.FormattingEnabled = true;
             cmbReturnSkill.Items.AddRange(new object[] { "Select or type skill to offer in return..." });
             cmbReturnSkill.Location = new Point(20, 190);
@@ -188,7 +191,7 @@ namespace Co_LAB
             // 
             // pnlTradeMode
             // 
-            pnlTradeMode.BackColor = Color.White;
+            pnlTradeMode.BackColor = Color.FromArgb(20, 28, 23);
             pnlTradeMode.Controls.Add(rbOnline);
             pnlTradeMode.Controls.Add(rbFaceToFace);
             pnlTradeMode.Location = new Point(20, 246);
@@ -200,7 +203,7 @@ namespace Co_LAB
             // 
             rbOnline.AutoSize = true;
             rbOnline.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            rbOnline.ForeColor = Color.Black;
+            rbOnline.ForeColor = Color.White;
             rbOnline.Location = new Point(230, 4);
             rbOnline.Name = "rbOnline";
             rbOnline.Size = new Size(105, 19);
@@ -214,7 +217,7 @@ namespace Co_LAB
             rbFaceToFace.AutoSize = true;
             rbFaceToFace.Checked = true;
             rbFaceToFace.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            rbFaceToFace.ForeColor = Color.Black;
+            rbFaceToFace.ForeColor = Color.White;
             rbFaceToFace.Location = new Point(15, 4);
             rbFaceToFace.Name = "rbFaceToFace";
             rbFaceToFace.Size = new Size(151, 19);
@@ -236,8 +239,10 @@ namespace Co_LAB
             // 
             // txtLocation
             // 
+            txtLocation.BackColor = Color.FromArgb(14, 20, 16);
+            txtLocation.BorderStyle = BorderStyle.FixedSingle;
             txtLocation.Font = new Font("Segoe UI", 9F);
-            txtLocation.ForeColor = Color.FromArgb(115, 115, 115);
+            txtLocation.ForeColor = Color.White;
             txtLocation.Location = new Point(20, 306);
             txtLocation.Name = "txtLocation";
             txtLocation.Size = new Size(430, 23);
@@ -257,8 +262,10 @@ namespace Co_LAB
             // 
             // txtNotes
             // 
+            txtNotes.BackColor = Color.FromArgb(14, 20, 16);
+            txtNotes.BorderStyle = BorderStyle.FixedSingle;
             txtNotes.Font = new Font("Segoe UI", 9F);
-            txtNotes.ForeColor = Color.Black;
+            txtNotes.ForeColor = Color.White;
             txtNotes.Location = new Point(20, 362);
             txtNotes.Multiline = true;
             txtNotes.Name = "txtNotes";
@@ -268,7 +275,7 @@ namespace Co_LAB
             // 
             // btnSendRequest
             // 
-            btnSendRequest.BackColor = Color.FromArgb(85, 138, 110);
+            btnSendRequest.BackColor = Color.FromArgb(46, 125, 70);
             btnSendRequest.Cursor = Cursors.Hand;
             btnSendRequest.FlatAppearance.BorderSize = 0;
             btnSendRequest.FlatStyle = FlatStyle.Flat;
@@ -284,12 +291,13 @@ namespace Co_LAB
             // 
             // btnCancel
             // 
-            btnCancel.BackColor = Color.FromArgb(185, 45, 45);
+            btnCancel.BackColor = Color.FromArgb(28, 38, 30);
             btnCancel.Cursor = Cursors.Hand;
-            btnCancel.FlatAppearance.BorderSize = 0;
+            btnCancel.FlatAppearance.BorderColor = Color.FromArgb(42, 60, 48);
+            btnCancel.FlatAppearance.BorderSize = 1;
             btnCancel.FlatStyle = FlatStyle.Flat;
             btnCancel.Font = new Font("Segoe UI Semibold", 9.5F, FontStyle.Bold);
-            btnCancel.ForeColor = Color.White;
+            btnCancel.ForeColor = Color.FromArgb(220, 235, 225);
             btnCancel.Location = new Point(360, 488);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(90, 32);
@@ -301,7 +309,7 @@ namespace Co_LAB
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(24, 24, 27);
+            BackColor = Color.FromArgb(14, 20, 16);
             Controls.Add(btnCancel);
             Controls.Add(btnSendRequest);
             Controls.Add(txtNotes);

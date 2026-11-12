@@ -53,7 +53,7 @@ namespace Co_LAB
             // 
             // pnlHeader
             // 
-            pnlHeader.BackColor = Color.FromArgb(28, 28, 33);
+            pnlHeader.BackColor = Color.FromArgb(20, 28, 23);
             pnlHeader.Controls.Add(lblHeaderSubtitle);
             pnlHeader.Controls.Add(lblHeaderTitle);
             pnlHeader.Dock = DockStyle.Top;
@@ -67,7 +67,7 @@ namespace Co_LAB
             // 
             lblHeaderSubtitle.AutoSize = true;
             lblHeaderSubtitle.Font = new Font("Segoe UI", 9F);
-            lblHeaderSubtitle.ForeColor = Color.FromArgb(161, 161, 170);
+            lblHeaderSubtitle.ForeColor = Color.FromArgb(130, 175, 145);
             lblHeaderSubtitle.Location = new Point(27, 36);
             lblHeaderSubtitle.Name = "lblHeaderSubtitle";
             lblHeaderSubtitle.Size = new Size(475, 15);
@@ -87,7 +87,7 @@ namespace Co_LAB
             // 
             // pnlCreateOffer
             // 
-            pnlCreateOffer.BackColor = Color.FromArgb(32, 32, 36);
+            pnlCreateOffer.BackColor = Color.FromArgb(20, 28, 23);
             pnlCreateOffer.Controls.Add(btnClearForm);
             pnlCreateOffer.Controls.Add(btnPublishListing);
             pnlCreateOffer.Controls.Add(txtDescription);
@@ -112,7 +112,7 @@ namespace Co_LAB
             // 
             lblSectionTitle.AutoSize = true;
             lblSectionTitle.Font = new Font("Segoe UI Semibold", 10.5F, FontStyle.Bold);
-            lblSectionTitle.ForeColor = Color.FromArgb(16, 185, 129);
+            lblSectionTitle.ForeColor = Color.FromArgb(74, 222, 128);
             lblSectionTitle.Location = new Point(25, 10);
             lblSectionTitle.Name = "lblSectionTitle";
             lblSectionTitle.Size = new Size(230, 19);
@@ -132,7 +132,7 @@ namespace Co_LAB
             // 
             // cmbKnownSkills
             // 
-            cmbKnownSkills.BackColor = Color.FromArgb(39, 39, 42);
+            cmbKnownSkills.BackColor = Color.FromArgb(14, 20, 16);
             cmbKnownSkills.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbKnownSkills.FlatStyle = FlatStyle.Flat;
             cmbKnownSkills.Font = new Font("Segoe UI", 9.5F);
@@ -156,7 +156,7 @@ namespace Co_LAB
             // 
             // txtDesiredSkill
             // 
-            txtDesiredSkill.BackColor = Color.FromArgb(39, 39, 42);
+            txtDesiredSkill.BackColor = Color.FromArgb(14, 20, 16);
             txtDesiredSkill.BorderStyle = BorderStyle.FixedSingle;
             txtDesiredSkill.Font = new Font("Segoe UI", 9.5F);
             txtDesiredSkill.ForeColor = Color.White;
@@ -179,7 +179,7 @@ namespace Co_LAB
             // 
             // cmbDeliveryMode
             // 
-            cmbDeliveryMode.BackColor = Color.FromArgb(39, 39, 42);
+            cmbDeliveryMode.BackColor = Color.FromArgb(14, 20, 16);
             cmbDeliveryMode.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbDeliveryMode.FlatStyle = FlatStyle.Flat;
             cmbDeliveryMode.Font = new Font("Segoe UI", 9.5F);
@@ -193,6 +193,7 @@ namespace Co_LAB
             // 
             // lblLocation
             // 
+            lblLocation.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblLocation.AutoSize = true;
             lblLocation.Font = new Font("Segoe UI Semibold", 9F);
             lblLocation.ForeColor = Color.FromArgb(212, 212, 216);
@@ -204,7 +205,8 @@ namespace Co_LAB
             // 
             // txtLocation
             // 
-            txtLocation.BackColor = Color.FromArgb(39, 39, 42);
+            txtLocation.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            txtLocation.BackColor = Color.FromArgb(14, 20, 16);
             txtLocation.BorderStyle = BorderStyle.FixedSingle;
             txtLocation.Font = new Font("Segoe UI", 9.5F);
             txtLocation.ForeColor = Color.White;
@@ -227,7 +229,8 @@ namespace Co_LAB
             // 
             // txtDescription
             // 
-            txtDescription.BackColor = Color.FromArgb(39, 39, 42);
+            txtDescription.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            txtDescription.BackColor = Color.FromArgb(14, 20, 16);
             txtDescription.BorderStyle = BorderStyle.FixedSingle;
             txtDescription.Font = new Font("Segoe UI", 9.5F);
             txtDescription.ForeColor = Color.White;
@@ -240,7 +243,8 @@ namespace Co_LAB
             // 
             // btnPublishListing
             // 
-            btnPublishListing.BackColor = Color.FromArgb(16, 185, 129);
+            btnPublishListing.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnPublishListing.BackColor = Color.FromArgb(46, 125, 70);
             btnPublishListing.Cursor = Cursors.Hand;
             btnPublishListing.FlatAppearance.BorderSize = 0;
             btnPublishListing.FlatStyle = FlatStyle.Flat;
@@ -256,12 +260,14 @@ namespace Co_LAB
             // 
             // btnClearForm
             // 
-            btnClearForm.BackColor = Color.FromArgb(39, 39, 42);
+            btnClearForm.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnClearForm.BackColor = Color.FromArgb(28, 38, 30);
             btnClearForm.Cursor = Cursors.Hand;
-            btnClearForm.FlatAppearance.BorderSize = 0;
+            btnClearForm.FlatAppearance.BorderColor = Color.FromArgb(42, 60, 48);
+            btnClearForm.FlatAppearance.BorderSize = 1;
             btnClearForm.FlatStyle = FlatStyle.Flat;
             btnClearForm.Font = new Font("Segoe UI", 9F);
-            btnClearForm.ForeColor = Color.FromArgb(212, 212, 216);
+            btnClearForm.ForeColor = Color.FromArgb(220, 235, 225);
             btnClearForm.Location = new Point(733, 156);
             btnClearForm.Name = "btnClearForm";
             btnClearForm.Size = new Size(190, 28);
@@ -272,7 +278,7 @@ namespace Co_LAB
             // 
             // pnlListingsHeader
             // 
-            pnlListingsHeader.BackColor = Color.FromArgb(28, 28, 33);
+            pnlListingsHeader.BackColor = Color.FromArgb(18, 25, 20);
             pnlListingsHeader.Controls.Add(lblListingsCount);
             pnlListingsHeader.Controls.Add(lblMyListingsTitle);
             pnlListingsHeader.Dock = DockStyle.Top;
@@ -287,7 +293,7 @@ namespace Co_LAB
             lblListingsCount.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblListingsCount.AutoSize = true;
             lblListingsCount.Font = new Font("Segoe UI", 9F, FontStyle.Italic);
-            lblListingsCount.ForeColor = Color.FromArgb(161, 161, 170);
+            lblListingsCount.ForeColor = Color.FromArgb(130, 175, 145);
             lblListingsCount.Location = new Point(800, 14);
             lblListingsCount.Name = "lblListingsCount";
             lblListingsCount.Size = new Size(116, 15);
@@ -299,6 +305,8 @@ namespace Co_LAB
             // 
             lblMyListingsTitle.AutoSize = true;
             lblMyListingsTitle.Font = new Font("Segoe UI Semibold", 10.5F, FontStyle.Bold);
+            lblMyListingsTitle.ForeColor = Color.FromArgb(74, 222, 128);
+            lblMyListingsTitle.Font = new Font("Segoe UI Semibold", 10.5F, FontStyle.Bold);
             lblMyListingsTitle.ForeColor = Color.White;
             lblMyListingsTitle.Location = new Point(25, 11);
             lblMyListingsTitle.Name = "lblMyListingsTitle";
@@ -308,7 +316,7 @@ namespace Co_LAB
             // 
             // pnlActions
             // 
-            pnlActions.BackColor = Color.FromArgb(28, 28, 33);
+            pnlActions.BackColor = Color.FromArgb(20, 28, 23);
             pnlActions.Controls.Add(btnRefresh);
             pnlActions.Controls.Add(btnToggleStatus);
             pnlActions.Controls.Add(btnDeleteListing);
@@ -322,12 +330,13 @@ namespace Co_LAB
             // btnDeleteListing
             // 
             btnDeleteListing.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnDeleteListing.BackColor = Color.FromArgb(185, 28, 28);
+            btnDeleteListing.BackColor = Color.FromArgb(45, 24, 26);
             btnDeleteListing.Cursor = Cursors.Hand;
-            btnDeleteListing.FlatAppearance.BorderSize = 0;
+            btnDeleteListing.FlatAppearance.BorderColor = Color.FromArgb(60, 35, 40);
+            btnDeleteListing.FlatAppearance.BorderSize = 1;
             btnDeleteListing.FlatStyle = FlatStyle.Flat;
             btnDeleteListing.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
-            btnDeleteListing.ForeColor = Color.White;
+            btnDeleteListing.ForeColor = Color.FromArgb(248, 113, 113);
             btnDeleteListing.Location = new Point(810, 10);
             btnDeleteListing.Name = "btnDeleteListing";
             btnDeleteListing.Size = new Size(115, 32);
@@ -338,12 +347,13 @@ namespace Co_LAB
             // 
             // btnToggleStatus
             // 
-            btnToggleStatus.BackColor = Color.FromArgb(39, 39, 42);
+            btnToggleStatus.BackColor = Color.FromArgb(28, 38, 30);
             btnToggleStatus.Cursor = Cursors.Hand;
-            btnToggleStatus.FlatAppearance.BorderSize = 0;
+            btnToggleStatus.FlatAppearance.BorderColor = Color.FromArgb(42, 60, 48);
+            btnToggleStatus.FlatAppearance.BorderSize = 1;
             btnToggleStatus.FlatStyle = FlatStyle.Flat;
             btnToggleStatus.Font = new Font("Segoe UI Semibold", 9F);
-            btnToggleStatus.ForeColor = Color.White;
+            btnToggleStatus.ForeColor = Color.FromArgb(220, 235, 225);
             btnToggleStatus.Location = new Point(25, 10);
             btnToggleStatus.Name = "btnToggleStatus";
             btnToggleStatus.Size = new Size(165, 32);
@@ -354,12 +364,13 @@ namespace Co_LAB
             // 
             // btnRefresh
             // 
-            btnRefresh.BackColor = Color.FromArgb(39, 39, 42);
+            btnRefresh.BackColor = Color.FromArgb(28, 38, 30);
             btnRefresh.Cursor = Cursors.Hand;
-            btnRefresh.FlatAppearance.BorderSize = 0;
+            btnRefresh.FlatAppearance.BorderColor = Color.FromArgb(42, 60, 48);
+            btnRefresh.FlatAppearance.BorderSize = 1;
             btnRefresh.FlatStyle = FlatStyle.Flat;
             btnRefresh.Font = new Font("Segoe UI Semibold", 9F);
-            btnRefresh.ForeColor = Color.White;
+            btnRefresh.ForeColor = Color.FromArgb(220, 235, 225);
             btnRefresh.Location = new Point(200, 10);
             btnRefresh.Name = "btnRefresh";
             btnRefresh.Size = new Size(95, 32);
@@ -374,33 +385,33 @@ namespace Co_LAB
             dgvMyListings.AllowUserToDeleteRows = false;
             dgvMyListings.AllowUserToResizeRows = false;
             dgvMyListings.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvMyListings.BackgroundColor = Color.FromArgb(24, 24, 27);
+            dgvMyListings.BackgroundColor = Color.FromArgb(14, 20, 16);
             dgvMyListings.BorderStyle = BorderStyle.None;
             dgvMyListings.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             dgvMyListings.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
             dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = Color.FromArgb(32, 32, 36);
+            dataGridViewCellStyle1.BackColor = Color.FromArgb(20, 28, 23);
             dataGridViewCellStyle1.Font = new Font("Segoe UI Semibold", 9.5F, FontStyle.Bold);
-            dataGridViewCellStyle1.ForeColor = Color.White;
+            dataGridViewCellStyle1.ForeColor = Color.FromArgb(74, 222, 128);
             dataGridViewCellStyle1.Padding = new Padding(8, 0, 0, 0);
-            dataGridViewCellStyle1.SelectionBackColor = Color.FromArgb(32, 32, 36);
-            dataGridViewCellStyle1.SelectionForeColor = Color.White;
+            dataGridViewCellStyle1.SelectionBackColor = Color.FromArgb(20, 28, 23);
+            dataGridViewCellStyle1.SelectionForeColor = Color.FromArgb(74, 222, 128);
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
             dgvMyListings.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dgvMyListings.ColumnHeadersHeight = 38;
             dgvMyListings.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = Color.FromArgb(24, 24, 27);
+            dataGridViewCellStyle2.BackColor = Color.FromArgb(18, 25, 20);
             dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F);
             dataGridViewCellStyle2.ForeColor = Color.FromArgb(228, 228, 231);
             dataGridViewCellStyle2.Padding = new Padding(8, 0, 0, 0);
-            dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(39, 39, 45);
-            dataGridViewCellStyle2.SelectionForeColor = Color.FromArgb(16, 185, 129);
+            dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(34, 52, 40);
+            dataGridViewCellStyle2.SelectionForeColor = Color.White;
             dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
             dgvMyListings.DefaultCellStyle = dataGridViewCellStyle2;
             dgvMyListings.Dock = DockStyle.Fill;
             dgvMyListings.EnableHeadersVisualStyles = false;
-            dgvMyListings.GridColor = Color.FromArgb(39, 39, 42);
+            dgvMyListings.GridColor = Color.FromArgb(30, 44, 34);
             dgvMyListings.Location = new Point(0, 306);
             dgvMyListings.MultiSelect = false;
             dgvMyListings.Name = "dgvMyListings";
@@ -416,7 +427,7 @@ namespace Co_LAB
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(24, 24, 27);
+            BackColor = Color.FromArgb(14, 20, 16);
             Controls.Add(dgvMyListings);
             Controls.Add(pnlActions);
             Controls.Add(pnlListingsHeader);

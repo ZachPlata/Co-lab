@@ -84,7 +84,7 @@ namespace Co_LAB
             // 
             // pnlHeaderCard
             // 
-            pnlHeaderCard.BackColor = Color.FromArgb(6, 95, 70);
+            pnlHeaderCard.BackColor = Color.FromArgb(20, 28, 23);
             pnlHeaderCard.Controls.Add(lblHeaderTitle);
             pnlHeaderCard.Controls.Add(lblHeaderSubtitle);
             pnlHeaderCard.Controls.Add(pnlUserBadge);
@@ -92,6 +92,7 @@ namespace Co_LAB
             pnlHeaderCard.Name = "pnlHeaderCard";
             pnlHeaderCard.Size = new Size(960, 90);
             pnlHeaderCard.TabIndex = 0;
+            pnlHeaderCard.Paint += RoundPanel_Paint;
 
             // 
             // lblHeaderTitle
@@ -110,7 +111,7 @@ namespace Co_LAB
             // 
             lblHeaderSubtitle.AutoSize = true;
             lblHeaderSubtitle.Font = new Font("Segoe UI", 9.5F);
-            lblHeaderSubtitle.ForeColor = Color.FromArgb(209, 250, 229);
+            lblHeaderSubtitle.ForeColor = Color.FromArgb(130, 175, 145);
             lblHeaderSubtitle.Location = new Point(26, 50);
             lblHeaderSubtitle.Name = "lblHeaderSubtitle";
             lblHeaderSubtitle.Size = new Size(585, 17);
@@ -121,7 +122,7 @@ namespace Co_LAB
             // pnlUserBadge
             // 
             pnlUserBadge.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            pnlUserBadge.BackColor = Color.FromArgb(4, 120, 87);
+            pnlUserBadge.BackColor = Color.FromArgb(14, 20, 16);
             pnlUserBadge.Controls.Add(lblUserIcon);
             pnlUserBadge.Controls.Add(lblUserName);
             pnlUserBadge.Controls.Add(lblUserRole);
@@ -129,13 +130,14 @@ namespace Co_LAB
             pnlUserBadge.Name = "pnlUserBadge";
             pnlUserBadge.Size = new Size(196, 50);
             pnlUserBadge.TabIndex = 2;
+            pnlUserBadge.Paint += RoundPanel_Paint;
 
             // 
             // lblUserIcon
             // 
             lblUserIcon.AutoSize = true;
             lblUserIcon.Font = new Font("Segoe UI", 16F);
-            lblUserIcon.ForeColor = Color.White;
+            lblUserIcon.ForeColor = Color.FromArgb(74, 222, 128);
             lblUserIcon.Location = new Point(10, 8);
             lblUserIcon.Name = "lblUserIcon";
             lblUserIcon.Size = new Size(33, 30);
@@ -159,7 +161,7 @@ namespace Co_LAB
             // 
             lblUserRole.AutoSize = true;
             lblUserRole.Font = new Font("Segoe UI", 8F);
-            lblUserRole.ForeColor = Color.FromArgb(167, 243, 208);
+            lblUserRole.ForeColor = Color.FromArgb(74, 222, 128);
             lblUserRole.Location = new Point(47, 27);
             lblUserRole.Name = "lblUserRole";
             lblUserRole.Size = new Size(104, 13);
@@ -169,13 +171,14 @@ namespace Co_LAB
             // 
             // pnlPolicyNotice
             // 
-            pnlPolicyNotice.BackColor = Color.FromArgb(16, 35, 24);
+            pnlPolicyNotice.BackColor = Color.FromArgb(20, 28, 23);
             pnlPolicyNotice.Controls.Add(lblPolicyIcon);
             pnlPolicyNotice.Controls.Add(lblPolicyText);
             pnlPolicyNotice.Location = new Point(25, 120);
             pnlPolicyNotice.Name = "pnlPolicyNotice";
             pnlPolicyNotice.Size = new Size(960, 42);
             pnlPolicyNotice.TabIndex = 1;
+            pnlPolicyNotice.Paint += RoundPanel_Paint;
 
             // 
             // lblPolicyIcon
@@ -194,7 +197,7 @@ namespace Co_LAB
             // 
             lblPolicyText.AutoSize = true;
             lblPolicyText.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lblPolicyText.ForeColor = Color.FromArgb(167, 243, 208);
+            lblPolicyText.ForeColor = Color.FromArgb(200, 220, 210);
             lblPolicyText.Location = new Point(44, 13);
             lblPolicyText.Name = "lblPolicyText";
             lblPolicyText.Size = new Size(748, 15);
@@ -204,7 +207,7 @@ namespace Co_LAB
             // 
             // pnlOfferDetails
             // 
-            pnlOfferDetails.BackColor = Color.FromArgb(6, 95, 70);
+            pnlOfferDetails.BackColor = Color.FromArgb(20, 28, 23);
             pnlOfferDetails.Controls.Add(lblSection1Title);
             pnlOfferDetails.Controls.Add(lblSkillTitle);
             pnlOfferDetails.Controls.Add(txtSkillTitle);
@@ -218,13 +221,14 @@ namespace Co_LAB
             pnlOfferDetails.Name = "pnlOfferDetails";
             pnlOfferDetails.Size = new Size(470, 490);
             pnlOfferDetails.TabIndex = 2;
+            pnlOfferDetails.Paint += RoundPanel_Paint;
 
             // 
             // lblSection1Title
             // 
             lblSection1Title.AutoSize = true;
             lblSection1Title.Font = new Font("Segoe UI", 11.5F, FontStyle.Bold);
-            lblSection1Title.ForeColor = Color.White;
+            lblSection1Title.ForeColor = Color.FromArgb(74, 222, 128);
             lblSection1Title.Location = new Point(18, 16);
             lblSection1Title.Name = "lblSection1Title";
             lblSection1Title.Size = new Size(242, 21);
@@ -246,7 +250,7 @@ namespace Co_LAB
             // 
             // txtSkillTitle
             // 
-            txtSkillTitle.BackColor = Color.FromArgb(24, 24, 27);
+            txtSkillTitle.BackColor = Color.FromArgb(14, 20, 16);
             txtSkillTitle.BorderStyle = BorderStyle.FixedSingle;
             txtSkillTitle.Font = new Font("Segoe UI", 9.5F);
             txtSkillTitle.ForeColor = Color.White;
@@ -271,7 +275,7 @@ namespace Co_LAB
             // 
             // cmbCategory
             // 
-            cmbCategory.BackColor = Color.FromArgb(24, 24, 27);
+            cmbCategory.BackColor = Color.FromArgb(14, 20, 16);
             cmbCategory.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbCategory.FlatStyle = FlatStyle.Flat;
             cmbCategory.Font = new Font("Segoe UI", 9.5F);
@@ -306,7 +310,7 @@ namespace Co_LAB
             // 
             // cmbProficiency
             // 
-            cmbProficiency.BackColor = Color.FromArgb(24, 24, 27);
+            cmbProficiency.BackColor = Color.FromArgb(14, 20, 16);
             cmbProficiency.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbProficiency.FlatStyle = FlatStyle.Flat;
             cmbProficiency.Font = new Font("Segoe UI", 9.5F);
@@ -337,7 +341,7 @@ namespace Co_LAB
             // 
             // txtDescription
             // 
-            txtDescription.BackColor = Color.FromArgb(24, 24, 27);
+            txtDescription.BackColor = Color.FromArgb(14, 20, 16);
             txtDescription.BorderStyle = BorderStyle.FixedSingle;
             txtDescription.Font = new Font("Segoe UI", 9.5F);
             txtDescription.ForeColor = Color.White;
@@ -352,7 +356,7 @@ namespace Co_LAB
             // 
             // pnlExchangeDetails
             // 
-            pnlExchangeDetails.BackColor = Color.FromArgb(6, 95, 70);
+            pnlExchangeDetails.BackColor = Color.FromArgb(20, 28, 23);
             pnlExchangeDetails.Controls.Add(lblSection2Title);
             pnlExchangeDetails.Controls.Add(lblDesiredSkill);
             pnlExchangeDetails.Controls.Add(txtDesiredSkill);
@@ -367,13 +371,14 @@ namespace Co_LAB
             pnlExchangeDetails.Name = "pnlExchangeDetails";
             pnlExchangeDetails.Size = new Size(470, 490);
             pnlExchangeDetails.TabIndex = 3;
+            pnlExchangeDetails.Paint += RoundPanel_Paint;
 
             // 
             // lblSection2Title
             // 
             lblSection2Title.AutoSize = true;
             lblSection2Title.Font = new Font("Segoe UI", 11.5F, FontStyle.Bold);
-            lblSection2Title.ForeColor = Color.White;
+            lblSection2Title.ForeColor = Color.FromArgb(74, 222, 128);
             lblSection2Title.Location = new Point(18, 16);
             lblSection2Title.Name = "lblSection2Title";
             lblSection2Title.Size = new Size(260, 21);
@@ -395,7 +400,7 @@ namespace Co_LAB
             // 
             // txtDesiredSkill
             // 
-            txtDesiredSkill.BackColor = Color.FromArgb(24, 24, 27);
+            txtDesiredSkill.BackColor = Color.FromArgb(14, 20, 16);
             txtDesiredSkill.BorderStyle = BorderStyle.FixedSingle;
             txtDesiredSkill.Font = new Font("Segoe UI", 9.5F);
             txtDesiredSkill.ForeColor = Color.White;
@@ -420,7 +425,7 @@ namespace Co_LAB
             // 
             // pnlDeliveryMode
             // 
-            pnlDeliveryMode.BackColor = Color.FromArgb(24, 24, 27);
+            pnlDeliveryMode.BackColor = Color.FromArgb(14, 20, 16);
             pnlDeliveryMode.Controls.Add(rbOnline);
             pnlDeliveryMode.Controls.Add(rbFaceToFace);
             pnlDeliveryMode.Location = new Point(20, 128);
@@ -473,7 +478,7 @@ namespace Co_LAB
             // 
             // txtLocation
             // 
-            txtLocation.BackColor = Color.FromArgb(24, 24, 27);
+            txtLocation.BackColor = Color.FromArgb(14, 20, 16);
             txtLocation.BorderStyle = BorderStyle.FixedSingle;
             txtLocation.Font = new Font("Segoe UI", 9.5F);
             txtLocation.ForeColor = Color.White;
@@ -498,7 +503,7 @@ namespace Co_LAB
             // 
             // txtAvailability
             // 
-            txtAvailability.BackColor = Color.FromArgb(24, 24, 27);
+            txtAvailability.BackColor = Color.FromArgb(14, 20, 16);
             txtAvailability.BorderStyle = BorderStyle.FixedSingle;
             txtAvailability.Font = new Font("Segoe UI", 9.5F);
             txtAvailability.ForeColor = Color.White;
@@ -511,19 +516,20 @@ namespace Co_LAB
             // 
             // pnlTip
             // 
-            pnlTip.BackColor = Color.FromArgb(4, 120, 87);
+            pnlTip.BackColor = Color.FromArgb(16, 23, 19);
             pnlTip.Controls.Add(lblTipText);
             pnlTip.Location = new Point(20, 300);
             pnlTip.Name = "pnlTip";
             pnlTip.Size = new Size(430, 170);
             pnlTip.TabIndex = 9;
+            pnlTip.Paint += RoundPanel_Paint;
 
             // 
             // lblTipText
             // 
             lblTipText.Dock = DockStyle.Fill;
             lblTipText.Font = new Font("Segoe UI", 9.2F);
-            lblTipText.ForeColor = Color.FromArgb(209, 250, 229);
+            lblTipText.ForeColor = Color.FromArgb(180, 215, 195);
             lblTipText.Location = new Point(0, 0);
             lblTipText.Name = "lblTipText";
             lblTipText.Padding = new Padding(16, 14, 16, 14);
@@ -534,7 +540,7 @@ namespace Co_LAB
             // 
             // pnlActionBar
             // 
-            pnlActionBar.BackColor = Color.FromArgb(4, 120, 87);
+            pnlActionBar.BackColor = Color.FromArgb(20, 28, 23);
             pnlActionBar.Controls.Add(lblStatusMessage);
             pnlActionBar.Controls.Add(btnPostSkill);
             pnlActionBar.Controls.Add(btnClear);
@@ -542,13 +548,14 @@ namespace Co_LAB
             pnlActionBar.Name = "pnlActionBar";
             pnlActionBar.Size = new Size(960, 58);
             pnlActionBar.TabIndex = 4;
+            pnlActionBar.Paint += RoundPanel_Paint;
 
             // 
             // lblStatusMessage
             // 
             lblStatusMessage.AutoSize = true;
             lblStatusMessage.Font = new Font("Segoe UI", 9F);
-            lblStatusMessage.ForeColor = Color.FromArgb(209, 250, 229);
+            lblStatusMessage.ForeColor = Color.FromArgb(130, 175, 145);
             lblStatusMessage.Location = new Point(18, 22);
             lblStatusMessage.Name = "lblStatusMessage";
             lblStatusMessage.Size = new Size(295, 15);
@@ -559,7 +566,7 @@ namespace Co_LAB
             // btnPostSkill
             // 
             btnPostSkill.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnPostSkill.BackColor = Color.FromArgb(16, 185, 129);
+            btnPostSkill.BackColor = Color.FromArgb(46, 125, 70);
             btnPostSkill.Cursor = Cursors.Hand;
             btnPostSkill.FlatAppearance.BorderSize = 0;
             btnPostSkill.FlatStyle = FlatStyle.Flat;
@@ -577,12 +584,13 @@ namespace Co_LAB
             // btnClear
             // 
             btnClear.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnClear.BackColor = Color.FromArgb(24, 24, 27);
+            btnClear.BackColor = Color.FromArgb(28, 38, 30);
             btnClear.Cursor = Cursors.Hand;
-            btnClear.FlatAppearance.BorderSize = 0;
+            btnClear.FlatAppearance.BorderColor = Color.FromArgb(42, 60, 48);
+            btnClear.FlatAppearance.BorderSize = 1;
             btnClear.FlatStyle = FlatStyle.Flat;
             btnClear.Font = new Font("Segoe UI Semibold", 9F);
-            btnClear.ForeColor = Color.White;
+            btnClear.ForeColor = Color.FromArgb(220, 235, 225);
             btnClear.Location = new Point(650, 11);
             btnClear.Name = "btnClear";
             btnClear.Size = new Size(105, 36);
@@ -597,7 +605,8 @@ namespace Co_LAB
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             AutoScroll = true;
-            BackColor = Color.FromArgb(24, 24, 27);
+            AutoScrollMinSize = new Size(960, 760);
+            BackColor = Color.FromArgb(14, 20, 16);
             Controls.Add(pnlActionBar);
             Controls.Add(pnlExchangeDetails);
             Controls.Add(pnlOfferDetails);
@@ -606,6 +615,7 @@ namespace Co_LAB
             Name = "uc_PostSkill";
             Size = new Size(1010, 760);
             Load += uc_PostSkill_Load;
+            Resize += uc_PostSkill_Resize;
 
             pnlHeaderCard.ResumeLayout(false);
             pnlHeaderCard.PerformLayout();

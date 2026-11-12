@@ -54,7 +54,7 @@ namespace Co_LAB
             // 
             lblSubtitle.AutoSize = true;
             lblSubtitle.Font = new Font("Segoe UI", 9F);
-            lblSubtitle.ForeColor = Color.FromArgb(209, 250, 229);
+            lblSubtitle.ForeColor = Color.FromArgb(130, 175, 145);
             lblSubtitle.Location = new Point(26, 48);
             lblSubtitle.Name = "lblSubtitle";
             lblSubtitle.Size = new Size(353, 15);
@@ -74,7 +74,7 @@ namespace Co_LAB
             // 
             // cmbCategory
             // 
-            cmbCategory.BackColor = Color.FromArgb(24, 24, 27);
+            cmbCategory.BackColor = Color.FromArgb(14, 20, 16);
             cmbCategory.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbCategory.FlatStyle = FlatStyle.Flat;
             cmbCategory.Font = new Font("Segoe UI", 9.5F);
@@ -99,7 +99,7 @@ namespace Co_LAB
             // 
             // txtSkillOffer
             // 
-            txtSkillOffer.BackColor = Color.FromArgb(24, 24, 27);
+            txtSkillOffer.BackColor = Color.FromArgb(14, 20, 16);
             txtSkillOffer.BorderStyle = BorderStyle.FixedSingle;
             txtSkillOffer.Font = new Font("Segoe UI", 10F);
             txtSkillOffer.ForeColor = Color.White;
@@ -112,7 +112,7 @@ namespace Co_LAB
             // 
             // btnAdd
             // 
-            btnAdd.BackColor = Color.FromArgb(16, 185, 129);
+            btnAdd.BackColor = Color.FromArgb(46, 125, 70);
             btnAdd.Cursor = Cursors.Hand;
             btnAdd.FlatAppearance.BorderSize = 0;
             btnAdd.FlatStyle = FlatStyle.Flat;
@@ -128,12 +128,13 @@ namespace Co_LAB
             // 
             // btnCancel
             // 
-            btnCancel.BackColor = Color.FromArgb(185, 28, 28);
+            btnCancel.BackColor = Color.FromArgb(28, 38, 30);
             btnCancel.Cursor = Cursors.Hand;
-            btnCancel.FlatAppearance.BorderSize = 0;
+            btnCancel.FlatAppearance.BorderColor = Color.FromArgb(42, 60, 48);
+            btnCancel.FlatAppearance.BorderSize = 1;
             btnCancel.FlatStyle = FlatStyle.Flat;
             btnCancel.Font = new Font("Segoe UI Semibold", 9.5F, FontStyle.Bold);
-            btnCancel.ForeColor = Color.White;
+            btnCancel.ForeColor = Color.FromArgb(220, 235, 225);
             btnCancel.Location = new Point(334, 225);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(102, 36);
@@ -144,7 +145,7 @@ namespace Co_LAB
             // 
             // pnlSeparator
             // 
-            pnlSeparator.BackColor = Color.FromArgb(4, 120, 87);
+            pnlSeparator.BackColor = Color.FromArgb(30, 44, 34);
             pnlSeparator.Location = new Point(26, 72);
             pnlSeparator.Name = "pnlSeparator";
             pnlSeparator.Size = new Size(410, 2);
@@ -154,7 +155,7 @@ namespace Co_LAB
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(24, 24, 27);
+            BackColor = Color.FromArgb(14, 20, 16);
             Controls.Add(pnlSeparator);
             Controls.Add(btnCancel);
             Controls.Add(btnAdd);
