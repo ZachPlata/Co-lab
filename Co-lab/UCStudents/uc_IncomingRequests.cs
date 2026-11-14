@@ -419,37 +419,6 @@ namespace Co_LAB
                     "UPDATE tbl_traderequests SET Status = @status WHERE RequestId = @id",
                     new MySqlParameter("@status", newStatus),
                     new MySqlParameter("@id", requestId));
-
-                if (string.Equals(newStatus, "Accepted", StringComparison.OrdinalIgnoreCase))
-                {
-                    // When a trade is accepted, the skill is officially in an ongoing trade -> pause listing
-                    DatabaseHelper.ExecuteNonQuery(
-                        @"UPDATE tbl_skills SET Status = 'Paused' 
-                          WHERE SkillId = (SELECT TargetSkillId FROM tbl_traderequests WHERE RequestId = @id)",
-                        new MySqlParameter("@id", requestId));
-                }
-                else if (string.Equals(newStatus, "Completed", StringComparison.OrdinalIgnoreCase))
-                {
-                    // When trade is completed, mark skill completed
-                    DatabaseHelper.ExecuteNonQuery(
-                        @"UPDATE tbl_skills SET Status = 'Completed' 
-                          WHERE SkillId = (SELECT TargetSkillId FROM tbl_traderequests WHERE RequestId = @id)",
-                        new MySqlParameter("@id", requestId));
-                }
-                else if (string.Equals(newStatus, "Declined", StringComparison.OrdinalIgnoreCase))
-                {
-                    // If declined and no other accepted trades exist for this skill, restore listing to Active
-                    DatabaseHelper.ExecuteNonQuery(
-                        @"UPDATE tbl_skills s
-                          SET s.Status = 'Active'
-                          WHERE s.SkillId = (SELECT TargetSkillId FROM tbl_traderequests WHERE RequestId = @id)
-                            AND s.Status = 'Paused'
-                            AND NOT EXISTS (
-                                SELECT 1 FROM tbl_traderequests r2 
-                                WHERE r2.TargetSkillId = s.SkillId AND r2.Status = 'Accepted'
-                            )",
-                        new MySqlParameter("@id", requestId));
-                }
             }
             catch (Exception ex)
             {
