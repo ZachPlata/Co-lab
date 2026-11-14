@@ -17,11 +17,20 @@ namespace Co_LAB
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string CurrentStudentName { get; set; } = "Juan Dela Cruz";
 
+        private System.Windows.Forms.Timer? _liveRefreshTimer;
+        private string _lastDashboardFingerprint = "";
+
         public uc_UserDashboard()
         {
             InitializeComponent();
             DoubleBuffered = true;
             SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
+
+            Disposed += (s, e) =>
+            {
+                _liveRefreshTimer?.Stop();
+                _liveRefreshTimer?.Dispose();
+            };
         }
 
         private void uc_UserDashboard_Load(object sender, EventArgs e)
@@ -46,6 +55,38 @@ namespace Co_LAB
             }
 
             LoadDashboardData();
+
+            _liveRefreshTimer = new System.Windows.Forms.Timer { Interval = 4000 };
+            _liveRefreshTimer.Tick += (s, ev) =>
+            {
+                if (Visible && !IsDisposed && Parent != null)
+                {
+                    CheckDashboardUpdates();
+                }
+            };
+            _liveRefreshTimer.Start();
+        }
+
+        private void CheckDashboardUpdates()
+        {
+            try
+            {
+                string sql = @"SELECT CONCAT(
+                                  COALESCE((SELECT COUNT(*) FROM tbl_traderequests r JOIN tbl_skills s ON r.TargetSkillId = s.SkillId WHERE s.OfferedBy = @name OR s.UserId = @uid), 0), ':',
+                                  COALESCE((SELECT MAX(r.RequestId) FROM tbl_traderequests r JOIN tbl_skills s ON r.TargetSkillId = s.SkillId WHERE s.OfferedBy = @name OR s.UserId = @uid), 0), ':',
+                                  COALESCE((SELECT MAX(r.Status) FROM tbl_traderequests r JOIN tbl_skills s ON r.TargetSkillId = s.SkillId WHERE s.OfferedBy = @name OR s.UserId = @uid), '')
+                               )";
+                object? check = DatabaseHelper.ExecuteScalar(sql,
+                    new MySqlParameter("@name", CurrentStudentName),
+                    new MySqlParameter("@uid", UserSession.UserId));
+                string fp = check?.ToString() ?? "";
+                if (fp != _lastDashboardFingerprint)
+                {
+                    _lastDashboardFingerprint = fp;
+                    LoadDashboardData();
+                }
+            }
+            catch { }
         }
 
         /// <summary>

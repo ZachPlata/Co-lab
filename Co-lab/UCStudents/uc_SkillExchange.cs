@@ -9,15 +9,58 @@ namespace Co_LAB
     [System.ComponentModel.DesignerCategory("UserControl")]
     public partial class uc_SkillExchange : UserControl
     {
+        private System.Windows.Forms.Timer? _liveRefreshTimer;
+        private string _lastMarketplaceFingerprint = "";
+
         public uc_SkillExchange()
         {
             InitializeComponent();
+            Disposed += (s, e) =>
+            {
+                _liveRefreshTimer?.Stop();
+                _liveRefreshTimer?.Dispose();
+            };
         }
 
         private void uc_SkillExchange_Load(object sender, EventArgs e)
         {
             LoadCategories();
             LoadMarketplaceCards("", "All Categories");
+
+            if (!DesignMode)
+            {
+                _liveRefreshTimer = new System.Windows.Forms.Timer { Interval = 4000 };
+                _liveRefreshTimer.Tick += (s, ev) =>
+                {
+                    if (Visible && !IsDisposed && Parent != null && !txtSearch.Focused)
+                    {
+                        CheckMarketplaceUpdates();
+                    }
+                };
+                _liveRefreshTimer.Start();
+            }
+        }
+
+        private void CheckMarketplaceUpdates()
+        {
+            try
+            {
+                string sql = @"SELECT CONCAT(
+                                  COALESCE(MAX(s.SkillId), 0), ':', 
+                                  COALESCE(MAX(s.Status), ''), ':', 
+                                  COALESCE((SELECT COUNT(*) FROM tbl_traderequests), 0), ':', 
+                                  COALESCE((SELECT MAX(RequestId) FROM tbl_traderequests), 0), ':',
+                                  COALESCE((SELECT MAX(Status) FROM tbl_traderequests), '')
+                               ) FROM tbl_skills s";
+                object? check = DatabaseHelper.ExecuteScalar(sql);
+                string fp = check?.ToString() ?? "";
+                if (fp != _lastMarketplaceFingerprint)
+                {
+                    _lastMarketplaceFingerprint = fp;
+                    LoadMarketplaceCards(txtSearch.Text, cmbCategory.SelectedItem?.ToString() ?? "All Categories");
+                }
+            }
+            catch { }
         }
 
         /// <summary>

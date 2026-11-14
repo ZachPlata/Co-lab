@@ -27,20 +27,40 @@ namespace Co_LAB
         }
 
         private List<SentRequestModel> _requests = new List<SentRequestModel>();
+        private string _lastFingerprint = "";
+        private System.Windows.Forms.Timer? _liveRefreshTimer;
 
         public uc_SentRequests()
         {
             InitializeComponent();
+            Disposed += (s, e) =>
+            {
+                _liveRefreshTimer?.Stop();
+                _liveRefreshTimer?.Dispose();
+            };
         }
 
         private void uc_SentRequests_Load(object sender, EventArgs e)
         {
             LoadSentRequests();
+
+            if (!DesignMode)
+            {
+                _liveRefreshTimer = new System.Windows.Forms.Timer { Interval = 4000 };
+                _liveRefreshTimer.Tick += (s, ev) =>
+                {
+                    if (Visible && !IsDisposed && Parent != null)
+                    {
+                        LoadSentRequests(isBackgroundTick: true);
+                    }
+                };
+                _liveRefreshTimer.Start();
+            }
         }
 
-        public void LoadSentRequests()
+        public void LoadSentRequests(bool isBackgroundTick = false)
         {
-            _requests.Clear();
+            var loadedList = new List<SentRequestModel>();
 
             string studentName = string.IsNullOrWhiteSpace(UserSession.FullName) ? "Zach Plata" : UserSession.FullName;
             string studentEmail = string.IsNullOrWhiteSpace(UserSession.Email) ? "" : UserSession.Email;
@@ -87,7 +107,7 @@ namespace Co_LAB
                         };
 
                         req.Initials = ExtractInitials(req.RecipientName);
-                        _requests.Add(req);
+                        loadedList.Add(req);
                     }
                 }
             }
@@ -96,6 +116,15 @@ namespace Co_LAB
                 System.Diagnostics.Debug.WriteLine($"Error loading sent requests: {ex.Message}");
             }
 
+            // Fingerprint check: avoid redrawing if nothing changed during timer ticks
+            string currentFingerprint = string.Join(";", loadedList.Select(r => $"{r.RequestId}:{r.Status}"));
+            if (isBackgroundTick && currentFingerprint == _lastFingerprint)
+            {
+                return;
+            }
+
+            _lastFingerprint = currentFingerprint;
+            _requests = loadedList;
             RenderCards();
         }
 

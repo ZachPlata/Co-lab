@@ -10,18 +10,62 @@ namespace Co_LAB
     [System.ComponentModel.DesignerCategory("UserControl")]
     public partial class uc_AdminDashboard : UserControl
     {
+        private System.Windows.Forms.Timer? _liveRefreshTimer;
+        private string _lastAdminDashboardFingerprint = "";
+
         public uc_AdminDashboard()
         {
             InitializeComponent();
             DoubleBuffered = true;
             SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
             SetupDataGrids();
+
+            Disposed += (s, e) =>
+            {
+                _liveRefreshTimer?.Stop();
+                _liveRefreshTimer?.Dispose();
+            };
         }
 
         private void uc_AdminDashboard_Load(object sender, EventArgs e)
         {
             uc_AdminDashboard_Resize(this, EventArgs.Empty);
             LoadDashboard();
+
+            if (!DesignMode)
+            {
+                _liveRefreshTimer = new System.Windows.Forms.Timer { Interval = 4000 };
+                _liveRefreshTimer.Tick += (s, ev) =>
+                {
+                    if (Visible && !IsDisposed && Parent != null)
+                    {
+                        CheckDashboardUpdates();
+                    }
+                };
+                _liveRefreshTimer.Start();
+            }
+        }
+
+        private void CheckDashboardUpdates()
+        {
+            try
+            {
+                string sql = @"SELECT CONCAT(
+                                  COALESCE((SELECT COUNT(*) FROM tbl_users), 0), ':', 
+                                  COALESCE((SELECT COUNT(*) FROM tbl_skills), 0), ':', 
+                                  COALESCE((SELECT COUNT(*) FROM tbl_reports), 0), ':', 
+                                  COALESCE((SELECT MAX(ReportId) FROM tbl_reports), 0), ':',
+                                  COALESCE((SELECT MAX(Status) FROM tbl_reports), '')
+                               )";
+                object? check = DatabaseHelper.ExecuteScalar(sql);
+                string fp = check?.ToString() ?? "";
+                if (fp != _lastAdminDashboardFingerprint)
+                {
+                    _lastAdminDashboardFingerprint = fp;
+                    LoadDashboard();
+                }
+            }
+            catch { }
         }
 
         // =====================================================

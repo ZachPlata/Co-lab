@@ -67,6 +67,9 @@ namespace Co_LAB
             }
         };
 
+        private System.Windows.Forms.Timer? _liveRefreshTimer;
+        private string _lastReportsFingerprint = "";
+
         public uc_ReportedStudents()
         {
             InitializeComponent();
@@ -75,11 +78,46 @@ namespace Co_LAB
             dataGridViewReports.CellContentClick += DataGridViewReports_CellContentClick;
             dataGridViewReports.CellFormatting += DataGridViewReports_CellFormatting;
             dataGridViewReports.CellDoubleClick += DataGridViewReports_CellDoubleClick;
+
+            Disposed += (s, e) =>
+            {
+                _liveRefreshTimer?.Stop();
+                _liveRefreshTimer?.Dispose();
+            };
         }
 
         private void uc_ReportedStudents_Load(object? sender, EventArgs e)
         {
             LoadReports();
+
+            if (!DesignMode)
+            {
+                _liveRefreshTimer = new System.Windows.Forms.Timer { Interval = 4000 };
+                _liveRefreshTimer.Tick += (s, ev) =>
+                {
+                    if (Visible && !IsDisposed && Parent != null && !txtSearch.Focused)
+                    {
+                        CheckReportUpdates();
+                    }
+                };
+                _liveRefreshTimer.Start();
+            }
+        }
+
+        private void CheckReportUpdates()
+        {
+            try
+            {
+                string sql = "SELECT CONCAT(COALESCE(COUNT(*), 0), ':', COALESCE(MAX(ReportId), 0), ':', COALESCE(MAX(Status), '')) FROM tbl_reports";
+                object? check = DatabaseHelper.ExecuteScalar(sql);
+                string fp = check?.ToString() ?? "";
+                if (fp != _lastReportsFingerprint)
+                {
+                    _lastReportsFingerprint = fp;
+                    LoadReports(txtSearch.Text);
+                }
+            }
+            catch { }
         }
 
         /// <summary>

@@ -28,24 +28,44 @@ namespace Co_LAB
         }
 
         private List<TradeRequestModel> _requests = new List<TradeRequestModel>();
+        private string _lastFingerprint = "";
+        private System.Windows.Forms.Timer? _liveRefreshTimer;
 
         public uc_IncomingRequests()
         {
             InitializeComponent();
+            Disposed += (s, e) =>
+            {
+                _liveRefreshTimer?.Stop();
+                _liveRefreshTimer?.Dispose();
+            };
         }
 
         private void uc_IncomingRequests_Load(object sender, EventArgs e)
         {
             LoadIncomingRequests();
+
+            if (!DesignMode)
+            {
+                _liveRefreshTimer = new System.Windows.Forms.Timer { Interval = 4000 };
+                _liveRefreshTimer.Tick += (s, ev) =>
+                {
+                    if (Visible && !IsDisposed && Parent != null)
+                    {
+                        LoadIncomingRequests(isBackgroundTick: true);
+                    }
+                };
+                _liveRefreshTimer.Start();
+            }
         }
 
         /// <summary>
         /// Loads real incoming trade proposals from tbl_traderequests joined to tbl_skills for this student.
         /// No fake seeded mock data.
         /// </summary>
-        public void LoadIncomingRequests()
+        public void LoadIncomingRequests(bool isBackgroundTick = false)
         {
-            _requests.Clear();
+            var loadedList = new List<TradeRequestModel>();
 
             int uid = UserSession.UserId;
             string studentName = string.IsNullOrWhiteSpace(UserSession.FullName) ? "Zach Plata" : UserSession.FullName;
@@ -93,7 +113,7 @@ namespace Co_LAB
                         };
 
                         req.Initials = ExtractInitials(req.RequesterName);
-                        _requests.Add(req);
+                        loadedList.Add(req);
                     }
                 }
             }
@@ -102,6 +122,15 @@ namespace Co_LAB
                 System.Diagnostics.Debug.WriteLine($"Error loading incoming requests: {ex.Message}");
             }
 
+            // Fingerprint check: avoid redrawing if nothing changed during timer ticks
+            string currentFingerprint = string.Join(";", loadedList.Select(r => $"{r.RequestId}:{r.Status}"));
+            if (isBackgroundTick && currentFingerprint == _lastFingerprint)
+            {
+                return;
+            }
+
+            _lastFingerprint = currentFingerprint;
+            _requests = loadedList;
             RenderCards();
         }
 
