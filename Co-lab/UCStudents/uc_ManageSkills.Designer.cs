@@ -23,26 +23,26 @@ namespace Co_LAB
             lblHeaderSubtitle = new Label();
             lblHeaderTitle = new Label();
             pnlCreateOffer = new Panel();
-            lblSectionTitle = new Label();
-            lblSelectKnownSkill = new Label();
-            cmbKnownSkills = new ComboBox();
-            lblDesiredSkill = new Label();
-            txtDesiredSkill = new TextBox();
-            lblDeliveryMode = new Label();
-            cmbDeliveryMode = new ComboBox();
-            lblLocation = new Label();
-            txtLocation = new TextBox();
-            lblDescription = new Label();
-            txtDescription = new TextBox();
-            btnPublishListing = new Button();
             btnClearForm = new Button();
+            btnPublishListing = new Button();
+            txtDescription = new TextBox();
+            lblDescription = new Label();
+            txtLocation = new TextBox();
+            lblLocation = new Label();
+            cmbDeliveryMode = new ComboBox();
+            lblDeliveryMode = new Label();
+            txtDesiredSkill = new TextBox();
+            lblDesiredSkill = new Label();
+            cmbKnownSkills = new ComboBox();
+            lblSelectKnownSkill = new Label();
+            lblSectionTitle = new Label();
             pnlListingsHeader = new Panel();
             lblListingsCount = new Label();
             lblMyListingsTitle = new Label();
             pnlActions = new Panel();
-            btnDeleteListing = new Button();
-            btnToggleStatus = new Button();
             btnRefresh = new Button();
+            btnToggleStatus = new Button();
+            btnDeleteListing = new Button();
             dgvMyListings = new DataGridView();
             pnlHeader.SuspendLayout();
             pnlCreateOffer.SuspendLayout();
@@ -70,7 +70,7 @@ namespace Co_LAB
             lblHeaderSubtitle.ForeColor = Color.FromArgb(130, 175, 145);
             lblHeaderSubtitle.Location = new Point(27, 36);
             lblHeaderSubtitle.Name = "lblHeaderSubtitle";
-            lblHeaderSubtitle.Size = new Size(475, 15);
+            lblHeaderSubtitle.Size = new Size(478, 15);
             lblHeaderSubtitle.TabIndex = 1;
             lblHeaderSubtitle.Text = "Publish your known skills to the public barter marketplace and manage your active offers.";
             // 
@@ -81,7 +81,7 @@ namespace Co_LAB
             lblHeaderTitle.ForeColor = Color.White;
             lblHeaderTitle.Location = new Point(25, 10);
             lblHeaderTitle.Name = "lblHeaderTitle";
-            lblHeaderTitle.Size = new Size(187, 25);
+            lblHeaderTitle.Size = new Size(183, 25);
             lblHeaderTitle.TabIndex = 0;
             lblHeaderTitle.Text = "My Barter Offerings";
             // 
@@ -108,138 +108,22 @@ namespace Co_LAB
             pnlCreateOffer.Size = new Size(950, 200);
             pnlCreateOffer.TabIndex = 1;
             // 
-            // lblSectionTitle
+            // btnClearForm
             // 
-            lblSectionTitle.AutoSize = true;
-            lblSectionTitle.Font = new Font("Segoe UI Semibold", 10.5F, FontStyle.Bold);
-            lblSectionTitle.ForeColor = Color.FromArgb(74, 222, 128);
-            lblSectionTitle.Location = new Point(25, 10);
-            lblSectionTitle.Name = "lblSectionTitle";
-            lblSectionTitle.Size = new Size(230, 19);
-            lblSectionTitle.TabIndex = 0;
-            lblSectionTitle.Text = "➕ Post a New Skill to Marketplace";
-            // 
-            // lblSelectKnownSkill
-            // 
-            lblSelectKnownSkill.AutoSize = true;
-            lblSelectKnownSkill.Font = new Font("Segoe UI Semibold", 9F);
-            lblSelectKnownSkill.ForeColor = Color.FromArgb(212, 212, 216);
-            lblSelectKnownSkill.Location = new Point(25, 40);
-            lblSelectKnownSkill.Name = "lblSelectKnownSkill";
-            lblSelectKnownSkill.Size = new Size(160, 15);
-            lblSelectKnownSkill.TabIndex = 1;
-            lblSelectKnownSkill.Text = "Choose From Known Skills:";
-            // 
-            // cmbKnownSkills
-            // 
-            cmbKnownSkills.BackColor = Color.FromArgb(14, 20, 16);
-            cmbKnownSkills.DropDownStyle = ComboBoxStyle.DropDownList;
-            cmbKnownSkills.FlatStyle = FlatStyle.Flat;
-            cmbKnownSkills.Font = new Font("Segoe UI", 9.5F);
-            cmbKnownSkills.ForeColor = Color.White;
-            cmbKnownSkills.FormattingEnabled = true;
-            cmbKnownSkills.Location = new Point(28, 59);
-            cmbKnownSkills.Name = "cmbKnownSkills";
-            cmbKnownSkills.Size = new Size(260, 25);
-            cmbKnownSkills.TabIndex = 2;
-            // 
-            // lblDesiredSkill
-            // 
-            lblDesiredSkill.AutoSize = true;
-            lblDesiredSkill.Font = new Font("Segoe UI Semibold", 9F);
-            lblDesiredSkill.ForeColor = Color.FromArgb(212, 212, 216);
-            lblDesiredSkill.Location = new Point(310, 40);
-            lblDesiredSkill.Name = "lblDesiredSkill";
-            lblDesiredSkill.Size = new Size(147, 15);
-            lblDesiredSkill.TabIndex = 3;
-            lblDesiredSkill.Text = "Desired Skill in Exchange:";
-            // 
-            // txtDesiredSkill
-            // 
-            txtDesiredSkill.BackColor = Color.FromArgb(14, 20, 16);
-            txtDesiredSkill.BorderStyle = BorderStyle.FixedSingle;
-            txtDesiredSkill.Font = new Font("Segoe UI", 9.5F);
-            txtDesiredSkill.ForeColor = Color.White;
-            txtDesiredSkill.Location = new Point(313, 59);
-            txtDesiredSkill.Name = "txtDesiredSkill";
-            txtDesiredSkill.PlaceholderText = "e.g. Photoshop basics, Python help";
-            txtDesiredSkill.Size = new Size(230, 24);
-            txtDesiredSkill.TabIndex = 4;
-            // 
-            // lblDeliveryMode
-            // 
-            lblDeliveryMode.AutoSize = true;
-            lblDeliveryMode.Font = new Font("Segoe UI Semibold", 9F);
-            lblDeliveryMode.ForeColor = Color.FromArgb(212, 212, 216);
-            lblDeliveryMode.Location = new Point(565, 40);
-            lblDeliveryMode.Name = "lblDeliveryMode";
-            lblDeliveryMode.Size = new Size(88, 15);
-            lblDeliveryMode.TabIndex = 5;
-            lblDeliveryMode.Text = "Delivery Mode:";
-            // 
-            // cmbDeliveryMode
-            // 
-            cmbDeliveryMode.BackColor = Color.FromArgb(14, 20, 16);
-            cmbDeliveryMode.DropDownStyle = ComboBoxStyle.DropDownList;
-            cmbDeliveryMode.FlatStyle = FlatStyle.Flat;
-            cmbDeliveryMode.Font = new Font("Segoe UI", 9.5F);
-            cmbDeliveryMode.ForeColor = Color.White;
-            cmbDeliveryMode.FormattingEnabled = true;
-            cmbDeliveryMode.Items.AddRange(new object[] { "Online", "Face-to-Face" });
-            cmbDeliveryMode.Location = new Point(568, 59);
-            cmbDeliveryMode.Name = "cmbDeliveryMode";
-            cmbDeliveryMode.Size = new Size(140, 25);
-            cmbDeliveryMode.TabIndex = 6;
-            // 
-            // lblLocation
-            // 
-            lblLocation.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            lblLocation.AutoSize = true;
-            lblLocation.Font = new Font("Segoe UI Semibold", 9F);
-            lblLocation.ForeColor = Color.FromArgb(212, 212, 216);
-            lblLocation.Location = new Point(730, 40);
-            lblLocation.Name = "lblLocation";
-            lblLocation.Size = new Size(119, 15);
-            lblLocation.TabIndex = 7;
-            lblLocation.Text = "Meeting / Platform:";
-            // 
-            // txtLocation
-            // 
-            txtLocation.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            txtLocation.BackColor = Color.FromArgb(14, 20, 16);
-            txtLocation.BorderStyle = BorderStyle.FixedSingle;
-            txtLocation.Font = new Font("Segoe UI", 9.5F);
-            txtLocation.ForeColor = Color.White;
-            txtLocation.Location = new Point(733, 59);
-            txtLocation.Name = "txtLocation";
-            txtLocation.PlaceholderText = "e.g. Discord or TYK Library";
-            txtLocation.Size = new Size(190, 24);
-            txtLocation.TabIndex = 8;
-            // 
-            // lblDescription
-            // 
-            lblDescription.AutoSize = true;
-            lblDescription.Font = new Font("Segoe UI Semibold", 9F);
-            lblDescription.ForeColor = Color.FromArgb(212, 212, 216);
-            lblDescription.Location = new Point(25, 96);
-            lblDescription.Name = "lblDescription";
-            lblDescription.Size = new Size(111, 15);
-            lblDescription.TabIndex = 9;
-            lblDescription.Text = "Listing Description:";
-            // 
-            // txtDescription
-            // 
-            txtDescription.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            txtDescription.BackColor = Color.FromArgb(14, 20, 16);
-            txtDescription.BorderStyle = BorderStyle.FixedSingle;
-            txtDescription.Font = new Font("Segoe UI", 9.5F);
-            txtDescription.ForeColor = Color.White;
-            txtDescription.Location = new Point(28, 116);
-            txtDescription.Multiline = true;
-            txtDescription.Name = "txtDescription";
-            txtDescription.PlaceholderText = "Describe what you will teach, topics covered, session length...";
-            txtDescription.Size = new Size(680, 68);
-            txtDescription.TabIndex = 10;
+            btnClearForm.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnClearForm.BackColor = Color.FromArgb(28, 38, 30);
+            btnClearForm.Cursor = Cursors.Hand;
+            btnClearForm.FlatAppearance.BorderColor = Color.FromArgb(42, 60, 48);
+            btnClearForm.FlatStyle = FlatStyle.Flat;
+            btnClearForm.Font = new Font("Segoe UI", 9F);
+            btnClearForm.ForeColor = Color.FromArgb(220, 235, 225);
+            btnClearForm.Location = new Point(733, 156);
+            btnClearForm.Name = "btnClearForm";
+            btnClearForm.Size = new Size(190, 28);
+            btnClearForm.TabIndex = 12;
+            btnClearForm.Text = "↺ Clear Inputs";
+            btnClearForm.UseVisualStyleBackColor = false;
+            btnClearForm.Click += btnClearForm_Click;
             // 
             // btnPublishListing
             // 
@@ -258,23 +142,138 @@ namespace Co_LAB
             btnPublishListing.UseVisualStyleBackColor = false;
             btnPublishListing.Click += btnPublishListing_Click;
             // 
-            // btnClearForm
+            // txtDescription
             // 
-            btnClearForm.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnClearForm.BackColor = Color.FromArgb(28, 38, 30);
-            btnClearForm.Cursor = Cursors.Hand;
-            btnClearForm.FlatAppearance.BorderColor = Color.FromArgb(42, 60, 48);
-            btnClearForm.FlatAppearance.BorderSize = 1;
-            btnClearForm.FlatStyle = FlatStyle.Flat;
-            btnClearForm.Font = new Font("Segoe UI", 9F);
-            btnClearForm.ForeColor = Color.FromArgb(220, 235, 225);
-            btnClearForm.Location = new Point(733, 156);
-            btnClearForm.Name = "btnClearForm";
-            btnClearForm.Size = new Size(190, 28);
-            btnClearForm.TabIndex = 12;
-            btnClearForm.Text = "↺ Clear Inputs";
-            btnClearForm.UseVisualStyleBackColor = false;
-            btnClearForm.Click += btnClearForm_Click;
+            txtDescription.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            txtDescription.BackColor = Color.FromArgb(14, 20, 16);
+            txtDescription.BorderStyle = BorderStyle.FixedSingle;
+            txtDescription.Font = new Font("Segoe UI", 9.5F);
+            txtDescription.ForeColor = Color.White;
+            txtDescription.Location = new Point(28, 116);
+            txtDescription.Multiline = true;
+            txtDescription.Name = "txtDescription";
+            txtDescription.PlaceholderText = "Describe what you will teach, topics covered, session length...";
+            txtDescription.Size = new Size(680, 68);
+            txtDescription.TabIndex = 10;
+            // 
+            // lblDescription
+            // 
+            lblDescription.AutoSize = true;
+            lblDescription.Font = new Font("Segoe UI Semibold", 9F);
+            lblDescription.ForeColor = Color.FromArgb(212, 212, 216);
+            lblDescription.Location = new Point(25, 96);
+            lblDescription.Name = "lblDescription";
+            lblDescription.Size = new Size(109, 15);
+            lblDescription.TabIndex = 9;
+            lblDescription.Text = "Listing Description:";
+            // 
+            // txtLocation
+            // 
+            txtLocation.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            txtLocation.BackColor = Color.FromArgb(14, 20, 16);
+            txtLocation.BorderStyle = BorderStyle.FixedSingle;
+            txtLocation.Font = new Font("Segoe UI", 9.5F);
+            txtLocation.ForeColor = Color.White;
+            txtLocation.Location = new Point(733, 59);
+            txtLocation.Name = "txtLocation";
+            txtLocation.PlaceholderText = "e.g. Discord or TYK Library";
+            txtLocation.Size = new Size(190, 24);
+            txtLocation.TabIndex = 8;
+            // 
+            // lblLocation
+            // 
+            lblLocation.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblLocation.AutoSize = true;
+            lblLocation.Font = new Font("Segoe UI Semibold", 9F);
+            lblLocation.ForeColor = Color.FromArgb(212, 212, 216);
+            lblLocation.Location = new Point(730, 40);
+            lblLocation.Name = "lblLocation";
+            lblLocation.Size = new Size(111, 15);
+            lblLocation.TabIndex = 7;
+            lblLocation.Text = "Meeting / Platform:";
+            // 
+            // cmbDeliveryMode
+            // 
+            cmbDeliveryMode.BackColor = Color.FromArgb(14, 20, 16);
+            cmbDeliveryMode.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbDeliveryMode.FlatStyle = FlatStyle.Flat;
+            cmbDeliveryMode.Font = new Font("Segoe UI", 9.5F);
+            cmbDeliveryMode.ForeColor = Color.White;
+            cmbDeliveryMode.FormattingEnabled = true;
+            cmbDeliveryMode.Items.AddRange(new object[] { "Online", "Face-to-Face" });
+            cmbDeliveryMode.Location = new Point(565, 59);
+            cmbDeliveryMode.Name = "cmbDeliveryMode";
+            cmbDeliveryMode.Size = new Size(140, 25);
+            cmbDeliveryMode.TabIndex = 6;
+            // 
+            // lblDeliveryMode
+            // 
+            lblDeliveryMode.AutoSize = true;
+            lblDeliveryMode.Font = new Font("Segoe UI Semibold", 9F);
+            lblDeliveryMode.ForeColor = Color.FromArgb(212, 212, 216);
+            lblDeliveryMode.Location = new Point(565, 40);
+            lblDeliveryMode.Name = "lblDeliveryMode";
+            lblDeliveryMode.Size = new Size(87, 15);
+            lblDeliveryMode.TabIndex = 5;
+            lblDeliveryMode.Text = "Delivery Mode:";
+            // 
+            // txtDesiredSkill
+            // 
+            txtDesiredSkill.BackColor = Color.FromArgb(14, 20, 16);
+            txtDesiredSkill.BorderStyle = BorderStyle.FixedSingle;
+            txtDesiredSkill.Font = new Font("Segoe UI", 9.5F);
+            txtDesiredSkill.ForeColor = Color.White;
+            txtDesiredSkill.Location = new Point(313, 59);
+            txtDesiredSkill.Name = "txtDesiredSkill";
+            txtDesiredSkill.PlaceholderText = "e.g. Photoshop basics, Python help";
+            txtDesiredSkill.Size = new Size(230, 24);
+            txtDesiredSkill.TabIndex = 4;
+            // 
+            // lblDesiredSkill
+            // 
+            lblDesiredSkill.AutoSize = true;
+            lblDesiredSkill.Font = new Font("Segoe UI Semibold", 9F);
+            lblDesiredSkill.ForeColor = Color.FromArgb(212, 212, 216);
+            lblDesiredSkill.Location = new Point(310, 40);
+            lblDesiredSkill.Name = "lblDesiredSkill";
+            lblDesiredSkill.Size = new Size(142, 15);
+            lblDesiredSkill.TabIndex = 3;
+            lblDesiredSkill.Text = "Desired Skill in Exchange:";
+            // 
+            // cmbKnownSkills
+            // 
+            cmbKnownSkills.BackColor = Color.FromArgb(14, 20, 16);
+            cmbKnownSkills.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbKnownSkills.FlatStyle = FlatStyle.Flat;
+            cmbKnownSkills.Font = new Font("Segoe UI", 9.5F);
+            cmbKnownSkills.ForeColor = Color.White;
+            cmbKnownSkills.FormattingEnabled = true;
+            cmbKnownSkills.Location = new Point(28, 59);
+            cmbKnownSkills.Name = "cmbKnownSkills";
+            cmbKnownSkills.Size = new Size(260, 25);
+            cmbKnownSkills.TabIndex = 2;
+            // 
+            // lblSelectKnownSkill
+            // 
+            lblSelectKnownSkill.AutoSize = true;
+            lblSelectKnownSkill.Font = new Font("Segoe UI Semibold", 9F);
+            lblSelectKnownSkill.ForeColor = Color.FromArgb(212, 212, 216);
+            lblSelectKnownSkill.Location = new Point(25, 40);
+            lblSelectKnownSkill.Name = "lblSelectKnownSkill";
+            lblSelectKnownSkill.Size = new Size(150, 15);
+            lblSelectKnownSkill.TabIndex = 1;
+            lblSelectKnownSkill.Text = "Choose From Known Skills:";
+            // 
+            // lblSectionTitle
+            // 
+            lblSectionTitle.AutoSize = true;
+            lblSectionTitle.Font = new Font("Segoe UI Semibold", 10.5F, FontStyle.Bold);
+            lblSectionTitle.ForeColor = Color.FromArgb(74, 222, 128);
+            lblSectionTitle.Location = new Point(25, 10);
+            lblSectionTitle.Name = "lblSectionTitle";
+            lblSectionTitle.Size = new Size(233, 19);
+            lblSectionTitle.TabIndex = 0;
+            lblSectionTitle.Text = "➕ Post a New Skill to Marketplace";
             // 
             // pnlListingsHeader
             // 
@@ -296,7 +295,7 @@ namespace Co_LAB
             lblListingsCount.ForeColor = Color.FromArgb(130, 175, 145);
             lblListingsCount.Location = new Point(800, 14);
             lblListingsCount.Name = "lblListingsCount";
-            lblListingsCount.Size = new Size(116, 15);
+            lblListingsCount.Size = new Size(87, 15);
             lblListingsCount.TabIndex = 1;
             lblListingsCount.Text = "0 active listings";
             lblListingsCount.TextAlign = ContentAlignment.MiddleRight;
@@ -305,12 +304,10 @@ namespace Co_LAB
             // 
             lblMyListingsTitle.AutoSize = true;
             lblMyListingsTitle.Font = new Font("Segoe UI Semibold", 10.5F, FontStyle.Bold);
-            lblMyListingsTitle.ForeColor = Color.FromArgb(74, 222, 128);
-            lblMyListingsTitle.Font = new Font("Segoe UI Semibold", 10.5F, FontStyle.Bold);
             lblMyListingsTitle.ForeColor = Color.White;
             lblMyListingsTitle.Location = new Point(25, 11);
             lblMyListingsTitle.Name = "lblMyListingsTitle";
-            lblMyListingsTitle.Size = new Size(160, 19);
+            lblMyListingsTitle.Size = new Size(168, 19);
             lblMyListingsTitle.TabIndex = 0;
             lblMyListingsTitle.Text = "Active Listings on Market";
             // 
@@ -327,30 +324,27 @@ namespace Co_LAB
             pnlActions.Size = new Size(950, 52);
             pnlActions.TabIndex = 3;
             // 
-            // btnDeleteListing
+            // btnRefresh
             // 
-            btnDeleteListing.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnDeleteListing.BackColor = Color.FromArgb(45, 24, 26);
-            btnDeleteListing.Cursor = Cursors.Hand;
-            btnDeleteListing.FlatAppearance.BorderColor = Color.FromArgb(60, 35, 40);
-            btnDeleteListing.FlatAppearance.BorderSize = 1;
-            btnDeleteListing.FlatStyle = FlatStyle.Flat;
-            btnDeleteListing.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
-            btnDeleteListing.ForeColor = Color.FromArgb(248, 113, 113);
-            btnDeleteListing.Location = new Point(810, 10);
-            btnDeleteListing.Name = "btnDeleteListing";
-            btnDeleteListing.Size = new Size(115, 32);
-            btnDeleteListing.TabIndex = 0;
-            btnDeleteListing.Text = "🗑️ Delete Listing";
-            btnDeleteListing.UseVisualStyleBackColor = false;
-            btnDeleteListing.Click += btnDeleteListing_Click;
+            btnRefresh.BackColor = Color.FromArgb(28, 38, 30);
+            btnRefresh.Cursor = Cursors.Hand;
+            btnRefresh.FlatAppearance.BorderColor = Color.FromArgb(42, 60, 48);
+            btnRefresh.FlatStyle = FlatStyle.Flat;
+            btnRefresh.Font = new Font("Segoe UI Semibold", 9F);
+            btnRefresh.ForeColor = Color.FromArgb(220, 235, 225);
+            btnRefresh.Location = new Point(200, 10);
+            btnRefresh.Name = "btnRefresh";
+            btnRefresh.Size = new Size(95, 32);
+            btnRefresh.TabIndex = 2;
+            btnRefresh.Text = "↺ Refresh";
+            btnRefresh.UseVisualStyleBackColor = false;
+            btnRefresh.Click += btnRefresh_Click;
             // 
             // btnToggleStatus
             // 
             btnToggleStatus.BackColor = Color.FromArgb(28, 38, 30);
             btnToggleStatus.Cursor = Cursors.Hand;
             btnToggleStatus.FlatAppearance.BorderColor = Color.FromArgb(42, 60, 48);
-            btnToggleStatus.FlatAppearance.BorderSize = 1;
             btnToggleStatus.FlatStyle = FlatStyle.Flat;
             btnToggleStatus.Font = new Font("Segoe UI Semibold", 9F);
             btnToggleStatus.ForeColor = Color.FromArgb(220, 235, 225);
@@ -362,22 +356,22 @@ namespace Co_LAB
             btnToggleStatus.UseVisualStyleBackColor = false;
             btnToggleStatus.Click += btnToggleStatus_Click;
             // 
-            // btnRefresh
+            // btnDeleteListing
             // 
-            btnRefresh.BackColor = Color.FromArgb(28, 38, 30);
-            btnRefresh.Cursor = Cursors.Hand;
-            btnRefresh.FlatAppearance.BorderColor = Color.FromArgb(42, 60, 48);
-            btnRefresh.FlatAppearance.BorderSize = 1;
-            btnRefresh.FlatStyle = FlatStyle.Flat;
-            btnRefresh.Font = new Font("Segoe UI Semibold", 9F);
-            btnRefresh.ForeColor = Color.FromArgb(220, 235, 225);
-            btnRefresh.Location = new Point(200, 10);
-            btnRefresh.Name = "btnRefresh";
-            btnRefresh.Size = new Size(95, 32);
-            btnRefresh.TabIndex = 2;
-            btnRefresh.Text = "↺ Refresh";
-            btnRefresh.UseVisualStyleBackColor = false;
-            btnRefresh.Click += btnRefresh_Click;
+            btnDeleteListing.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnDeleteListing.BackColor = Color.FromArgb(45, 24, 26);
+            btnDeleteListing.Cursor = Cursors.Hand;
+            btnDeleteListing.FlatAppearance.BorderColor = Color.FromArgb(60, 35, 40);
+            btnDeleteListing.FlatStyle = FlatStyle.Flat;
+            btnDeleteListing.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
+            btnDeleteListing.ForeColor = Color.FromArgb(248, 113, 113);
+            btnDeleteListing.Location = new Point(810, 10);
+            btnDeleteListing.Name = "btnDeleteListing";
+            btnDeleteListing.Size = new Size(115, 32);
+            btnDeleteListing.TabIndex = 0;
+            btnDeleteListing.Text = "🗑️ Delete Listing";
+            btnDeleteListing.UseVisualStyleBackColor = false;
+            btnDeleteListing.Click += btnDeleteListing_Click;
             // 
             // dgvMyListings
             // 

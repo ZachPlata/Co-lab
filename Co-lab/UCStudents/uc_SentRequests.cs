@@ -320,6 +320,22 @@ namespace Co_LAB
 
             try
             {
+                // If this proposal had paused the skill, restore it to Active if no other accepted trade exists
+                try
+                {
+                    DatabaseHelper.ExecuteNonQuery(@"
+                        UPDATE tbl_skills s
+                        JOIN tbl_traderequests r ON s.SkillId = r.TargetSkillId
+                        SET s.Status = 'Active'
+                        WHERE r.RequestId = @id AND s.Status = 'Paused'
+                          AND NOT EXISTS (
+                              SELECT 1 FROM tbl_traderequests r2 
+                              WHERE r2.TargetSkillId = s.SkillId AND r2.RequestId != @id AND r2.Status = 'Accepted'
+                          )",
+                        new MySqlParameter("@id", req.RequestId));
+                }
+                catch { }
+
                 DatabaseHelper.ExecuteNonQuery(
                     "DELETE FROM tbl_traderequests WHERE RequestId = @id",
                     new MySqlParameter("@id", req.RequestId));
