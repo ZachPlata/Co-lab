@@ -27,7 +27,10 @@ CREATE TABLE `tbl_users` (
     `is_verified` TINYINT(1) DEFAULT 0,
     `is_blacklisted` TINYINT(1) DEFAULT 0,
     `BanReason` VARCHAR(255) DEFAULT NULL,
-    `CreatedAt` DATETIME DEFAULT CURRENT_TIMESTAMP
+    `CreatedAt` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `is_logged_in` TINYINT(1) DEFAULT 0,
+    `last_active` DATETIME DEFAULT NULL,
+    `session_id` VARCHAR(64) DEFAULT NULL
 ) ENGINE=InnoDB;
 
 -- Populate ONLY the 5 specific users (Password: 12345678)

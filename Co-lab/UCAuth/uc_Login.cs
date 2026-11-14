@@ -70,7 +70,10 @@ namespace Co_LAB.UCAuth
 
             try
             {
-                string query = "SELECT UserId, FullName, Email, Password, Role, is_blacklisted, BanReason FROM tbl_users WHERE Email = @Email LIMIT 1";
+                string query = @"SELECT UserId, FullName, Email, Password, Role, is_blacklisted, BanReason,
+                                        is_logged_in, last_active,
+                                        TIMESTAMPDIFF(SECOND, last_active, NOW()) AS inactive_seconds
+                                 FROM tbl_users WHERE Email = @Email LIMIT 1";
                 DataTable dt = DatabaseHelper.ExecuteQuery(query, new MySqlParameter("@Email", email));
 
                 if (dt.Rows.Count == 0)
@@ -115,7 +118,40 @@ namespace Co_LAB.UCAuth
                 string fullName = row["FullName"]?.ToString() ?? "";
                 string role = row["Role"]?.ToString() ?? "Student";
 
-                UserSession.Set(userId, fullName, email, role);
+                // Check if account is actively logged in on another device
+                int isLoggedIn = 0;
+                if (row["is_logged_in"] != DBNull.Value)
+                {
+                    isLoggedIn = Convert.ToInt32(row["is_logged_in"]);
+                }
+
+                bool isActiveOnOtherDevice = false;
+                if (isLoggedIn == 1 && row["last_active"] != DBNull.Value && row["inactive_seconds"] != DBNull.Value)
+                {
+                    long seconds = Convert.ToInt64(row["inactive_seconds"]);
+                    // Active if last heartbeat was within the last 30 seconds
+                    if (seconds >= -5 && seconds < 30)
+                    {
+                        isActiveOnOtherDevice = true;
+                    }
+                }
+
+                if (isActiveOnOtherDevice)
+                {
+                    lblGeneralError.Text = "This account is currently active on another device.\nPlease sign out from that device first.";
+                    lblGeneralError.Visible = true;
+                    return;
+                }
+
+                // Generate new session token and register session in DB
+                string newSessionId = Guid.NewGuid().ToString("N");
+                DatabaseHelper.ExecuteNonQuery(
+                    "UPDATE tbl_users SET is_logged_in = 1, last_active = NOW(), session_id = @sid WHERE UserId = @uid",
+                    new MySqlParameter("@sid", newSessionId),
+                    new MySqlParameter("@uid", userId)
+                );
+
+                UserSession.Set(userId, fullName, email, role, newSessionId);
 
                 if (ParentForm is LoginForm loginForm)
                 {

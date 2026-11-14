@@ -14,6 +14,7 @@ namespace Co_LAB
         public AdminMainForm()
         {
             InitializeComponent();
+            this.FormClosing += AdminMainForm_FormClosing;
         }
 
         private void AdminMainForm_Load(object sender, EventArgs e)
@@ -73,15 +74,20 @@ namespace Co_LAB
             Controls.Add(_notificationPanel);
             _notificationPanel.BringToFront();
 
-            // Background timer to refresh admin notifications live
+            // Background timer to refresh admin notifications live & heartbeat session
             _notifTimer = new System.Windows.Forms.Timer
             {
                 Interval = 5000 // Every 5 seconds
             };
-            _notifTimer.Tick += (s, e) => CheckNotifications();
+            _notifTimer.Tick += (s, e) =>
+            {
+                UserSession.Heartbeat();
+                CheckNotifications();
+            };
             _notifTimer.Start();
 
-            // Initial sync & check
+            // Initial heartbeat, sync & check
+            UserSession.Heartbeat();
             NotificationHelper.SyncExistingPendingNotifications();
             CheckNotifications();
         }
@@ -237,9 +243,17 @@ namespace Co_LAB
             {
                 _notifTimer?.Stop();
                 _notifTimer?.Dispose();
-                UserSession.Clear();
+                UserSession.SignedOut = true;
+                UserSession.EndSession();
                 this.Close();
             }
+        }
+
+        private void AdminMainForm_FormClosing(object? sender, FormClosingEventArgs e)
+        {
+            _notifTimer?.Stop();
+            _notifTimer?.Dispose();
+            UserSession.EndSession();
         }
 
         private void content_adminpan_Paint(object sender, PaintEventArgs e)

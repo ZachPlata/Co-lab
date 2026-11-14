@@ -314,9 +314,10 @@ namespace Co_LAB
             card.Controls.Add(btnDetails);
             currentBtnX += 86;
 
-            if (req.Status == "PENDING")
+            if (req.Status == "PENDING" || req.Status == "ACCEPTED")
             {
-                Button btnCancel = CreateButton("✕ Cancel Proposal", Color.FromArgb(185, 28, 28), Color.White, new Size(130, 28));
+                string cancelText = req.Status == "ACCEPTED" ? "✕ Cancel Trade" : "✕ Cancel Proposal";
+                Button btnCancel = CreateButton(cancelText, Color.FromArgb(185, 28, 28), Color.White, new Size(130, 28));
                 btnCancel.Font = new Font("Segoe UI Semibold", 8.5F, FontStyle.Bold);
                 btnCancel.Location = new Point(currentBtnX, btnY);
                 btnCancel.Click += (s, e) => CancelProposal(req);

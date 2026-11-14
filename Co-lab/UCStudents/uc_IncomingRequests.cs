@@ -351,6 +351,12 @@ namespace Co_LAB
                     btnComplete.Location = new Point(currentBtnX, btnY);
                     btnComplete.Click += (s, e) => MarkCompleted(req);
                     card.Controls.Add(btnComplete);
+                    currentBtnX += 138;
+
+                    Button btnCancelOngoing = CreateButton("✕ Cancel Trade", Color.FromArgb(185, 28, 28), Color.White, new Size(120, 28));
+                    btnCancelOngoing.Location = new Point(currentBtnX, btnY);
+                    btnCancelOngoing.Click += (s, e) => CancelOngoingTrade(req);
+                    card.Controls.Add(btnCancelOngoing);
                     break;
 
                 case "COMPLETED":
@@ -437,6 +443,23 @@ namespace Co_LAB
                 UpdateDatabaseStatus(req.RequestId, "Completed");
                 LoadIncomingRequests();
                 MessageBox.Show($"Trade with {req.RequesterName} marked as COMPLETED!", "Exchange Completed", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void CancelOngoingTrade(TradeRequestModel req)
+        {
+            var res = MessageBox.Show(
+                $"Are you sure you want to cancel this ongoing trade with {req.RequesterName}?\n\n" +
+                "Cancelling will return the skill listing to the marketplace so it becomes available again.",
+                "Cancel Ongoing Trade",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning);
+
+            if (res == DialogResult.Yes)
+            {
+                UpdateDatabaseStatus(req.RequestId, "Declined");
+                LoadIncomingRequests();
+                MessageBox.Show($"Ongoing trade with {req.RequesterName} has been cancelled.\nYour skill listing is now active on the marketplace again.", "Trade Cancelled", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 

@@ -12,6 +12,7 @@ namespace Co_LAB
         static void Main()
         {
             ApplicationConfiguration.Initialize();
+            Application.ApplicationExit += (s, e) => { UserSession.EndSession(); };
 
             while (true)
             {
@@ -36,9 +37,10 @@ namespace Co_LAB
                 {
                     Application.Run(new StudentMainForm());
 
-                    // When the main form closes AND UserSession was cleared by a Sign Out, return to LoginForm; otherwise exit the app.
-                    if (!UserSession.IsLoggedIn)
+                    // When the main form closes AND user clicked Sign Out, return to LoginForm; otherwise exit the app.
+                    if (UserSession.SignedOut)
                     {
+                        UserSession.SignedOut = false;
                         continue;
                     }
                     else
@@ -50,9 +52,10 @@ namespace Co_LAB
                 {
                     Application.Run(new AdminMainForm());
 
-                    // When the admin form closes AND UserSession was cleared by a Sign Out, return to LoginForm; otherwise exit the app.
-                    if (!UserSession.IsLoggedIn)
+                    // When the admin form closes AND user clicked Sign Out, return to LoginForm; otherwise exit the app.
+                    if (UserSession.SignedOut)
                     {
+                        UserSession.SignedOut = false;
                         continue;
                     }
                     else
