@@ -450,6 +450,10 @@ namespace Co_LAB
                             )",
                         new MySqlParameter("@id", requestId));
                 }
+
+                // Notify requester of status change
+                string studentName = string.IsNullOrWhiteSpace(UserSession.FullName) ? "Skill Owner" : UserSession.FullName;
+                NotificationHelper.NotifyTradeStatusUpdate(requestId, newStatus, studentName);
             }
             catch (Exception ex)
             {

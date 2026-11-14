@@ -245,6 +245,9 @@ namespace Co_LAB
 
                 if (rows > 0)
                 {
+                    // Trigger notification to the skill listing owner
+                    NotificationHelper.NotifyTradeRequest(TargetSkillId, TargetSkillTitle, senderName, senderEmail);
+
                     MessageBox.Show(
                         $"Your trade proposal has been sent to {TargetOwnerName}!\n\n" +
                         $"You can track the status of this proposal under 'Trade Requests'.",

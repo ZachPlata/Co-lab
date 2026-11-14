@@ -291,6 +291,11 @@ namespace Co_LAB
                         new MySqlParameter("@user", owner),
                         new MySqlParameter("@reason", reason.Trim())
                     );
+
+                    // Notify Admin of new report
+                    string reporter = string.IsNullOrWhiteSpace(UserSession.FullName) ? "A student" : UserSession.FullName;
+                    NotificationHelper.NotifyAdminNewReport(skillId, title, owner, reason.Trim(), reporter);
+
                     MessageBox.Show("Report submitted successfully. Admin will review this listing.", "Report Sent", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception ex)

@@ -93,24 +93,28 @@ namespace Co_LAB.UCStudents
                     lblDeliveryMode.Visible = false;
 
                     btnRequestTrade.Text = "🔒 Ongoing";
-                    btnRequestTrade.Enabled = false;
-                    btnRequestTrade.BackColor = Color.FromArgb(38, 44, 40);
-                    btnRequestTrade.ForeColor = Color.FromArgb(160, 165, 160);
+                    btnRequestTrade.Enabled = true;
+                    btnRequestTrade.BackColor = Color.FromArgb(45, 52, 47);
+                    btnRequestTrade.ForeColor = Color.FromArgb(170, 175, 170);
+                    btnRequestTrade.FlatAppearance.BorderColor = Color.FromArgb(60, 70, 64);
+                    btnRequestTrade.FlatAppearance.BorderSize = 1;
                     btnRequestTrade.Cursor = Cursors.Default;
                     break;
 
                 case CardTradeState.UserPending:
                     _lblOngoingBadge!.Text = "⏳ REQUEST SENT";
-                    _lblOngoingBadge.BackColor = Color.FromArgb(25, 48, 55);
-                    _lblOngoingBadge.ForeColor = Color.FromArgb(56, 189, 248); // Sky blue
+                    _lblOngoingBadge.BackColor = Color.FromArgb(20, 60, 35);
+                    _lblOngoingBadge.ForeColor = Color.FromArgb(134, 239, 172); // Light mint green
                     _lblOngoingBadge.Visible = true;
                     _lblOngoingBadge.Location = new Point(Width - _lblOngoingBadge.PreferredWidth - 14, 10);
                     lblDeliveryMode.Visible = false;
 
                     btnRequestTrade.Text = "⏳ Request Sent";
-                    btnRequestTrade.Enabled = false;
-                    btnRequestTrade.BackColor = Color.FromArgb(38, 44, 40);
-                    btnRequestTrade.ForeColor = Color.FromArgb(160, 165, 160);
+                    btnRequestTrade.Enabled = true;
+                    btnRequestTrade.BackColor = Color.FromArgb(28, 90, 50); // Vibrant forest green
+                    btnRequestTrade.ForeColor = Color.FromArgb(240, 253, 244);
+                    btnRequestTrade.FlatAppearance.BorderColor = Color.FromArgb(74, 222, 128);
+                    btnRequestTrade.FlatAppearance.BorderSize = 1;
                     btnRequestTrade.Cursor = Cursors.Default;
                     break;
 
@@ -119,9 +123,11 @@ namespace Co_LAB.UCStudents
                     lblDeliveryMode.Visible = true;
 
                     btnRequestTrade.Text = "👤 Your Skill";
-                    btnRequestTrade.Enabled = false;
-                    btnRequestTrade.BackColor = Color.FromArgb(32, 40, 35);
-                    btnRequestTrade.ForeColor = Color.FromArgb(140, 150, 142);
+                    btnRequestTrade.Enabled = true;
+                    btnRequestTrade.BackColor = Color.FromArgb(24, 75, 42); // Clean dark emerald green
+                    btnRequestTrade.ForeColor = Color.FromArgb(187, 247, 208); // Light emerald text
+                    btnRequestTrade.FlatAppearance.BorderColor = Color.FromArgb(46, 125, 70);
+                    btnRequestTrade.FlatAppearance.BorderSize = 1;
                     btnRequestTrade.Cursor = Cursors.Default;
                     break;
 
@@ -134,6 +140,7 @@ namespace Co_LAB.UCStudents
                     btnRequestTrade.Enabled = true;
                     btnRequestTrade.BackColor = Color.FromArgb(46, 125, 70);
                     btnRequestTrade.ForeColor = Color.White;
+                    btnRequestTrade.FlatAppearance.BorderSize = 0;
                     btnRequestTrade.Cursor = Cursors.Hand;
                     break;
             }

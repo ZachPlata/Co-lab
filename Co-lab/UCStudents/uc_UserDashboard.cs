@@ -358,6 +358,9 @@ namespace Co_LAB
                     }
                     catch { }
 
+                    string student = string.IsNullOrWhiteSpace(UserSession.FullName) ? CurrentStudentName : UserSession.FullName;
+                    NotificationHelper.NotifyTradeStatusUpdate(reqId, "Accepted", student);
+
                     MessageBox.Show("Trade request accepted successfully! The listing has been marked ongoing on the marketplace.", "Request Accepted", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadDashboardData();
                 }
@@ -415,6 +418,9 @@ namespace Co_LAB
                             new MySqlParameter("@id", reqId));
                     }
                     catch { }
+
+                    string student = string.IsNullOrWhiteSpace(UserSession.FullName) ? CurrentStudentName : UserSession.FullName;
+                    NotificationHelper.NotifyTradeStatusUpdate(reqId, "Declined", student);
 
                     MessageBox.Show("Trade request declined.", "Request Declined", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadDashboardData();

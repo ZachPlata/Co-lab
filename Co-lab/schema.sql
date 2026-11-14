@@ -139,7 +139,28 @@ CREATE TABLE `tbl_reports` (
 ) ENGINE=InnoDB;
 
 -- -----------------------------------------------------------------------------
--- 7. Table: tbl_tos (Terms of Service)
+-- 7. Table: tbl_notifications (User & Admin in-app notifications)
+-- -----------------------------------------------------------------------------
+DROP TABLE IF EXISTS `tbl_notifications`;
+CREATE TABLE `tbl_notifications` (
+    `NotificationId` INT AUTO_INCREMENT PRIMARY KEY,
+    `UserId` INT DEFAULT NULL,
+    `UserEmail` VARCHAR(100) DEFAULT NULL,
+    `TargetRole` ENUM('Student', 'Admin') DEFAULT 'Student',
+    `Title` VARCHAR(150) NOT NULL,
+    `Message` TEXT NOT NULL,
+    `Type` VARCHAR(50) DEFAULT 'Info',
+    `RelatedId` INT DEFAULT NULL,
+    `IsRead` TINYINT(1) DEFAULT 0,
+    `CreatedAt` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    INDEX (`UserId`),
+    INDEX (`UserEmail`),
+    INDEX (`TargetRole`),
+    INDEX (`IsRead`)
+) ENGINE=InnoDB;
+
+-- -----------------------------------------------------------------------------
+-- 8. Table: tbl_tos (Terms of Service)
 -- -----------------------------------------------------------------------------
 DROP TABLE IF EXISTS `tbl_tos`;
 CREATE TABLE `tbl_tos` (
