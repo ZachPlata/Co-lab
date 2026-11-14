@@ -7,7 +7,7 @@ namespace Co_LAB
     public static class DatabaseHelper
     {
         // =========================================================================
-        // XAMPP / PHPMYADMIN CONFIGURATION
+        // XAMPP / PHPMYADMIN CONFIGURATION (LOCAL)
         // Modify these values if your database name or credentials differ
         // =========================================================================
         public static string Server = "localhost";

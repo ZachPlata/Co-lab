@@ -201,6 +201,34 @@ namespace Co_LAB
 
             try
             {
+                // Guard: Check if duplicate request already exists in Pending or Accepted state
+                string dupCheck = @"SELECT Status FROM tbl_traderequests 
+                                    WHERE TargetSkillId = @targetId 
+                                      AND (SenderEmail = @email OR SenderName = @sender) 
+                                      AND Status IN ('Pending', 'Accepted') 
+                                    LIMIT 1";
+                object? existing = DatabaseHelper.ExecuteScalar(dupCheck,
+                    new MySqlParameter("@targetId", TargetSkillId),
+                    new MySqlParameter("@email", senderEmail),
+                    new MySqlParameter("@sender", senderName));
+
+                if (existing != null && existing != DBNull.Value)
+                {
+                    MessageBox.Show(
+                        $"You already have an ongoing trade proposal for this skill (Status: {existing}).\n\n" +
+                        "You cannot submit duplicate proposals for the same skill.",
+                        "Request Already Ongoing",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+
+                    if (ParentForm is Form parentForm)
+                    {
+                        parentForm.DialogResult = DialogResult.Cancel;
+                        parentForm.Close();
+                    }
+                    return;
+                }
+
                 string sql = @"INSERT INTO tbl_traderequests 
                     (TargetSkillId, SenderName, SenderEmail, OfferedSkillTitle, MeetingMode, Location, Message, Status) 
                     VALUES 

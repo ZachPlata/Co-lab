@@ -57,31 +57,52 @@ namespace Co_LAB
         }
 
         /// <summary>
+        /// <summary>
         /// Queries the database and dynamically generates cards inside the FlowLayoutPanel.
+        /// Keeps ongoing listings visible on the marketplace while marking them as Ongoing and disabling trade requests.
         /// </summary>
         public void LoadMarketplaceCards(string keyword, string category)
         {
             flpMarketplace.SuspendLayout();
             flpMarketplace.Controls.Clear();
 
+            string currentStudent = UserSession.FullName ?? "";
+            string currentEmail = UserSession.Email ?? "";
+            int currentUid = UserSession.UserId;
+
             try
             {
-                string query = "SELECT * FROM tbl_skills WHERE (Status = 'Active' OR Status IS NULL)";
-                var parameters = new System.Collections.Generic.List<MySqlParameter>();
+                // Select active and ongoing (paused) listings, together with accepted & user pending trade flags
+                string query = @"
+                    SELECT s.*,
+                           (SELECT COUNT(*) FROM tbl_traderequests r 
+                            WHERE r.TargetSkillId = s.SkillId AND r.Status = 'Accepted') AS AcceptedTradesCount,
+                           (SELECT COUNT(*) FROM tbl_traderequests r 
+                            WHERE r.TargetSkillId = s.SkillId 
+                              AND (r.SenderEmail = @userEmail OR r.SenderName = @userName) 
+                              AND r.Status IN ('Pending', 'Accepted')) AS UserRequestsCount
+                    FROM tbl_skills s
+                    WHERE (s.Status IN ('Active', 'Paused') OR s.Status IS NULL)";
+
+                var parameters = new System.Collections.Generic.List<MySqlParameter>
+                {
+                    new MySqlParameter("@userEmail", currentEmail),
+                    new MySqlParameter("@userName", currentStudent)
+                };
 
                 if (!string.IsNullOrWhiteSpace(keyword))
                 {
-                    query += " AND (SkillTitle LIKE @kw OR Description LIKE @kw OR OfferedBy LIKE @kw)";
+                    query += " AND (s.SkillTitle LIKE @kw OR s.Description LIKE @kw OR s.OfferedBy LIKE @kw)";
                     parameters.Add(new MySqlParameter("@kw", "%" + keyword.Trim() + "%"));
                 }
 
                 if (!string.IsNullOrWhiteSpace(category) && category != "All Categories")
                 {
-                    query += " AND Category = @cat";
+                    query += " AND s.Category = @cat";
                     parameters.Add(new MySqlParameter("@cat", category));
                 }
 
-                query += " ORDER BY SkillId DESC";
+                query += " ORDER BY s.SkillId DESC";
 
                 DataTable dt = DatabaseHelper.ExecuteQuery(query, parameters.ToArray());
 
@@ -92,11 +113,46 @@ namespace Co_LAB
                 }
                 else
                 {
-                    lblListingCount.Text = $"{dt.Rows.Count} skill(s) available";
+                    lblListingCount.Text = $"{dt.Rows.Count} skill(s) listed";
                     foreach (DataRow row in dt.Rows)
                     {
                         var card = new UCStudents.uc_SkillCard();
                         card.BindData(row);
+
+                        int acceptedCount = 0;
+                        if (row["AcceptedTradesCount"] != DBNull.Value)
+                        {
+                            acceptedCount = Convert.ToInt32(row["AcceptedTradesCount"]);
+                        }
+
+                        int userReqCount = 0;
+                        if (row["UserRequestsCount"] != DBNull.Value)
+                        {
+                            userReqCount = Convert.ToInt32(row["UserRequestsCount"]);
+                        }
+
+                        string skillStatus = row["Status"]?.ToString() ?? "Active";
+                        bool isOwner = (!string.IsNullOrWhiteSpace(currentStudent) && string.Equals(card.OfferedBy, currentStudent, StringComparison.OrdinalIgnoreCase)) ||
+                                       (currentUid > 0 && row["UserId"] != DBNull.Value && Convert.ToInt32(row["UserId"]) == currentUid);
+
+                        // If trade is accepted or paused, show as Ongoing; if user sent pending, show as Requested; if owner, show as Your Skill
+                        if (acceptedCount > 0 || string.Equals(skillStatus, "Paused", StringComparison.OrdinalIgnoreCase))
+                        {
+                            card.SetTradeState(UCStudents.CardTradeState.OngoingTrade);
+                        }
+                        else if (userReqCount > 0)
+                        {
+                            card.SetTradeState(UCStudents.CardTradeState.UserPending);
+                        }
+                        else if (isOwner)
+                        {
+                            card.SetTradeState(UCStudents.CardTradeState.OwnListing);
+                        }
+                        else
+                        {
+                            card.SetTradeState(UCStudents.CardTradeState.Available);
+                        }
+
                         card.RequestTradeClicked += (s, args) =>
                         {
                             OnRequestTradeClicked(args.SkillId, args.SkillTitle, args.OfferedBy, args.DeliveryMode);
@@ -138,6 +194,8 @@ namespace Co_LAB
         private void OnRequestTradeClicked(string skillId, string title, string owner, string mode)
         {
             string currentStudent = UserSession.FullName;
+            string currentEmail = UserSession.Email;
+
             if (!string.IsNullOrWhiteSpace(currentStudent) && string.Equals(owner, currentStudent, StringComparison.OrdinalIgnoreCase))
             {
                 MessageBox.Show("This is your own skill listing! You cannot send a trade request to yourself.", "Notice", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -145,6 +203,51 @@ namespace Co_LAB
             }
 
             int.TryParse(skillId, out int parsedSkillId);
+
+            // Guard: Check if the user already has an ongoing trade request for this skill
+            try
+            {
+                string checkSql = @"SELECT Status FROM tbl_traderequests 
+                                    WHERE TargetSkillId = @sid 
+                                      AND (SenderEmail = @email OR SenderName = @name) 
+                                      AND Status IN ('Pending', 'Accepted') 
+                                    LIMIT 1";
+                object? existingStatus = DatabaseHelper.ExecuteScalar(checkSql,
+                    new MySqlParameter("@sid", parsedSkillId),
+                    new MySqlParameter("@email", currentEmail),
+                    new MySqlParameter("@name", currentStudent));
+
+                if (existingStatus != null && existingStatus != DBNull.Value)
+                {
+                    MessageBox.Show(
+                        $"You already have an ongoing trade request for \"{title}\" (Status: {existingStatus}).\n\n" +
+                        "You cannot submit multiple requests for the same skill while one is ongoing. Please check 'Trade Requests' to view or manage it.",
+                        "Trade Request Already Ongoing",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+                    LoadMarketplaceCards(txtSearch.Text, cmbCategory.SelectedItem?.ToString() ?? "All Categories");
+                    return;
+                }
+
+                // Guard: Check if someone else already has an Accepted ongoing trade for this skill
+                string acceptedCheckSql = "SELECT Status FROM tbl_traderequests WHERE TargetSkillId = @sid AND Status = 'Accepted' LIMIT 1";
+                object? acceptedStatus = DatabaseHelper.ExecuteScalar(acceptedCheckSql, new MySqlParameter("@sid", parsedSkillId));
+                if (acceptedStatus != null && acceptedStatus != DBNull.Value)
+                {
+                    MessageBox.Show(
+                        $"This skill listing is currently engaged in an ongoing trade with another student.\n\n" +
+                        "It is no longer available for new trade proposals at this time.",
+                        "Trade Already Ongoing",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+                    LoadMarketplaceCards(txtSearch.Text, cmbCategory.SelectedItem?.ToString() ?? "All Categories");
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error checking existing trade status: {ex.Message}");
+            }
 
             using Form dlg = new Form
             {
@@ -165,6 +268,9 @@ namespace Co_LAB
             uc.InitializeTrade(parsedSkillId, title, owner, mode);
             dlg.Controls.Add(uc);
             dlg.ShowDialog(this);
+
+            // Refresh marketplace so the card updates its button and badge state immediately
+            LoadMarketplaceCards(txtSearch.Text, cmbCategory.SelectedItem?.ToString() ?? "All Categories");
         }
 
         private void OnReportClicked(string skillId, string title, string owner)

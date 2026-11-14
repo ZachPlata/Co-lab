@@ -320,6 +320,22 @@ namespace Co_LAB
 
             try
             {
+                // Restore skill to Active if this request was accepted or paused
+                try
+                {
+                    DatabaseHelper.ExecuteNonQuery(
+                        @"UPDATE tbl_skills s
+                          SET s.Status = 'Active'
+                          WHERE s.SkillId = (SELECT TargetSkillId FROM tbl_traderequests WHERE RequestId = @id)
+                            AND s.Status = 'Paused'
+                            AND NOT EXISTS (
+                                SELECT 1 FROM tbl_traderequests r2 
+                                WHERE r2.TargetSkillId = s.SkillId AND r2.Status = 'Accepted' AND r2.RequestId != @id
+                            )",
+                        new MySqlParameter("@id", req.RequestId));
+                }
+                catch { }
+
                 DatabaseHelper.ExecuteNonQuery(
                     "DELETE FROM tbl_traderequests WHERE RequestId = @id",
                     new MySqlParameter("@id", req.RequestId));

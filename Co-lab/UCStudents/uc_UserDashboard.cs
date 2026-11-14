@@ -349,7 +349,16 @@ namespace Co_LAB
 
                 if (rows > 0)
                 {
-                    MessageBox.Show("Trade request accepted successfully!", "Request Accepted", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    try
+                    {
+                        DatabaseHelper.ExecuteNonQuery(
+                            @"UPDATE tbl_skills SET Status = 'Paused' 
+                              WHERE SkillId = (SELECT TargetSkillId FROM tbl_traderequests WHERE RequestId = @id)",
+                            new MySqlParameter("@id", reqId));
+                    }
+                    catch { }
+
+                    MessageBox.Show("Trade request accepted successfully! The listing has been marked ongoing on the marketplace.", "Request Accepted", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadDashboardData();
                 }
             }
@@ -392,6 +401,21 @@ namespace Co_LAB
 
                 if (rows > 0)
                 {
+                    try
+                    {
+                        DatabaseHelper.ExecuteNonQuery(
+                            @"UPDATE tbl_skills s
+                              SET s.Status = 'Active'
+                              WHERE s.SkillId = (SELECT TargetSkillId FROM tbl_traderequests WHERE RequestId = @id)
+                                AND s.Status = 'Paused'
+                                AND NOT EXISTS (
+                                    SELECT 1 FROM tbl_traderequests r2 
+                                    WHERE r2.TargetSkillId = s.SkillId AND r2.Status = 'Accepted'
+                                )",
+                            new MySqlParameter("@id", reqId));
+                    }
+                    catch { }
+
                     MessageBox.Show("Trade request declined.", "Request Declined", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadDashboardData();
                 }
