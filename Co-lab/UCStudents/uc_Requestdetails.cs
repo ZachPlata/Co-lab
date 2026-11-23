@@ -14,25 +14,11 @@ namespace Co_LAB.UCStudents
         {
             InitializeComponent();
 
-            // Set up dark-theme styling and read-only behavior for information boxes
-            ApplyReadOnlyTheme(textBox1);
-            ApplyReadOnlyTheme(textBox2);
-            ApplyReadOnlyTheme(textBox3);
-            ApplyReadOnlyTheme(txtNotes);
-
             // Connect close button to close host Form
             btnCancel.Click += (s, e) => this.FindForm()?.Close();
 
             // Avatar painting
             pnlAvatar.Paint += PnlAvatar_Paint;
-        }
-
-        private void ApplyReadOnlyTheme(TextBox tb)
-        {
-            tb.ReadOnly = true;
-            tb.BackColor = Color.FromArgb(14, 20, 16);
-            tb.ForeColor = Color.White;
-            tb.BorderStyle = BorderStyle.FixedSingle;
         }
 
         private void PnlAvatar_Paint(object? sender, PaintEventArgs pe)

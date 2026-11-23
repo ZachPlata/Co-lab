@@ -103,16 +103,6 @@
       <DependentUpon>uc_UserDashboard.cs</DependentUpon>
     </EmbeddedResource>
 
-    <Compile Update="UCStudents\uc_PostSkill.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="UCStudents\uc_PostSkill.Designer.cs">
-      <DependentUpon>uc_PostSkill.cs</DependentUpon>
-    </Compile>
-    <EmbeddedResource Update="UCStudents\uc_PostSkill.resx">
-      <DependentUpon>uc_PostSkill.cs</DependentUpon>
-    </EmbeddedResource>
-
     <Compile Update="UCStudents\uc_ManageSkills.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -161,16 +151,6 @@
     </Compile>
     <EmbeddedResource Update="UCStudents\Propose skill exchange.resx">
       <DependentUpon>Propose skill exchange.cs</DependentUpon>
-    </EmbeddedResource>
-
-    <Compile Update="addskill.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="addskill.Designer.cs">
-      <DependentUpon>addskill.cs</DependentUpon>
-    </Compile>
-    <EmbeddedResource Update="addskill.resx">
-      <DependentUpon>addskill.cs</DependentUpon>
     </EmbeddedResource>
 
     <!-- Admin UserControls -->

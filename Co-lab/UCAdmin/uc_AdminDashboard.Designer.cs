@@ -17,6 +17,14 @@ namespace Co_LAB
 
         private void InitializeComponent()
         {
+            DataGridViewCellStyle dgvHeaderStyle = new DataGridViewCellStyle();
+            DataGridViewCellStyle dgvRowStyle = new DataGridViewCellStyle();
+            DataGridViewCellStyle dgvRowStyleAlt = new DataGridViewCellStyle();
+            DataGridViewCellStyle approveBtnStyle = new DataGridViewCellStyle();
+            DataGridViewCellStyle unbanBtnStyle = new DataGridViewCellStyle();
+            DataGridViewCellStyle blacklistBtnStyle = new DataGridViewCellStyle();
+            DataGridViewCellStyle dismissBtnStyle = new DataGridViewCellStyle();
+
             lblHeaderTitle = new Label();
             lblHeaderSubtitle = new Label();
             pnlAdminBadge = new Panel();
@@ -52,18 +60,69 @@ namespace Co_LAB
             pnlPendingVerif = new Panel();
             lblPendingVerifTitle = new Label();
             dgv_PendingStudentVerification = new DataGridView();
+            colPendingId = new DataGridViewTextBoxColumn();
+            colPendingName = new DataGridViewTextBoxColumn();
+            colPendingEmail = new DataGridViewTextBoxColumn();
+            colPendingApprove = new DataGridViewButtonColumn();
 
             pnlBlacklisted = new Panel();
             lblBlacklistedTitle = new Label();
             dgv_CurrentlyBlackLister = new DataGridView();
+            colBlacklistId = new DataGridViewTextBoxColumn();
+            colBlacklistName = new DataGridViewTextBoxColumn();
+            colBlacklistReason = new DataGridViewTextBoxColumn();
+            colBlacklistUnban = new DataGridViewButtonColumn();
 
             pnlDeclined = new Panel();
             lblDeclinedTitle = new Label();
             dgv_DeclineStudent = new DataGridView();
+            colDeclinedSource = new DataGridViewTextBoxColumn();
+            colDeclinedName = new DataGridViewTextBoxColumn();
+            colDeclinedReason = new DataGridViewTextBoxColumn();
+            colDeclinedStatus = new DataGridViewTextBoxColumn();
 
             pnlReports = new Panel();
             lblReportsTitle = new Label();
             dgvReportRecords = new DataGridView();
+            colReportId = new DataGridViewTextBoxColumn();
+            colReportedUserId = new DataGridViewTextBoxColumn();
+            colReportedStudent = new DataGridViewTextBoxColumn();
+            colReason = new DataGridViewTextBoxColumn();
+            colDate = new DataGridViewTextBoxColumn();
+            colStatus = new DataGridViewTextBoxColumn();
+            colBlacklist = new DataGridViewButtonColumn();
+            colDismiss = new DataGridViewButtonColumn();
+
+            dgvHeaderStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dgvHeaderStyle.BackColor = Color.FromArgb(20, 28, 23);
+            dgvHeaderStyle.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
+            dgvHeaderStyle.ForeColor = Color.FromArgb(74, 222, 128);
+            dgvHeaderStyle.SelectionBackColor = Color.FromArgb(20, 28, 23);
+            dgvHeaderStyle.SelectionForeColor = Color.FromArgb(74, 222, 128);
+
+            dgvRowStyle.BackColor = Color.FromArgb(18, 25, 20);
+            dgvRowStyle.Font = new Font("Segoe UI", 9F);
+            dgvRowStyle.ForeColor = Color.FromArgb(228, 228, 231);
+            dgvRowStyle.SelectionBackColor = Color.FromArgb(34, 52, 40);
+            dgvRowStyle.SelectionForeColor = Color.White;
+
+            dgvRowStyleAlt.BackColor = Color.FromArgb(15, 22, 17);
+            dgvRowStyleAlt.Font = new Font("Segoe UI", 9F);
+            dgvRowStyleAlt.ForeColor = Color.FromArgb(228, 228, 231);
+            dgvRowStyleAlt.SelectionBackColor = Color.FromArgb(34, 52, 40);
+            dgvRowStyleAlt.SelectionForeColor = Color.White;
+
+            approveBtnStyle.BackColor = Color.FromArgb(46, 125, 70);
+            approveBtnStyle.ForeColor = Color.White;
+
+            unbanBtnStyle.BackColor = Color.FromArgb(28, 38, 30);
+            unbanBtnStyle.ForeColor = Color.FromArgb(74, 222, 128);
+
+            blacklistBtnStyle.BackColor = Color.FromArgb(45, 24, 26);
+            blacklistBtnStyle.ForeColor = Color.FromArgb(248, 113, 113);
+
+            dismissBtnStyle.BackColor = Color.FromArgb(28, 38, 30);
+            dismissBtnStyle.ForeColor = Color.FromArgb(200, 220, 208);
 
             pnlAdminBadge.SuspendLayout();
             pnlStatStudents.SuspendLayout();
@@ -148,7 +207,7 @@ namespace Co_LAB
             pnlStatStudents.BackColor = Color.FromArgb(20, 28, 23);
             pnlStatStudents.Controls.Add(lblStatStudentsTitle);
             pnlStatStudents.Controls.Add(lblTotalStudentCount);
-            pnlStatStudents.Location = new Point(24, 78);
+            pnlStatStudents.Location = new Point(24, 82);
             pnlStatStudents.Name = "pnlStatStudents";
             pnlStatStudents.Size = new Size(215, 95);
             pnlStatStudents.TabIndex = 3;
@@ -187,7 +246,7 @@ namespace Co_LAB
             pnlStatSkills.BackColor = Color.FromArgb(20, 28, 23);
             pnlStatSkills.Controls.Add(lblStatSkillsTitle);
             pnlStatSkills.Controls.Add(lblActiveSkillCount);
-            pnlStatSkills.Location = new Point(259, 78);
+            pnlStatSkills.Location = new Point(259, 82);
             pnlStatSkills.Name = "pnlStatSkills";
             pnlStatSkills.Size = new Size(215, 95);
             pnlStatSkills.TabIndex = 4;
@@ -226,7 +285,7 @@ namespace Co_LAB
             pnlStatPending.BackColor = Color.FromArgb(20, 28, 23);
             pnlStatPending.Controls.Add(lblStatPendingTitle);
             pnlStatPending.Controls.Add(lblPendingSkillCount);
-            pnlStatPending.Location = new Point(494, 78);
+            pnlStatPending.Location = new Point(494, 82);
             pnlStatPending.Name = "pnlStatPending";
             pnlStatPending.Size = new Size(215, 95);
             pnlStatPending.TabIndex = 5;
@@ -265,7 +324,7 @@ namespace Co_LAB
             pnlStatReports.BackColor = Color.FromArgb(20, 28, 23);
             pnlStatReports.Controls.Add(lblStatReportsTitle);
             pnlStatReports.Controls.Add(lblOpenReportsCount);
-            pnlStatReports.Location = new Point(729, 78);
+            pnlStatReports.Location = new Point(729, 82);
             pnlStatReports.Name = "pnlStatReports";
             pnlStatReports.Size = new Size(215, 95);
             pnlStatReports.TabIndex = 6;
@@ -310,7 +369,7 @@ namespace Co_LAB
             pnlShortcuts.Controls.Add(btnManageStudents);
             pnlShortcuts.Controls.Add(lblShortcutsSub);
             pnlShortcuts.Controls.Add(label2);
-            pnlShortcuts.Location = new Point(24, 185);
+            pnlShortcuts.Location = new Point(24, 201);
             pnlShortcuts.Name = "pnlShortcuts";
             pnlShortcuts.Size = new Size(350, 205);
             pnlShortcuts.TabIndex = 7;
@@ -382,7 +441,7 @@ namespace Co_LAB
             pnlPendingVerif.BackColor = Color.FromArgb(20, 28, 23);
             pnlPendingVerif.Controls.Add(dgv_PendingStudentVerification);
             pnlPendingVerif.Controls.Add(lblPendingVerifTitle);
-            pnlPendingVerif.Location = new Point(390, 185);
+            pnlPendingVerif.Location = new Point(390, 201);
             pnlPendingVerif.Name = "pnlPendingVerif";
             pnlPendingVerif.Size = new Size(554, 205);
             pnlPendingVerif.TabIndex = 8;
@@ -403,10 +462,51 @@ namespace Co_LAB
             // 
             // dgv_PendingStudentVerification
             // 
+            dgv_PendingStudentVerification.AllowUserToAddRows = false;
+            dgv_PendingStudentVerification.AllowUserToDeleteRows = false;
+            dgv_PendingStudentVerification.AllowUserToResizeRows = false;
+            dgv_PendingStudentVerification.AlternatingRowsDefaultCellStyle = dgvRowStyleAlt;
+            dgv_PendingStudentVerification.BackgroundColor = Color.FromArgb(14, 20, 16);
+            dgv_PendingStudentVerification.BorderStyle = BorderStyle.None;
+            dgv_PendingStudentVerification.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+            dgv_PendingStudentVerification.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            dgv_PendingStudentVerification.ColumnHeadersDefaultCellStyle = dgvHeaderStyle;
+            dgv_PendingStudentVerification.ColumnHeadersHeight = 32;
+            dgv_PendingStudentVerification.Columns.AddRange(new DataGridViewColumn[] { colPendingId, colPendingName, colPendingEmail, colPendingApprove });
+            dgv_PendingStudentVerification.DefaultCellStyle = dgvRowStyle;
+            dgv_PendingStudentVerification.EnableHeadersVisualStyles = false;
+            dgv_PendingStudentVerification.GridColor = Color.FromArgb(30, 44, 34);
             dgv_PendingStudentVerification.Location = new Point(16, 42);
+            dgv_PendingStudentVerification.MultiSelect = false;
             dgv_PendingStudentVerification.Name = "dgv_PendingStudentVerification";
+            dgv_PendingStudentVerification.RowHeadersVisible = false;
+            dgv_PendingStudentVerification.RowTemplate.Height = 32;
+            dgv_PendingStudentVerification.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgv_PendingStudentVerification.Size = new Size(522, 145);
             dgv_PendingStudentVerification.TabIndex = 1;
+            dgv_PendingStudentVerification.CellContentClick += dgv_PendingStudentVerification_CellContentClick;
+            dgv_PendingStudentVerification.CellFormatting += DgvApprove_CellFormatting;
+
+            colPendingId.HeaderText = "ID";
+            colPendingId.Name = "colPendingId";
+            colPendingId.Visible = false;
+
+            colPendingName.HeaderText = "Student Name";
+            colPendingName.Name = "colPendingName";
+            colPendingName.Width = 160;
+
+            colPendingEmail.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colPendingEmail.HeaderText = "Email Address";
+            colPendingEmail.MinimumWidth = 140;
+            colPendingEmail.Name = "colPendingEmail";
+
+            colPendingApprove.DefaultCellStyle = approveBtnStyle;
+            colPendingApprove.FlatStyle = FlatStyle.Flat;
+            colPendingApprove.HeaderText = "Action";
+            colPendingApprove.Name = "colPendingApprove";
+            colPendingApprove.Text = "✓ Approve";
+            colPendingApprove.UseColumnTextForButtonValue = true;
+            colPendingApprove.Width = 90;
 
             // 
             // pnlBlacklisted
@@ -414,7 +514,7 @@ namespace Co_LAB
             pnlBlacklisted.BackColor = Color.FromArgb(20, 28, 23);
             pnlBlacklisted.Controls.Add(dgv_CurrentlyBlackLister);
             pnlBlacklisted.Controls.Add(lblBlacklistedTitle);
-            pnlBlacklisted.Location = new Point(24, 402);
+            pnlBlacklisted.Location = new Point(24, 430);
             pnlBlacklisted.Name = "pnlBlacklisted";
             pnlBlacklisted.Size = new Size(440, 215);
             pnlBlacklisted.TabIndex = 9;
@@ -435,10 +535,50 @@ namespace Co_LAB
             // 
             // dgv_CurrentlyBlackLister
             // 
+            dgv_CurrentlyBlackLister.AllowUserToAddRows = false;
+            dgv_CurrentlyBlackLister.AllowUserToDeleteRows = false;
+            dgv_CurrentlyBlackLister.AllowUserToResizeRows = false;
+            dgv_CurrentlyBlackLister.AlternatingRowsDefaultCellStyle = dgvRowStyleAlt;
+            dgv_CurrentlyBlackLister.BackgroundColor = Color.FromArgb(14, 20, 16);
+            dgv_CurrentlyBlackLister.BorderStyle = BorderStyle.None;
+            dgv_CurrentlyBlackLister.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+            dgv_CurrentlyBlackLister.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            dgv_CurrentlyBlackLister.ColumnHeadersDefaultCellStyle = dgvHeaderStyle;
+            dgv_CurrentlyBlackLister.ColumnHeadersHeight = 32;
+            dgv_CurrentlyBlackLister.Columns.AddRange(new DataGridViewColumn[] { colBlacklistId, colBlacklistName, colBlacklistReason, colBlacklistUnban });
+            dgv_CurrentlyBlackLister.DefaultCellStyle = dgvRowStyle;
+            dgv_CurrentlyBlackLister.EnableHeadersVisualStyles = false;
+            dgv_CurrentlyBlackLister.GridColor = Color.FromArgb(30, 44, 34);
             dgv_CurrentlyBlackLister.Location = new Point(16, 42);
+            dgv_CurrentlyBlackLister.MultiSelect = false;
             dgv_CurrentlyBlackLister.Name = "dgv_CurrentlyBlackLister";
+            dgv_CurrentlyBlackLister.RowHeadersVisible = false;
+            dgv_CurrentlyBlackLister.RowTemplate.Height = 32;
+            dgv_CurrentlyBlackLister.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgv_CurrentlyBlackLister.Size = new Size(408, 155);
             dgv_CurrentlyBlackLister.TabIndex = 1;
+            dgv_CurrentlyBlackLister.CellContentClick += dgv_CurrentlyBlackLister_CellContentClick;
+
+            colBlacklistId.HeaderText = "ID";
+            colBlacklistId.Name = "colBlacklistId";
+            colBlacklistId.Visible = false;
+
+            colBlacklistName.HeaderText = "Student Name";
+            colBlacklistName.Name = "colBlacklistName";
+            colBlacklistName.Width = 130;
+
+            colBlacklistReason.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colBlacklistReason.HeaderText = "Reason";
+            colBlacklistReason.MinimumWidth = 130;
+            colBlacklistReason.Name = "colBlacklistReason";
+
+            colBlacklistUnban.DefaultCellStyle = unbanBtnStyle;
+            colBlacklistUnban.FlatStyle = FlatStyle.Flat;
+            colBlacklistUnban.HeaderText = "Action";
+            colBlacklistUnban.Name = "colBlacklistUnban";
+            colBlacklistUnban.Text = "Unban";
+            colBlacklistUnban.UseColumnTextForButtonValue = true;
+            colBlacklistUnban.Width = 75;
 
             // 
             // pnlDeclined
@@ -446,7 +586,7 @@ namespace Co_LAB
             pnlDeclined.BackColor = Color.FromArgb(20, 28, 23);
             pnlDeclined.Controls.Add(dgv_DeclineStudent);
             pnlDeclined.Controls.Add(lblDeclinedTitle);
-            pnlDeclined.Location = new Point(480, 402);
+            pnlDeclined.Location = new Point(480, 430);
             pnlDeclined.Name = "pnlDeclined";
             pnlDeclined.Size = new Size(464, 215);
             pnlDeclined.TabIndex = 10;
@@ -467,10 +607,45 @@ namespace Co_LAB
             // 
             // dgv_DeclineStudent
             // 
+            dgv_DeclineStudent.AllowUserToAddRows = false;
+            dgv_DeclineStudent.AllowUserToDeleteRows = false;
+            dgv_DeclineStudent.AllowUserToResizeRows = false;
+            dgv_DeclineStudent.AlternatingRowsDefaultCellStyle = dgvRowStyleAlt;
+            dgv_DeclineStudent.BackgroundColor = Color.FromArgb(14, 20, 16);
+            dgv_DeclineStudent.BorderStyle = BorderStyle.None;
+            dgv_DeclineStudent.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+            dgv_DeclineStudent.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            dgv_DeclineStudent.ColumnHeadersDefaultCellStyle = dgvHeaderStyle;
+            dgv_DeclineStudent.ColumnHeadersHeight = 32;
+            dgv_DeclineStudent.Columns.AddRange(new DataGridViewColumn[] { colDeclinedSource, colDeclinedName, colDeclinedReason, colDeclinedStatus });
+            dgv_DeclineStudent.DefaultCellStyle = dgvRowStyle;
+            dgv_DeclineStudent.EnableHeadersVisualStyles = false;
+            dgv_DeclineStudent.GridColor = Color.FromArgb(30, 44, 34);
             dgv_DeclineStudent.Location = new Point(16, 42);
+            dgv_DeclineStudent.MultiSelect = false;
             dgv_DeclineStudent.Name = "dgv_DeclineStudent";
+            dgv_DeclineStudent.RowHeadersVisible = false;
+            dgv_DeclineStudent.RowTemplate.Height = 32;
+            dgv_DeclineStudent.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgv_DeclineStudent.Size = new Size(432, 155);
             dgv_DeclineStudent.TabIndex = 1;
+
+            colDeclinedSource.HeaderText = "Type";
+            colDeclinedSource.Name = "colDeclinedSource";
+            colDeclinedSource.Width = 105;
+
+            colDeclinedName.HeaderText = "Student Name";
+            colDeclinedName.Name = "colDeclinedName";
+            colDeclinedName.Width = 125;
+
+            colDeclinedReason.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colDeclinedReason.HeaderText = "Reason / Notes";
+            colDeclinedReason.MinimumWidth = 140;
+            colDeclinedReason.Name = "colDeclinedReason";
+
+            colDeclinedStatus.HeaderText = "Status";
+            colDeclinedStatus.Name = "colDeclinedStatus";
+            colDeclinedStatus.Width = 85;
 
             // 
             // pnlReports
@@ -478,7 +653,7 @@ namespace Co_LAB
             pnlReports.BackColor = Color.FromArgb(20, 28, 23);
             pnlReports.Controls.Add(dgvReportRecords);
             pnlReports.Controls.Add(lblReportsTitle);
-            pnlReports.Location = new Point(24, 629);
+            pnlReports.Location = new Point(24, 669);
             pnlReports.Name = "pnlReports";
             pnlReports.Size = new Size(920, 255);
             pnlReports.TabIndex = 11;
@@ -499,10 +674,71 @@ namespace Co_LAB
             // 
             // dgvReportRecords
             // 
+            dgvReportRecords.AllowUserToAddRows = false;
+            dgvReportRecords.AllowUserToDeleteRows = false;
+            dgvReportRecords.AllowUserToResizeRows = false;
+            dgvReportRecords.AlternatingRowsDefaultCellStyle = dgvRowStyleAlt;
+            dgvReportRecords.BackgroundColor = Color.FromArgb(14, 20, 16);
+            dgvReportRecords.BorderStyle = BorderStyle.None;
+            dgvReportRecords.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+            dgvReportRecords.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            dgvReportRecords.ColumnHeadersDefaultCellStyle = dgvHeaderStyle;
+            dgvReportRecords.ColumnHeadersHeight = 32;
+            dgvReportRecords.Columns.AddRange(new DataGridViewColumn[] { colReportId, colReportedUserId, colReportedStudent, colReason, colDate, colStatus, colBlacklist, colDismiss });
+            dgvReportRecords.DefaultCellStyle = dgvRowStyle;
+            dgvReportRecords.EnableHeadersVisualStyles = false;
+            dgvReportRecords.GridColor = Color.FromArgb(30, 44, 34);
             dgvReportRecords.Location = new Point(16, 42);
+            dgvReportRecords.MultiSelect = false;
             dgvReportRecords.Name = "dgvReportRecords";
+            dgvReportRecords.RowHeadersVisible = false;
+            dgvReportRecords.RowTemplate.Height = 32;
+            dgvReportRecords.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvReportRecords.Size = new Size(888, 195);
             dgvReportRecords.TabIndex = 1;
+            dgvReportRecords.CellContentClick += dgvReportRecords_CellContentClick;
+            dgvReportRecords.CellFormatting += DgvReports_CellFormatting;
+
+            colReportId.HeaderText = "ID";
+            colReportId.Name = "colReportId";
+            colReportId.Width = 55;
+
+            colReportedUserId.HeaderText = "UserId";
+            colReportedUserId.Name = "colReportedUserId";
+            colReportedUserId.Visible = false;
+
+            colReportedStudent.HeaderText = "Reported Student";
+            colReportedStudent.Name = "colReportedStudent";
+            colReportedStudent.Width = 150;
+
+            colReason.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colReason.HeaderText = "Reason of Report";
+            colReason.MinimumWidth = 180;
+            colReason.Name = "colReason";
+
+            colDate.HeaderText = "Date";
+            colDate.Name = "colDate";
+            colDate.Width = 95;
+
+            colStatus.HeaderText = "Status";
+            colStatus.Name = "colStatus";
+            colStatus.Width = 85;
+
+            colBlacklist.DefaultCellStyle = blacklistBtnStyle;
+            colBlacklist.FlatStyle = FlatStyle.Flat;
+            colBlacklist.HeaderText = "Blacklist";
+            colBlacklist.Name = "colBlacklist";
+            colBlacklist.Text = "Blacklist";
+            colBlacklist.UseColumnTextForButtonValue = true;
+            colBlacklist.Width = 80;
+
+            colDismiss.DefaultCellStyle = dismissBtnStyle;
+            colDismiss.FlatStyle = FlatStyle.Flat;
+            colDismiss.HeaderText = "Dismiss";
+            colDismiss.Name = "colDismiss";
+            colDismiss.Text = "Dismiss";
+            colDismiss.UseColumnTextForButtonValue = true;
+            colDismiss.Width = 75;
 
             // 
             // uc_AdminDashboard
@@ -510,7 +746,7 @@ namespace Co_LAB
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             AutoScroll = true;
-            AutoScrollMinSize = new Size(920, 900);
+            AutoScrollMinSize = new Size(920, 956);
             BackColor = Color.FromArgb(14, 20, 16);
             Controls.Add(pnlReports);
             Controls.Add(pnlDeclined);
@@ -525,7 +761,7 @@ namespace Co_LAB
             Controls.Add(lblHeaderSubtitle);
             Controls.Add(lblHeaderTitle);
             Name = "uc_AdminDashboard";
-            Size = new Size(960, 910);
+            Size = new Size(960, 960);
             Load += uc_AdminDashboard_Load;
             Resize += uc_AdminDashboard_Resize;
 
@@ -609,20 +845,40 @@ namespace Co_LAB
         private Panel pnlPendingVerif;
         private Label lblPendingVerifTitle;
         private DataGridView dgv_PendingStudentVerification;
+        private DataGridViewTextBoxColumn colPendingId;
+        private DataGridViewTextBoxColumn colPendingName;
+        private DataGridViewTextBoxColumn colPendingEmail;
+        private DataGridViewButtonColumn colPendingApprove;
 
         // Blacklisted
         private Panel pnlBlacklisted;
         private Label lblBlacklistedTitle;
         private DataGridView dgv_CurrentlyBlackLister;
+        private DataGridViewTextBoxColumn colBlacklistId;
+        private DataGridViewTextBoxColumn colBlacklistName;
+        private DataGridViewTextBoxColumn colBlacklistReason;
+        private DataGridViewButtonColumn colBlacklistUnban;
 
         // Declined
         private Panel pnlDeclined;
         private Label lblDeclinedTitle;
         private DataGridView dgv_DeclineStudent;
+        private DataGridViewTextBoxColumn colDeclinedSource;
+        private DataGridViewTextBoxColumn colDeclinedName;
+        private DataGridViewTextBoxColumn colDeclinedReason;
+        private DataGridViewTextBoxColumn colDeclinedStatus;
 
         // Report records
         private Panel pnlReports;
         private Label lblReportsTitle;
         private DataGridView dgvReportRecords;
+        private DataGridViewTextBoxColumn colReportId;
+        private DataGridViewTextBoxColumn colReportedUserId;
+        private DataGridViewTextBoxColumn colReportedStudent;
+        private DataGridViewTextBoxColumn colReason;
+        private DataGridViewTextBoxColumn colDate;
+        private DataGridViewTextBoxColumn colStatus;
+        private DataGridViewButtonColumn colBlacklist;
+        private DataGridViewButtonColumn colDismiss;
     }
 }

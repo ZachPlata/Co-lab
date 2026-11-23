@@ -62,31 +62,48 @@ namespace Co_LAB
         {
             var loadedList = new List<SentRequestModel>();
 
-            string studentName = string.IsNullOrWhiteSpace(UserSession.FullName) ? "Zach Plata" : UserSession.FullName;
-            string studentEmail = string.IsNullOrWhiteSpace(UserSession.Email) ? "" : UserSession.Email;
+            string studentName = UserSession.FullName?.Trim() ?? string.Empty;
+            string studentEmail = UserSession.Email?.Trim() ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(studentName) && string.IsNullOrWhiteSpace(studentEmail))
+            {
+                _lastFingerprint = string.Empty;
+                _requests = loadedList;
+                RenderCards();
+                return;
+            }
 
             try
             {
-                string query = @"SELECT 
-                                    r.RequestId, 
-                                    s.OfferedBy AS RecipientName, 
-                                    COALESCE(u.College, 'UE Student') AS RecipientProgram, 
-                                    s.SkillTitle AS TargetSkill, 
-                                    r.OfferedSkillTitle AS WhatIOffered, 
-                                    r.RequestDate AS RequestDateTime, 
-                                    COALESCE(r.MeetingMode, 'Face-to-Face') AS MeetingMode,
-                                    r.Location, 
-                                    r.Message AS Note, 
-                                    r.Status 
-                                 FROM tbl_traderequests r 
-                                 INNER JOIN tbl_skills s ON r.TargetSkillId = s.SkillId 
-                                 LEFT JOIN tbl_users u ON s.UserId = u.UserId OR s.OfferedBy = u.FullName 
-                                 WHERE r.SenderName = @user OR (r.SenderEmail = @email AND @email != '') 
-                                 ORDER BY r.RequestId DESC";
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand cmd = new MySqlCommand();
+                DataSet ds = new DataSet();
+                MySqlDataAdapter da = new MySqlDataAdapter();
+                conn.Open();
+                cmd.CommandText = @"SELECT 
+                                        r.RequestId, 
+                                        s.OfferedBy AS RecipientName, 
+                                        COALESCE(u.College, 'UE Student') AS RecipientProgram, 
+                                        s.SkillTitle AS TargetSkill, 
+                                        r.OfferedSkillTitle AS WhatIOffered, 
+                                        r.RequestDate AS RequestDateTime, 
+                                        COALESCE(r.MeetingMode, 'Face-to-Face') AS MeetingMode,
+                                        r.Location, 
+                                        r.Message AS Note, 
+                                        r.Status 
+                                    FROM tbl_traderequests r 
+                                    INNER JOIN tbl_skills s ON r.TargetSkillId = s.SkillId 
+                                    LEFT JOIN tbl_users u ON s.UserId = u.UserId OR (s.UserId IS NULL AND s.OfferedBy = u.FullName) 
+                                    WHERE ((@user != '' AND r.SenderName = @user) OR (@email != '' AND r.SenderEmail = @email)) 
+                                    ORDER BY r.RequestId DESC";
+                cmd.Connection = conn;
+                cmd.Parameters.AddWithValue("@user", studentName);
+                cmd.Parameters.AddWithValue("@email", studentEmail);
+                da.SelectCommand = cmd;
+                da.Fill(ds, "sent");
+                conn.Close();
 
-                DataTable dt = DatabaseHelper.ExecuteQuery(query,
-                    new MySqlParameter("@user", studentName),
-                    new MySqlParameter("@email", studentEmail));
+                DataTable dt = ds.Tables["sent"]!;
 
                 if (dt != null && dt.Rows.Count > 0)
                 {
@@ -131,24 +148,22 @@ namespace Co_LAB
         private void RenderCards()
         {
             flpRequests.SuspendLayout();
-            flpRequests.Controls.Clear();
+            for (int i = flpRequests.Controls.Count - 1; i >= 0; i--)
+            {
+                Control old = flpRequests.Controls[i];
+                flpRequests.Controls.RemoveAt(i);
+                old.Dispose();
+            }
 
             if (_requests.Count == 0)
             {
-                Label lblEmpty = new Label
-                {
-                    Text = "No sent trade proposals yet.\nBrowse the Skill Exchange marketplace and request a trade to see your sent offers here!",
-                    ForeColor = Color.FromArgb(161, 161, 170),
-                    Font = new Font("Segoe UI", 10.5F),
-                    AutoSize = false,
-                    Size = new Size(Math.Max(flpRequests.ClientSize.Width - 40, 600), 100),
-                    TextAlign = ContentAlignment.MiddleCenter,
-                    Margin = new Padding(20, 80, 0, 0)
-                };
-                flpRequests.Controls.Add(lblEmpty);
+                lblEmpty.Visible = true;
+                lblEmpty.BringToFront();
                 flpRequests.ResumeLayout(true);
                 return;
             }
+
+            lblEmpty.Visible = false;
 
             int cardWidth = GetResponsiveCardWidth();
 
@@ -353,22 +368,32 @@ namespace Co_LAB
                 // Restore skill to Active if this request was accepted or paused
                 try
                 {
-                    DatabaseHelper.ExecuteNonQuery(
-                        @"UPDATE tbl_skills s
-                          SET s.Status = 'Active'
-                          WHERE s.SkillId = (SELECT TargetSkillId FROM tbl_traderequests WHERE RequestId = @id)
-                            AND s.Status = 'Paused'
-                            AND NOT EXISTS (
-                                SELECT 1 FROM tbl_traderequests r2 
-                                WHERE r2.TargetSkillId = s.SkillId AND r2.Status = 'Accepted' AND r2.RequestId != @id
-                            )",
-                        new MySqlParameter("@id", req.RequestId));
+                    using MySqlConnection restoreConn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                    MySqlCommand restoreCmd = new MySqlCommand();
+                    restoreConn.Open();
+                    restoreCmd.CommandText = @"UPDATE tbl_skills s
+                                               SET s.Status = 'Active'
+                                               WHERE s.SkillId = (SELECT TargetSkillId FROM tbl_traderequests WHERE RequestId = @id)
+                                                 AND s.Status = 'Paused'
+                                                 AND NOT EXISTS (
+                                                     SELECT 1 FROM tbl_traderequests r2 
+                                                     WHERE r2.TargetSkillId = s.SkillId AND r2.Status = 'Accepted' AND r2.RequestId != @id
+                                                 )";
+                    restoreCmd.Connection = restoreConn;
+                    restoreCmd.Parameters.AddWithValue("@id", req.RequestId);
+                    restoreCmd.ExecuteNonQuery();
+                    restoreConn.Close();
                 }
                 catch { }
 
-                DatabaseHelper.ExecuteNonQuery(
-                    "DELETE FROM tbl_traderequests WHERE RequestId = @id",
-                    new MySqlParameter("@id", req.RequestId));
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand cmd = new MySqlCommand();
+                conn.Open();
+                cmd.CommandText = "DELETE FROM tbl_traderequests WHERE RequestId = @id";
+                cmd.Connection = conn;
+                cmd.Parameters.AddWithValue("@id", req.RequestId);
+                cmd.ExecuteNonQuery();
+                conn.Close();
 
                 LoadSentRequests();
                 MessageBox.Show("Your trade proposal has been cancelled.", "Cancelled", MessageBoxButtons.OK, MessageBoxIcon.Information);

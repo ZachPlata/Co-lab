@@ -1,14 +1,13 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using MySql.Data.MySqlClient;
 
 namespace Co_LAB
 {
     [System.ComponentModel.DesignerCategory("Form")]
     public partial class AdminMainForm : Form
     {
-        private Button btnNotificationBell = null!;
-        private NotificationPanel _notificationPanel = null!;
         private System.Windows.Forms.Timer _notifTimer = null!;
 
         public AdminMainForm()
@@ -29,34 +28,6 @@ namespace Co_LAB
 
         private void InitializeNotificationUI()
         {
-            // Notification Bell button on top header
-            btnNotificationBell = new Button
-            {
-                Text = "🔔 0",
-                Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold),
-                BackColor = Color.FromArgb(24, 34, 27),
-                ForeColor = Color.FromArgb(74, 222, 128),
-                FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand,
-                Size = new Size(82, 32),
-                Anchor = AnchorStyles.Top | AnchorStyles.Right,
-                Location = new Point(lblAdminProfile.Left - 95, 38)
-            };
-            btnNotificationBell.FlatAppearance.BorderColor = Color.FromArgb(46, 125, 70);
-            btnNotificationBell.FlatAppearance.BorderSize = 1;
-            btnNotificationBell.Click += BtnNotificationBell_Click;
-
-            pnlHeader.Controls.Add(btnNotificationBell);
-            btnNotificationBell.BringToFront();
-
-            // Notification dropdown panel
-            _notificationPanel = new NotificationPanel
-            {
-                Visible = false,
-                Anchor = AnchorStyles.Top | AnchorStyles.Right,
-                Location = new Point(Width - 400, pnlHeader.Bottom + 2),
-                Size = new Size(380, 440)
-            };
             _notificationPanel.NotificationActionRequested += (s, type) =>
             {
                 _notificationPanel.Visible = false;
@@ -70,9 +41,6 @@ namespace Co_LAB
             {
                 _notificationPanel.Visible = false;
             };
-
-            Controls.Add(_notificationPanel);
-            _notificationPanel.BringToFront();
 
             // Background timer to refresh admin notifications live & heartbeat session
             _notifTimer = new System.Windows.Forms.Timer
@@ -124,9 +92,19 @@ namespace Co_LAB
                 }
 
                 // Also update sidebar badge for pending reports
-                string query = "SELECT COUNT(*) FROM tbl_reports WHERE Status = 'Pending'";
-                object? countObj = DatabaseHelper.ExecuteScalar(query);
-                int pendingReports = countObj != null && countObj != DBNull.Value ? Convert.ToInt32(countObj) : 0;
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand cmd = new MySqlCommand();
+                conn.Open();
+                cmd.CommandText = "SELECT COUNT(*) FROM tbl_reports WHERE Status = 'Pending'";
+                cmd.Connection = conn;
+
+                int pendingReports = 0;
+                using MySqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read() && reader[0] != DBNull.Value)
+                {
+                    pendingReports = Convert.ToInt32(reader[0]);
+                }
+                conn.Close();
                 if (pendingReports > 0)
                 {
                     btn_ReportedStudents.Text = $"Reports & Blacklist ({pendingReports})";
@@ -143,14 +121,24 @@ namespace Co_LAB
         // SIDEBAR BUTTON CLICK EVENTS (TRANSITIONS)
         // ==========================================
 
+        private void LoadContentControl(UserControl control)
+        {
+            for (int i = panelContent.Controls.Count - 1; i >= 0; i--)
+            {
+                Control old = panelContent.Controls[i];
+                panelContent.Controls.RemoveAt(i);
+                old.Dispose();
+            }
+
+            control.Dock = DockStyle.Fill;
+            panelContent.Controls.Add(control);
+            control.Show();
+        }
+
         private void btn_AdminDashboard_Click(object sender, EventArgs e)
         {
             _notificationPanel?.Hide();
-            uc_AdminDashboard frm = new uc_AdminDashboard();
-            panelContent.Controls.Clear();
-            frm.Dock = DockStyle.Fill;
-            panelContent.Controls.Add(frm);
-            frm.Show();
+            LoadContentControl(new uc_AdminDashboard());
             SetActiveButton(btn_AdminDashboard);
             lblHeaderTitle.Text = "Admin Dashboard";
         }
@@ -158,11 +146,7 @@ namespace Co_LAB
         private void btn_SkillCategories_Click(object sender, EventArgs e)
         {
             _notificationPanel?.Hide();
-            uc_SkillCategories frm = new uc_SkillCategories();
-            panelContent.Controls.Clear();
-            frm.Dock = DockStyle.Fill;
-            panelContent.Controls.Add(frm);
-            frm.Show();
+            LoadContentControl(new uc_SkillCategories());
             SetActiveButton(btn_SkillCategories);
             lblHeaderTitle.Text = "Skill Categories Creation";
         }
@@ -170,11 +154,7 @@ namespace Co_LAB
         private void btn_ModerateListings_Click(object sender, EventArgs e)
         {
             _notificationPanel?.Hide();
-            uc_ModerateListings frm = new uc_ModerateListings();
-            panelContent.Controls.Clear();
-            frm.Dock = DockStyle.Fill;
-            panelContent.Controls.Add(frm);
-            frm.Show();
+            LoadContentControl(new uc_ModerateListings());
             SetActiveButton(btn_ModerateListings);
             lblHeaderTitle.Text = "Moderate Skill Listings";
         }
@@ -182,11 +162,7 @@ namespace Co_LAB
         private void btn_ReportedStudents_Click(object sender, EventArgs e)
         {
             _notificationPanel?.Hide();
-            uc_ReportedStudents frm = new uc_ReportedStudents();
-            panelContent.Controls.Clear();
-            frm.Dock = DockStyle.Fill;
-            panelContent.Controls.Add(frm);
-            frm.Show();
+            LoadContentControl(new uc_ReportedStudents());
             SetActiveButton(btn_ReportedStudents);
             lblHeaderTitle.Text = "Reports & Blacklist";
             CheckNotifications();

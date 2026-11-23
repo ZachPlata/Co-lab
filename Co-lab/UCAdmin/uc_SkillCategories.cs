@@ -34,8 +34,13 @@ namespace Co_LAB
         {
             try
             {
-                DatabaseHelper.ExecuteNonQuery(
-                    "ALTER TABLE tbl_categories ADD COLUMN IF NOT EXISTS Description TEXT DEFAULT NULL;");
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand cmd = new MySqlCommand();
+                conn.Open();
+                cmd.CommandText = "ALTER TABLE tbl_categories ADD COLUMN IF NOT EXISTS Description TEXT DEFAULT NULL;";
+                cmd.Connection = conn;
+                cmd.ExecuteNonQuery();
+                conn.Close();
             }
             catch
             {
@@ -50,18 +55,27 @@ namespace Co_LAB
         {
             try
             {
-                string query = "SELECT CategoryId, CategoryName, IFNULL(Description, '') AS Description FROM tbl_categories WHERE 1=1";
-                var parameters = new System.Collections.Generic.List<MySqlParameter>();
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand cmd = new MySqlCommand();
+                DataSet ds = new DataSet();
+                MySqlDataAdapter da = new MySqlDataAdapter();
+                conn.Open();
 
+                string query = "SELECT CategoryId, CategoryName, IFNULL(Description, '') AS Description FROM tbl_categories WHERE 1=1";
                 if (!string.IsNullOrWhiteSpace(searchKeyword))
                 {
                     query += " AND (CategoryName LIKE @kw OR Description LIKE @kw)";
-                    parameters.Add(new MySqlParameter("@kw", "%" + searchKeyword.Trim() + "%"));
+                    cmd.Parameters.AddWithValue("@kw", "%" + searchKeyword.Trim() + "%");
                 }
-
                 query += " ORDER BY CategoryId ASC";
 
-                DataTable dt = DatabaseHelper.ExecuteQuery(query, parameters.ToArray());
+                cmd.CommandText = query;
+                cmd.Connection = conn;
+                da.SelectCommand = cmd;
+                da.Fill(ds, "categories");
+                conn.Close();
+
+                DataTable dt = ds.Tables["categories"]!;
                 dgvCategories.DataSource = dt;
 
                 int count = dt != null ? dt.Rows.Count : 0;
@@ -84,10 +98,19 @@ namespace Co_LAB
         {
             try
             {
-                object? result = DatabaseHelper.ExecuteScalar(
-                    "SELECT COUNT(*) FROM tbl_skills WHERE Category IN (SELECT CategoryName FROM tbl_categories);");
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand cmd = new MySqlCommand();
+                conn.Open();
+                cmd.CommandText = "SELECT COUNT(*) FROM tbl_skills WHERE Category IN (SELECT CategoryName FROM tbl_categories);";
+                cmd.Connection = conn;
 
-                int total = result != null && int.TryParse(result.ToString(), out int val) ? val : 0;
+                int total = 0;
+                using MySqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read() && reader[0] != DBNull.Value)
+                {
+                    int.TryParse(reader[0].ToString(), out total);
+                }
+                conn.Close();
                 lblTotalTagged.Text = $"Total Listings Tagged: {total}";
             }
             catch
@@ -120,53 +143,6 @@ namespace Co_LAB
             }
         }
 
-        private void dgvCategories_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
-        {
-            if (e.RowIndex >= 0 && e.ColumnIndex == colActions.Index)
-            {
-                e.Value = "✏   🗑";
-                e.FormattingApplied = true;
-            }
-        }
-
-        private void dgvCategories_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex >= 0 && e.ColumnIndex == colActions.Index)
-            {
-                dgvCategories.Cursor = Cursors.Hand;
-            }
-            else
-            {
-                dgvCategories.Cursor = Cursors.Default;
-            }
-        }
-
-        private void dgvCategories_CellClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex < 0) return;
-
-            // If action cell clicked (✏ or 🗑)
-            if (e.ColumnIndex == colActions.Index)
-            {
-                var cellRect = dgvCategories.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, false);
-                Point pt = dgvCategories.PointToClient(Cursor.Position);
-
-                // Left half of cell: Edit (✏)
-                if (pt.X - cellRect.Left < cellRect.Width / 2)
-                {
-                    dgvCategories.Rows[e.RowIndex].Selected = true;
-                    txtCategoryName.Focus();
-                    txtCategoryName.SelectAll();
-                }
-                // Right half of cell: Delete (🗑)
-                else
-                {
-                    dgvCategories.Rows[e.RowIndex].Selected = true;
-                    btnDelete.PerformClick();
-                }
-            }
-        }
-
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
             LoadCategories(txtSearch.Text);
@@ -190,22 +166,39 @@ namespace Co_LAB
 
             try
             {
-                // Check for duplicates
-                object? dupCheck = DatabaseHelper.ExecuteScalar(
-                    "SELECT COUNT(*) FROM tbl_categories WHERE LOWER(CategoryName) = LOWER(@name)",
-                    new MySqlParameter("@name", name));
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                conn.Open();
 
-                if (dupCheck != null && int.TryParse(dupCheck.ToString(), out int existing) && existing > 0)
+                // Check for duplicates
+                MySqlCommand dupCmd = new MySqlCommand();
+                dupCmd.CommandText = "SELECT COUNT(*) FROM tbl_categories WHERE LOWER(CategoryName) = LOWER(@name)";
+                dupCmd.Connection = conn;
+                dupCmd.Parameters.AddWithValue("@name", name);
+
+                int existing = 0;
+                using (MySqlDataReader reader = dupCmd.ExecuteReader())
                 {
+                    if (reader.Read() && reader[0] != DBNull.Value)
+                    {
+                        int.TryParse(reader[0].ToString(), out existing);
+                    }
+                }
+
+                if (existing > 0)
+                {
+                    conn.Close();
                     MessageBox.Show($"A category named '{name}' already exists.", "Duplicate Category", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     txtCategoryName.Focus();
                     return;
                 }
 
-                int rows = DatabaseHelper.ExecuteNonQuery(
-                    "INSERT INTO tbl_categories (CategoryName, Description) VALUES (@name, @desc)",
-                    new MySqlParameter("@name", name),
-                    new MySqlParameter("@desc", string.IsNullOrEmpty(desc) ? (object)DBNull.Value : desc));
+                MySqlCommand insertCmd = new MySqlCommand();
+                insertCmd.CommandText = "INSERT INTO tbl_categories (CategoryName, Description) VALUES (@name, @desc)";
+                insertCmd.Connection = conn;
+                insertCmd.Parameters.AddWithValue("@name", name);
+                insertCmd.Parameters.AddWithValue("@desc", string.IsNullOrEmpty(desc) ? (object)DBNull.Value : desc);
+                int rows = insertCmd.ExecuteNonQuery();
+                conn.Close();
 
                 if (rows > 0)
                 {
@@ -240,39 +233,62 @@ namespace Co_LAB
 
             try
             {
-                // Check if new name conflicts with another category
-                object? dupCheck = DatabaseHelper.ExecuteScalar(
-                    "SELECT COUNT(*) FROM tbl_categories WHERE LOWER(CategoryName) = LOWER(@name) AND CategoryId != @id",
-                    new MySqlParameter("@name", name),
-                    new MySqlParameter("@id", _selectedCategoryId));
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                conn.Open();
 
-                if (dupCheck != null && int.TryParse(dupCheck.ToString(), out int existing) && existing > 0)
+                // Check if new name conflicts with another category
+                MySqlCommand dupCmd = new MySqlCommand();
+                dupCmd.CommandText = "SELECT COUNT(*) FROM tbl_categories WHERE LOWER(CategoryName) = LOWER(@name) AND CategoryId != @id";
+                dupCmd.Connection = conn;
+                dupCmd.Parameters.AddWithValue("@name", name);
+                dupCmd.Parameters.AddWithValue("@id", _selectedCategoryId);
+
+                int existing = 0;
+                using (MySqlDataReader reader = dupCmd.ExecuteReader())
                 {
+                    if (reader.Read() && reader[0] != DBNull.Value)
+                    {
+                        int.TryParse(reader[0].ToString(), out existing);
+                    }
+                }
+
+                if (existing > 0)
+                {
+                    conn.Close();
                     MessageBox.Show($"Another category named '{name}' already exists.", "Duplicate Category", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     txtCategoryName.Focus();
                     return;
                 }
 
-                int rows = DatabaseHelper.ExecuteNonQuery(
-                    "UPDATE tbl_categories SET CategoryName = @name, Description = @desc WHERE CategoryId = @id",
-                    new MySqlParameter("@name", name),
-                    new MySqlParameter("@desc", string.IsNullOrEmpty(desc) ? (object)DBNull.Value : desc),
-                    new MySqlParameter("@id", _selectedCategoryId));
+                MySqlCommand updateCmd = new MySqlCommand();
+                updateCmd.CommandText = "UPDATE tbl_categories SET CategoryName = @name, Description = @desc WHERE CategoryId = @id";
+                updateCmd.Connection = conn;
+                updateCmd.Parameters.AddWithValue("@name", name);
+                updateCmd.Parameters.AddWithValue("@desc", string.IsNullOrEmpty(desc) ? (object)DBNull.Value : desc);
+                updateCmd.Parameters.AddWithValue("@id", _selectedCategoryId);
+                int rows = updateCmd.ExecuteNonQuery();
 
                 if (rows > 0)
                 {
                     // If name changed, update listings tagged under old name
                     if (!string.Equals(_originalCategoryName, name, StringComparison.OrdinalIgnoreCase))
                     {
-                        DatabaseHelper.ExecuteNonQuery(
-                            "UPDATE tbl_skills SET Category = @newName WHERE Category = @oldName",
-                            new MySqlParameter("@newName", name),
-                            new MySqlParameter("@oldName", _originalCategoryName));
+                        MySqlCommand syncCmd = new MySqlCommand();
+                        syncCmd.CommandText = "UPDATE tbl_skills SET Category = @newName WHERE Category = @oldName";
+                        syncCmd.Connection = conn;
+                        syncCmd.Parameters.AddWithValue("@newName", name);
+                        syncCmd.Parameters.AddWithValue("@oldName", _originalCategoryName);
+                        syncCmd.ExecuteNonQuery();
                     }
 
+                    conn.Close();
                     MessageBox.Show($"Category '{name}' was updated successfully!", "Category Updated", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     ResetForm();
                     LoadCategories(txtSearch.Text);
+                }
+                else
+                {
+                    conn.Close();
                 }
             }
             catch (Exception ex)
@@ -295,14 +311,19 @@ namespace Co_LAB
             int taggedListings = 0;
             try
             {
-                object? countObj = DatabaseHelper.ExecuteScalar(
-                    "SELECT COUNT(*) FROM tbl_skills WHERE Category = @cat",
-                    new MySqlParameter("@cat", name));
+                using MySqlConnection checkConn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand checkCmd = new MySqlCommand();
+                checkConn.Open();
+                checkCmd.CommandText = "SELECT COUNT(*) FROM tbl_skills WHERE Category = @cat";
+                checkCmd.Connection = checkConn;
+                checkCmd.Parameters.AddWithValue("@cat", name);
 
-                if (countObj != null && int.TryParse(countObj.ToString(), out int c))
+                using MySqlDataReader reader = checkCmd.ExecuteReader();
+                if (reader.Read() && reader[0] != DBNull.Value)
                 {
-                    taggedListings = c;
+                    int.TryParse(reader[0].ToString(), out taggedListings);
                 }
+                checkConn.Close();
             }
             catch
             {
@@ -322,9 +343,14 @@ namespace Co_LAB
 
             try
             {
-                int rows = DatabaseHelper.ExecuteNonQuery(
-                    "DELETE FROM tbl_categories WHERE CategoryId = @id",
-                    new MySqlParameter("@id", _selectedCategoryId));
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand cmd = new MySqlCommand();
+                conn.Open();
+                cmd.CommandText = "DELETE FROM tbl_categories WHERE CategoryId = @id";
+                cmd.Connection = conn;
+                cmd.Parameters.AddWithValue("@id", _selectedCategoryId);
+                int rows = cmd.ExecuteNonQuery();
+                conn.Close();
 
                 if (rows > 0)
                 {
@@ -405,6 +431,11 @@ namespace Co_LAB
             path.AddArc(rect.X, rect.Bottom - diameter, diameter, diameter, 90, 90);
             path.CloseFigure();
             return path;
+        }
+
+        private void dgvCategories_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }

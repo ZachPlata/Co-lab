@@ -55,6 +55,7 @@ namespace Co_LAB.UCStudents
             TradeModeTxtBox.ForeColor = Color.White;
             TradeModeTxtBox.Location = new Point(20, 265);
             TradeModeTxtBox.Name = "TradeModeTxtBox";
+            TradeModeTxtBox.ReadOnly = true;
             TradeModeTxtBox.Size = new Size(430, 23);
             TradeModeTxtBox.TabIndex = 43;
             // 
@@ -66,6 +67,7 @@ namespace Co_LAB.UCStudents
             YourOfferTxtBox.ForeColor = Color.White;
             YourOfferTxtBox.Location = new Point(20, 205);
             YourOfferTxtBox.Name = "YourOfferTxtBox";
+            YourOfferTxtBox.ReadOnly = true;
             YourOfferTxtBox.Size = new Size(430, 23);
             YourOfferTxtBox.TabIndex = 42;
             // 
@@ -77,6 +79,7 @@ namespace Co_LAB.UCStudents
             TheyOfferTxtBox.ForeColor = Color.White;
             TheyOfferTxtBox.Location = new Point(21, 144);
             TheyOfferTxtBox.Name = "TheyOfferTxtBox";
+            TheyOfferTxtBox.ReadOnly = true;
             TheyOfferTxtBox.Size = new Size(429, 23);
             TheyOfferTxtBox.TabIndex = 41;
             // 
@@ -105,6 +108,7 @@ namespace Co_LAB.UCStudents
             txtNotes.Location = new Point(20, 320);
             txtNotes.Multiline = true;
             txtNotes.Name = "txtNotes";
+            txtNotes.ReadOnly = true;
             txtNotes.ScrollBars = ScrollBars.Vertical;
             txtNotes.Size = new Size(430, 110);
             txtNotes.TabIndex = 39;

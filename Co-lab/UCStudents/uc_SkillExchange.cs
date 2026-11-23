@@ -45,15 +45,28 @@ namespace Co_LAB
         {
             try
             {
-                string sql = @"SELECT CONCAT(
-                                  COALESCE(MAX(s.SkillId), 0), ':', 
-                                  COALESCE(MAX(s.Status), ''), ':', 
-                                  COALESCE((SELECT COUNT(*) FROM tbl_traderequests), 0), ':', 
-                                  COALESCE((SELECT MAX(RequestId) FROM tbl_traderequests), 0), ':',
-                                  COALESCE((SELECT MAX(Status) FROM tbl_traderequests), '')
-                               ) FROM tbl_skills s";
-                object? check = DatabaseHelper.ExecuteScalar(sql);
-                string fp = check?.ToString() ?? "";
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand cmd = new MySqlCommand();
+                conn.Open();
+                cmd.CommandText = @"SELECT CONCAT(
+                                      COALESCE(MAX(s.SkillId), 0), ':', 
+                                      COALESCE(MAX(s.Status), ''), ':', 
+                                      COALESCE((SELECT COUNT(*) FROM tbl_traderequests), 0), ':', 
+                                      COALESCE((SELECT MAX(RequestId) FROM tbl_traderequests), 0), ':',
+                                      COALESCE((SELECT MAX(Status) FROM tbl_traderequests), '')
+                                   ) FROM tbl_skills s";
+                cmd.Connection = conn;
+
+                string fp = "";
+                using (MySqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read() && reader[0] != DBNull.Value)
+                    {
+                        fp = reader[0].ToString() ?? "";
+                    }
+                }
+                conn.Close();
+
                 if (fp != _lastMarketplaceFingerprint)
                 {
                     _lastMarketplaceFingerprint = fp;
@@ -73,7 +86,18 @@ namespace Co_LAB
 
             try
             {
-                DataTable dt = DatabaseHelper.ExecuteQuery("SELECT CategoryName FROM tbl_categories ORDER BY CategoryName ASC");
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand cmd = new MySqlCommand();
+                DataSet ds = new DataSet();
+                MySqlDataAdapter da = new MySqlDataAdapter();
+                conn.Open();
+                cmd.CommandText = "SELECT CategoryName FROM tbl_categories ORDER BY CategoryName ASC";
+                cmd.Connection = conn;
+                da.SelectCommand = cmd;
+                da.Fill(ds, "categories");
+                conn.Close();
+
+                DataTable dt = ds.Tables["categories"]!;
                 foreach (DataRow row in dt.Rows)
                 {
                     string? name = row["CategoryName"]?.ToString();
@@ -99,7 +123,46 @@ namespace Co_LAB
             cmbCategory.SelectedIndex = 0;
         }
 
-        /// <summary>
+        private static bool _reportedUserIdColumnChecked = false;
+
+        private static void EnsureReportedUserIdColumnExists()
+        {
+            if (_reportedUserIdColumnChecked) return;
+            try
+            {
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                conn.Open();
+                MySqlCommand checkCmd = new MySqlCommand();
+                checkCmd.CommandText = @"SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS 
+                                         WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'tbl_reports' AND COLUMN_NAME = 'ReportedUserId'";
+                checkCmd.Connection = conn;
+
+                int exists = 0;
+                using (MySqlDataReader reader = checkCmd.ExecuteReader())
+                {
+                    if (reader.Read() && reader[0] != DBNull.Value)
+                    {
+                        exists = Convert.ToInt32(reader[0]);
+                    }
+                }
+
+                if (exists == 0)
+                {
+                    MySqlCommand alterCmd = new MySqlCommand();
+                    alterCmd.CommandText = "ALTER TABLE tbl_reports ADD COLUMN ReportedUserId INT DEFAULT NULL";
+                    alterCmd.Connection = conn;
+                    alterCmd.ExecuteNonQuery();
+                }
+
+                conn.Close();
+                _reportedUserIdColumnChecked = true;
+            }
+            catch
+            {
+                // Column may already exist or user lacks ALTER permission
+            }
+        }
+
         /// <summary>
         /// Queries the database and dynamically generates cards inside the FlowLayoutPanel.
         /// Keeps ongoing listings visible on the marketplace while marking them as Ongoing and disabling trade requests.
@@ -107,7 +170,12 @@ namespace Co_LAB
         public void LoadMarketplaceCards(string keyword, string category)
         {
             flpMarketplace.SuspendLayout();
-            flpMarketplace.Controls.Clear();
+            for (int i = flpMarketplace.Controls.Count - 1; i >= 0; i--)
+            {
+                Control old = flpMarketplace.Controls[i];
+                flpMarketplace.Controls.RemoveAt(i);
+                old.Dispose();
+            }
 
             string currentStudent = UserSession.FullName ?? "";
             string currentEmail = UserSession.Email ?? "";
@@ -115,6 +183,12 @@ namespace Co_LAB
 
             try
             {
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand cmd = new MySqlCommand();
+                DataSet ds = new DataSet();
+                MySqlDataAdapter da = new MySqlDataAdapter();
+                conn.Open();
+
                 // Select active and ongoing (paused) listings, together with accepted & user pending trade flags
                 string query = @"
                     SELECT s.*,
@@ -122,32 +196,35 @@ namespace Co_LAB
                             WHERE r.TargetSkillId = s.SkillId AND r.Status = 'Accepted') AS AcceptedTradesCount,
                            (SELECT COUNT(*) FROM tbl_traderequests r 
                             WHERE r.TargetSkillId = s.SkillId 
-                              AND (r.SenderEmail = @userEmail OR r.SenderName = @userName) 
+                              AND ((@userEmail != '' AND r.SenderEmail = @userEmail) OR (@userName != '' AND r.SenderName = @userName)) 
                               AND r.Status IN ('Pending', 'Accepted')) AS UserRequestsCount
                     FROM tbl_skills s
                     WHERE (s.Status IN ('Active', 'Paused') OR s.Status IS NULL)";
 
-                var parameters = new System.Collections.Generic.List<MySqlParameter>
-                {
-                    new MySqlParameter("@userEmail", currentEmail),
-                    new MySqlParameter("@userName", currentStudent)
-                };
+                cmd.Parameters.AddWithValue("@userEmail", currentEmail);
+                cmd.Parameters.AddWithValue("@userName", currentStudent);
 
                 if (!string.IsNullOrWhiteSpace(keyword))
                 {
                     query += " AND (s.SkillTitle LIKE @kw OR s.Description LIKE @kw OR s.OfferedBy LIKE @kw)";
-                    parameters.Add(new MySqlParameter("@kw", "%" + keyword.Trim() + "%"));
+                    cmd.Parameters.AddWithValue("@kw", "%" + keyword.Trim() + "%");
                 }
 
                 if (!string.IsNullOrWhiteSpace(category) && category != "All Categories")
                 {
                     query += " AND s.Category = @cat";
-                    parameters.Add(new MySqlParameter("@cat", category));
+                    cmd.Parameters.AddWithValue("@cat", category);
                 }
 
                 query += " ORDER BY s.SkillId DESC";
 
-                DataTable dt = DatabaseHelper.ExecuteQuery(query, parameters.ToArray());
+                cmd.CommandText = query;
+                cmd.Connection = conn;
+                da.SelectCommand = cmd;
+                da.Fill(ds, "skills");
+                conn.Close();
+
+                DataTable dt = ds.Tables["skills"]!;
 
                 if (dt.Rows.Count == 0)
                 {
@@ -156,6 +233,7 @@ namespace Co_LAB
                 }
                 else
                 {
+                    lblEmpty.Visible = false;
                     lblListingCount.Text = $"{dt.Rows.Count} skill(s) listed";
                     foreach (DataRow row in dt.Rows)
                     {
@@ -221,23 +299,15 @@ namespace Co_LAB
 
         private void ShowEmptyState(string message)
         {
-            Label lblEmpty = new Label
-            {
-                Text = message,
-                ForeColor = Color.FromArgb(161, 161, 170),
-                Font = new Font("Segoe UI", 10.5F),
-                AutoSize = false,
-                Size = new Size(600, 80),
-                TextAlign = ContentAlignment.MiddleCenter,
-                Margin = new Padding(120, 100, 0, 0)
-            };
-            flpMarketplace.Controls.Add(lblEmpty);
+            lblEmpty.Text = message;
+            lblEmpty.Visible = true;
+            lblEmpty.BringToFront();
         }
 
         private void OnRequestTradeClicked(string skillId, string title, string owner, string mode)
         {
-            string currentStudent = UserSession.FullName;
-            string currentEmail = UserSession.Email;
+            string currentStudent = UserSession.FullName ?? string.Empty;
+            string currentEmail = UserSession.Email ?? string.Empty;
 
             if (!string.IsNullOrWhiteSpace(currentStudent) && string.Equals(owner, currentStudent, StringComparison.OrdinalIgnoreCase))
             {
@@ -250,18 +320,32 @@ namespace Co_LAB
             // Guard: Check if the user already has an ongoing trade request for this skill
             try
             {
-                string checkSql = @"SELECT Status FROM tbl_traderequests 
-                                    WHERE TargetSkillId = @sid 
-                                      AND (SenderEmail = @email OR SenderName = @name) 
-                                      AND Status IN ('Pending', 'Accepted') 
-                                    LIMIT 1";
-                object? existingStatus = DatabaseHelper.ExecuteScalar(checkSql,
-                    new MySqlParameter("@sid", parsedSkillId),
-                    new MySqlParameter("@email", currentEmail),
-                    new MySqlParameter("@name", currentStudent));
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                conn.Open();
+
+                MySqlCommand checkCmd = new MySqlCommand();
+                checkCmd.CommandText = @"SELECT Status FROM tbl_traderequests 
+                                         WHERE TargetSkillId = @sid 
+                                           AND ((@email != '' AND SenderEmail = @email) OR (@name != '' AND SenderName = @name)) 
+                                           AND Status IN ('Pending', 'Accepted') 
+                                         LIMIT 1";
+                checkCmd.Connection = conn;
+                checkCmd.Parameters.AddWithValue("@sid", parsedSkillId);
+                checkCmd.Parameters.AddWithValue("@email", currentEmail);
+                checkCmd.Parameters.AddWithValue("@name", currentStudent);
+
+                object? existingStatus = null;
+                using (MySqlDataReader reader = checkCmd.ExecuteReader())
+                {
+                    if (reader.Read() && reader[0] != DBNull.Value)
+                    {
+                        existingStatus = reader[0];
+                    }
+                }
 
                 if (existingStatus != null && existingStatus != DBNull.Value)
                 {
+                    conn.Close();
                     MessageBox.Show(
                         $"You already have an ongoing trade request for \"{title}\" (Status: {existingStatus}).\n\n" +
                         "You cannot submit multiple requests for the same skill while one is ongoing. Please check 'Trade Requests' to view or manage it.",
@@ -273,8 +357,21 @@ namespace Co_LAB
                 }
 
                 // Guard: Check if someone else already has an Accepted ongoing trade for this skill
-                string acceptedCheckSql = "SELECT Status FROM tbl_traderequests WHERE TargetSkillId = @sid AND Status = 'Accepted' LIMIT 1";
-                object? acceptedStatus = DatabaseHelper.ExecuteScalar(acceptedCheckSql, new MySqlParameter("@sid", parsedSkillId));
+                MySqlCommand accCmd = new MySqlCommand();
+                accCmd.CommandText = "SELECT Status FROM tbl_traderequests WHERE TargetSkillId = @sid AND Status = 'Accepted' LIMIT 1";
+                accCmd.Connection = conn;
+                accCmd.Parameters.AddWithValue("@sid", parsedSkillId);
+
+                object? acceptedStatus = null;
+                using (MySqlDataReader reader = accCmd.ExecuteReader())
+                {
+                    if (reader.Read() && reader[0] != DBNull.Value)
+                    {
+                        acceptedStatus = reader[0];
+                    }
+                }
+                conn.Close();
+
                 if (acceptedStatus != null && acceptedStatus != DBNull.Value)
                 {
                     MessageBox.Show(
@@ -327,13 +424,40 @@ namespace Co_LAB
             {
                 try
                 {
-                    string insertSql = @"INSERT INTO tbl_reports (SkillId, ReportedUser, Reason, ReportDate, Status) 
-                                         VALUES (@sid, @user, @reason, NOW(), 'Pending')";
-                    DatabaseHelper.ExecuteNonQuery(insertSql,
-                        new MySqlParameter("@sid", skillId),
-                        new MySqlParameter("@user", owner),
-                        new MySqlParameter("@reason", reason.Trim())
-                    );
+                    EnsureReportedUserIdColumnExists();
+
+                    int.TryParse(skillId, out int parsedSkillId);
+                    using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                    conn.Open();
+
+                    object? ownerIdObj = null;
+                    if (parsedSkillId > 0)
+                    {
+                        MySqlCommand ownerCmd = new MySqlCommand();
+                        ownerCmd.CommandText = "SELECT UserId FROM tbl_skills WHERE SkillId = @sid LIMIT 1";
+                        ownerCmd.Connection = conn;
+                        ownerCmd.Parameters.AddWithValue("@sid", parsedSkillId);
+                        using MySqlDataReader reader = ownerCmd.ExecuteReader();
+                        if (reader.Read() && reader[0] != DBNull.Value)
+                        {
+                            ownerIdObj = reader[0];
+                        }
+                    }
+
+                    object reportedUserIdParam = (ownerIdObj != null && int.TryParse(ownerIdObj.ToString(), out int parsedOwnerId) && parsedOwnerId > 0)
+                        ? parsedOwnerId
+                        : DBNull.Value;
+
+                    MySqlCommand insertCmd = new MySqlCommand();
+                    insertCmd.CommandText = @"INSERT INTO tbl_reports (SkillId, ReportedUserId, ReportedUser, Reason, ReportDate, Status) 
+                                              VALUES (@sid, @ruid, @user, @reason, NOW(), 'Pending')";
+                    insertCmd.Connection = conn;
+                    insertCmd.Parameters.AddWithValue("@sid", parsedSkillId > 0 ? parsedSkillId : (object)DBNull.Value);
+                    insertCmd.Parameters.AddWithValue("@ruid", reportedUserIdParam);
+                    insertCmd.Parameters.AddWithValue("@user", owner);
+                    insertCmd.Parameters.AddWithValue("@reason", reason.Trim());
+                    insertCmd.ExecuteNonQuery();
+                    conn.Close();
 
                     // Notify Admin of new report
                     string reporter = string.IsNullOrWhiteSpace(UserSession.FullName) ? "A student" : UserSession.FullName;

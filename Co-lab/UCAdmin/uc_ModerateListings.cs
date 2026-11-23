@@ -26,24 +26,35 @@ namespace Co_LAB
         {
             try
             {
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand cmd = new MySqlCommand();
+                DataSet ds = new DataSet();
+                MySqlDataAdapter da = new MySqlDataAdapter();
+                conn.Open();
+
                 string query = "SELECT SkillId, SkillTitle, Category, OfferedBy, DeliveryMode, Status FROM tbl_skills WHERE 1=1";
-                var parameters = new System.Collections.Generic.List<MySqlParameter>();
 
                 if (!string.IsNullOrWhiteSpace(keyword))
                 {
                     query += " AND (SkillTitle LIKE @kw OR Description LIKE @kw OR OfferedBy LIKE @kw)";
-                    parameters.Add(new MySqlParameter("@kw", "%" + keyword.Trim() + "%"));
+                    cmd.Parameters.AddWithValue("@kw", "%" + keyword.Trim() + "%");
                 }
 
                 if (!string.IsNullOrWhiteSpace(status) && status != "All Statuses")
                 {
                     query += " AND Status = @status";
-                    parameters.Add(new MySqlParameter("@status", status));
+                    cmd.Parameters.AddWithValue("@status", status);
                 }
 
                 query += " ORDER BY SkillId DESC";
 
-                DataTable dt = DatabaseHelper.ExecuteQuery(query, parameters.ToArray());
+                cmd.CommandText = query;
+                cmd.Connection = conn;
+                da.SelectCommand = cmd;
+                da.Fill(ds, "skills");
+                conn.Close();
+
+                DataTable dt = ds.Tables["skills"]!;
                 dgvListings.DataSource = dt;
                 lblStatusCount.Text = $"{dt.Rows.Count} listing(s) found";
 
@@ -84,8 +95,14 @@ namespace Co_LAB
 
             try
             {
-                DatabaseHelper.ExecuteNonQuery("UPDATE tbl_skills SET Status = 'Active' WHERE SkillId = @id",
-                    new MySqlParameter("@id", id));
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand cmd = new MySqlCommand();
+                conn.Open();
+                cmd.CommandText = "UPDATE tbl_skills SET Status = 'Active' WHERE SkillId = @id";
+                cmd.Connection = conn;
+                cmd.Parameters.AddWithValue("@id", id);
+                cmd.ExecuteNonQuery();
+                conn.Close();
                 MessageBox.Show("Listing approved and marked as Active.", "Listing Approved", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 ReloadCurrentView();
             }
@@ -102,8 +119,14 @@ namespace Co_LAB
 
             try
             {
-                DatabaseHelper.ExecuteNonQuery("UPDATE tbl_skills SET Status = 'Flagged' WHERE SkillId = @id",
-                    new MySqlParameter("@id", id));
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand cmd = new MySqlCommand();
+                conn.Open();
+                cmd.CommandText = "UPDATE tbl_skills SET Status = 'Flagged' WHERE SkillId = @id";
+                cmd.Connection = conn;
+                cmd.Parameters.AddWithValue("@id", id);
+                cmd.ExecuteNonQuery();
+                conn.Close();
                 MessageBox.Show("Listing flagged for moderation review.", "Listing Flagged", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 ReloadCurrentView();
             }
@@ -128,8 +151,14 @@ namespace Co_LAB
             {
                 try
                 {
-                    DatabaseHelper.ExecuteNonQuery("DELETE FROM tbl_skills WHERE SkillId = @id",
-                        new MySqlParameter("@id", id));
+                    using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                    MySqlCommand cmd = new MySqlCommand();
+                    conn.Open();
+                    cmd.CommandText = "DELETE FROM tbl_skills WHERE SkillId = @id";
+                    cmd.Connection = conn;
+                    cmd.Parameters.AddWithValue("@id", id);
+                    cmd.ExecuteNonQuery();
+                    conn.Close();
                     MessageBox.Show("Listing deleted successfully.", "Deleted", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     ReloadCurrentView();
                 }

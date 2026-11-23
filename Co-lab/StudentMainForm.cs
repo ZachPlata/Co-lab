@@ -8,10 +8,8 @@ namespace Co_LAB
     [System.ComponentModel.DesignerCategory("Form")]
     public partial class StudentMainForm : Form
     {
-        public static string CurrentStudentName { get; set; } = "Juan Dela Cruz";
+        public static string CurrentStudentName { get; set; } = string.Empty;
 
-        private Button btnNotificationBell = null!;
-        private NotificationPanel _notificationPanel = null!;
         private System.Windows.Forms.Timer _notifTimer = null!;
 
         public StudentMainForm()
@@ -37,34 +35,6 @@ namespace Co_LAB
 
         private void InitializeNotificationUI()
         {
-            // Notification Bell button
-            btnNotificationBell = new Button
-            {
-                Text = "🔔 0",
-                Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold),
-                BackColor = Color.FromArgb(24, 34, 27),
-                ForeColor = Color.FromArgb(74, 222, 128),
-                FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand,
-                Size = new Size(82, 32),
-                Anchor = AnchorStyles.Top | AnchorStyles.Right,
-                Location = new Point(lblWelcome.Left - 95, 27)
-            };
-            btnNotificationBell.FlatAppearance.BorderColor = Color.FromArgb(46, 125, 70);
-            btnNotificationBell.FlatAppearance.BorderSize = 1;
-            btnNotificationBell.Click += BtnNotificationBell_Click;
-
-            pnlHeader.Controls.Add(btnNotificationBell);
-            btnNotificationBell.BringToFront();
-
-            // Notification dropdown panel
-            _notificationPanel = new NotificationPanel
-            {
-                Visible = false,
-                Anchor = AnchorStyles.Top | AnchorStyles.Right,
-                Location = new Point(Width - 400, pnlHeader.Bottom + 2),
-                Size = new Size(380, 440)
-            };
             _notificationPanel.NotificationActionRequested += (s, type) =>
             {
                 _notificationPanel.Visible = false;
@@ -78,9 +48,6 @@ namespace Co_LAB
             {
                 _notificationPanel.Visible = false;
             };
-
-            Controls.Add(_notificationPanel);
-            _notificationPanel.BringToFront();
 
             // Background timer to refresh notifications live & heartbeat session
             _notifTimer = new System.Windows.Forms.Timer
@@ -132,15 +99,24 @@ namespace Co_LAB
                 }
 
                 // Update sidebar badge for pending incoming requests
-                string query = @"SELECT COUNT(*) FROM tbl_traderequests r 
-                                 INNER JOIN tbl_skills s ON r.TargetSkillId = s.SkillId 
-                                 WHERE (s.UserId = @uid OR s.OfferedBy = @user) 
-                                   AND r.Status = 'Pending'";
-                object? countObj = DatabaseHelper.ExecuteScalar(query,
-                    new MySqlParameter("@uid", UserSession.UserId),
-                    new MySqlParameter("@user", UserSession.FullName));
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand cmd = new MySqlCommand();
+                conn.Open();
+                cmd.CommandText = @"SELECT COUNT(*) FROM tbl_traderequests r 
+                                    INNER JOIN tbl_skills s ON r.TargetSkillId = s.SkillId 
+                                    WHERE (s.UserId = @uid OR s.OfferedBy = @user) 
+                                      AND r.Status = 'Pending'";
+                cmd.Connection = conn;
+                cmd.Parameters.AddWithValue("@uid", UserSession.UserId);
+                cmd.Parameters.AddWithValue("@user", UserSession.FullName);
 
-                int incomingPending = countObj != null && countObj != DBNull.Value ? Convert.ToInt32(countObj) : 0;
+                int incomingPending = 0;
+                using MySqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read() && reader[0] != DBNull.Value)
+                {
+                    incomingPending = Convert.ToInt32(reader[0]);
+                }
+                conn.Close();
                 if (incomingPending > 0)
                 {
                     btn_TradeRequests.Text = $"Trade Requests ({incomingPending})";
@@ -166,14 +142,24 @@ namespace Co_LAB
         // SIDEBAR BUTTON CLICK EVENTS (TRANSITIONS)
         // ==========================================
 
+        private void LoadContentControl(UserControl control)
+        {
+            for (int i = panelContent.Controls.Count - 1; i >= 0; i--)
+            {
+                Control old = panelContent.Controls[i];
+                panelContent.Controls.RemoveAt(i);
+                old.Dispose();
+            }
+
+            control.Dock = DockStyle.Fill;
+            panelContent.Controls.Add(control);
+            control.Show();
+        }
+
         private void btn_SkillExchange_Click(object sender, EventArgs e)
         {
             _notificationPanel?.Hide();
-            uc_SkillExchange frm = new uc_SkillExchange();
-            panelContent.Controls.Clear();
-            frm.Dock = DockStyle.Fill;
-            panelContent.Controls.Add(frm);
-            frm.Show();
+            LoadContentControl(new uc_SkillExchange());
             SetActiveButton(btn_SkillExchange);
             lblHeaderTitle.Text = "Skill Exchange";
         }
@@ -181,11 +167,7 @@ namespace Co_LAB
         private void btn_ManageSkills_Click(object sender, EventArgs e)
         {
             _notificationPanel?.Hide();
-            uc_ManageSkills frm = new uc_ManageSkills();
-            panelContent.Controls.Clear();
-            frm.Dock = DockStyle.Fill;
-            panelContent.Controls.Add(frm);
-            frm.Show();
+            LoadContentControl(new uc_ManageSkills());
             SetActiveButton(btn_ManageSkills);
             lblHeaderTitle.Text = "My Listings";
         }
@@ -193,11 +175,7 @@ namespace Co_LAB
         private void btn_TradeRequests_Click(object sender, EventArgs e)
         {
             _notificationPanel?.Hide();
-            uc_TradeRequests frm = new uc_TradeRequests();
-            panelContent.Controls.Clear();
-            frm.Dock = DockStyle.Fill;
-            panelContent.Controls.Add(frm);
-            frm.Show();
+            LoadContentControl(new uc_TradeRequests());
             SetActiveButton(btn_TradeRequests);
             lblHeaderTitle.Text = "Trade Requests";
             CheckNotifications();
@@ -206,14 +184,10 @@ namespace Co_LAB
         private void btn_UserDashboard_Click(object sender, EventArgs e)
         {
             _notificationPanel?.Hide();
-            uc_UserDashboard frm = new uc_UserDashboard
+            LoadContentControl(new uc_UserDashboard
             {
-                CurrentStudentName = CurrentStudentName,
-                Dock = DockStyle.Fill
-            };
-            panelContent.Controls.Clear();
-            panelContent.Controls.Add(frm);
-            frm.Show();
+                CurrentStudentName = CurrentStudentName
+            });
             SetActiveButton(btn_UserDashboard);
             lblHeaderTitle.Text = "Student Profile & Dashboard";
         }

@@ -33,13 +33,13 @@ CREATE TABLE `tbl_users` (
     `session_id` VARCHAR(64) DEFAULT NULL
 ) ENGINE=InnoDB;
 
--- Populate ONLY the 5 specific users (Password: 12345678)
+-- Populate ONLY the 5 specific users (Password: 12345678, PBKDF2-HMAC-SHA256)
 INSERT INTO `tbl_users` (`UserId`, `FullName`, `Email`, `Password`, `Role`, `SecurityQuestion`, `SecurityAnswer`, `is_verified`) VALUES
-(1, 'Zach Plata', 'plata.zachbenedict@ue.edu.ph', '12345678', 'Student', 'What was the name of your first pet?', 'dog', 1),
-(2, 'Trowa Bugarin', 'bugarin.trowabarton@ue.edu.ph', '12345678', 'Student', 'What was the name of your first pet?', 'dog', 1),
-(3, 'Gabs Katipunan', 'katipunan.karisgabriel@ue.edu.ph', '12345678', 'Student', 'What was the name of your first pet?', 'dog', 1),
-(4, 'Andrei Sarmiento', 'sarmiento.andrei@ue.edu.ph', '12345678', 'Student', 'What was the name of your first pet?', 'dog', 1),
-(5, 'Miguel Borja', 'borja.miguelantonio@ue.edu.ph', '12345678', 'Admin', 'What was the name of your first pet?', 'dog', 1);
+(1, 'Zach Plata', 'plata.zachbenedict@ue.edu.ph', 'PBKDF2$100000$qTzxb8BxYtDDPj5MxnuZMg==$Cbr/X/hKT5aRiaFeTUg6GLi9nf4wAo0vW+XJ27HehGA=', 'Student', 'What was the name of your first pet?', 'dog', 1),
+(2, 'Trowa Bugarin', 'bugarin.trowabarton@ue.edu.ph', 'PBKDF2$100000$zyu7gfrAa54M3y5NeCfZ/g==$been6LNNyqjDHChpxmd1OaA9DYDR9Hc3tO/wAA8VCjI=', 'Student', 'What was the name of your first pet?', 'dog', 1),
+(3, 'Gabs Katipunan', 'katipunan.karisgabriel@ue.edu.ph', 'PBKDF2$100000$6+kUbBobCJUCYKdGPfR88Q==$YJWKov9Yssf44jowfNgUYs4keWq52gjatkBDogPm48E=', 'Student', 'What was the name of your first pet?', 'dog', 1),
+(4, 'Andrei Sarmiento', 'sarmiento.andrei@ue.edu.ph', 'PBKDF2$100000$+zYoTxKcLX1gSX3zYw6EeQ==$UkyATxysysj4TxvLAciS632U7b9bLixLVeTQJUNtGI4=', 'Student', 'What was the name of your first pet?', 'dog', 1),
+(5, 'Miguel Borja', 'borja.miguelantonio@ue.edu.ph', 'PBKDF2$100000$Y3rkzU/k+cKebcwjFdqZUg==$loEyRk9hVllo2wcxrmbxhRjcdzFpMTflH6ZZklzGOqw=', 'Admin', 'What was the name of your first pet?', 'dog', 1);
 
 -- -----------------------------------------------------------------------------
 -- 2. Table: tbl_categories
@@ -135,10 +135,12 @@ DROP TABLE IF EXISTS `tbl_reports`;
 CREATE TABLE `tbl_reports` (
     `ReportId` INT AUTO_INCREMENT PRIMARY KEY,
     `SkillId` INT DEFAULT NULL,
+    `ReportedUserId` INT DEFAULT NULL,
     `ReportedUser` VARCHAR(100) NOT NULL,
     `Reason` TEXT NOT NULL,
     `ReportDate` DATETIME DEFAULT CURRENT_TIMESTAMP,
-    `Status` ENUM('Pending', 'Reviewed', 'Dismissed') DEFAULT 'Pending'
+    `Status` ENUM('Pending', 'Reviewed', 'Dismissed') DEFAULT 'Pending',
+    INDEX (`ReportedUserId`)
 ) ENGINE=InnoDB;
 
 -- -----------------------------------------------------------------------------

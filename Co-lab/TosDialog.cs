@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using MySql.Data.MySqlClient;
 
 namespace Co_LAB
 {
@@ -38,11 +39,18 @@ namespace Co_LAB
 
             try
             {
-                object? tosObj = DatabaseHelper.ExecuteScalar("SELECT TosContent FROM tbl_tos ORDER BY TosId DESC LIMIT 1");
-                if (tosObj != null && tosObj != DBNull.Value)
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand cmd = new MySqlCommand();
+                conn.Open();
+                cmd.CommandText = "SELECT TosContent FROM tbl_tos ORDER BY TosId DESC LIMIT 1";
+                cmd.Connection = conn;
+
+                using MySqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read() && reader[0] != DBNull.Value)
                 {
-                    regulationsText = tosObj.ToString() ?? "";
+                    regulationsText = reader[0].ToString() ?? "";
                 }
+                conn.Close();
             }
             catch (Exception ex)
             {

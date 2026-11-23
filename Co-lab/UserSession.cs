@@ -29,10 +29,14 @@ namespace Co_LAB
             if (UserId <= 0) return;
             try
             {
-                DatabaseHelper.ExecuteNonQuery(
-                    "UPDATE tbl_users SET last_active = NOW() WHERE UserId = @uid",
-                    new MySqlParameter("@uid", UserId)
-                );
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand cmd = new MySqlCommand();
+                conn.Open();
+                cmd.CommandText = "UPDATE tbl_users SET last_active = NOW() WHERE UserId = @uid";
+                cmd.Connection = conn;
+                cmd.Parameters.AddWithValue("@uid", UserId);
+                cmd.ExecuteNonQuery();
+                conn.Close();
             }
             catch { }
         }
@@ -43,10 +47,14 @@ namespace Co_LAB
             {
                 if (UserId > 0)
                 {
-                    DatabaseHelper.ExecuteNonQuery(
-                        "UPDATE tbl_users SET is_logged_in = 0, session_id = NULL WHERE UserId = @uid",
-                        new MySqlParameter("@uid", UserId)
-                    );
+                    using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                    MySqlCommand cmd = new MySqlCommand();
+                    conn.Open();
+                    cmd.CommandText = "UPDATE tbl_users SET is_logged_in = 0, session_id = NULL WHERE UserId = @uid";
+                    cmd.Connection = conn;
+                    cmd.Parameters.AddWithValue("@uid", UserId);
+                    cmd.ExecuteNonQuery();
+                    conn.Close();
                 }
             }
             catch { }

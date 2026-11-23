@@ -46,7 +46,12 @@ namespace Co_LAB
 
         private void LoadView(UserControl uc)
         {
-            panel1.Controls.Clear();
+            for (int i = panel1.Controls.Count - 1; i >= 0; i--)
+            {
+                Control old = panel1.Controls[i];
+                panel1.Controls.RemoveAt(i);
+                old.Dispose();
+            }
             uc.Dock = DockStyle.Fill;
             panel1.Controls.Add(uc);
             uc.Show();

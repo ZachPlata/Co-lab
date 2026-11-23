@@ -20,19 +20,23 @@ namespace Co_LAB
         {
             try
             {
-                string sql = @"INSERT INTO tbl_notifications 
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand cmd = new MySqlCommand();
+                conn.Open();
+                cmd.CommandText = @"INSERT INTO tbl_notifications 
                     (UserId, UserEmail, TargetRole, Title, Message, Type, RelatedId, IsRead, CreatedAt)
                     VALUES 
                     (@uid, @email, @role, @title, @msg, @type, @relId, 0, NOW())";
-
-                DatabaseHelper.ExecuteNonQuery(sql,
-                    new MySqlParameter("@uid", userId.HasValue ? userId.Value : (object)DBNull.Value),
-                    new MySqlParameter("@email", string.IsNullOrWhiteSpace(userEmail) ? (object)DBNull.Value : userEmail.Trim()),
-                    new MySqlParameter("@role", targetRole),
-                    new MySqlParameter("@title", title),
-                    new MySqlParameter("@msg", message),
-                    new MySqlParameter("@type", type),
-                    new MySqlParameter("@relId", relatedId.HasValue ? relatedId.Value : (object)DBNull.Value));
+                cmd.Connection = conn;
+                cmd.Parameters.AddWithValue("@uid", userId.HasValue ? userId.Value : (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@email", string.IsNullOrWhiteSpace(userEmail) ? (object)DBNull.Value : userEmail.Trim());
+                cmd.Parameters.AddWithValue("@role", targetRole);
+                cmd.Parameters.AddWithValue("@title", title);
+                cmd.Parameters.AddWithValue("@msg", message);
+                cmd.Parameters.AddWithValue("@type", type);
+                cmd.Parameters.AddWithValue("@relId", relatedId.HasValue ? relatedId.Value : (object)DBNull.Value);
+                cmd.ExecuteNonQuery();
+                conn.Close();
             }
             catch (Exception ex)
             {
@@ -43,13 +47,23 @@ namespace Co_LAB
         /// <summary>
         /// Sends a notification to the skill listing owner when a student proposes a trade.
         /// </summary>
-        public static void NotifyTradeRequest(int targetSkillId, string skillTitle, string senderName, string senderEmail)
+        public static void NotifyTradeRequest(int requestId, int targetSkillId, string skillTitle, string senderName, string senderEmail)
         {
             try
             {
-                string query = "SELECT s.UserId, s.OfferedBy, u.Email FROM tbl_skills s LEFT JOIN tbl_users u ON s.UserId = u.UserId WHERE s.SkillId = @sid LIMIT 1";
-                DataTable dt = DatabaseHelper.ExecuteQuery(query, new MySqlParameter("@sid", targetSkillId));
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand cmd = new MySqlCommand();
+                DataSet ds = new DataSet();
+                MySqlDataAdapter da = new MySqlDataAdapter();
+                conn.Open();
+                cmd.CommandText = "SELECT s.UserId, s.OfferedBy, u.Email FROM tbl_skills s LEFT JOIN tbl_users u ON s.UserId = u.UserId WHERE s.SkillId = @sid LIMIT 1";
+                cmd.Connection = conn;
+                cmd.Parameters.AddWithValue("@sid", targetSkillId);
+                da.SelectCommand = cmd;
+                da.Fill(ds, "skill");
+                conn.Close();
 
+                DataTable dt = ds.Tables["skill"]!;
                 if (dt != null && dt.Rows.Count > 0)
                 {
                     int? ownerId = dt.Rows[0]["UserId"] != DBNull.Value ? Convert.ToInt32(dt.Rows[0]["UserId"]) : null;
@@ -62,7 +76,7 @@ namespace Co_LAB
                         "🤝 New Trade Request",
                         $"{senderName} sent you a trade proposal for your skill \"{skillTitle}\".",
                         "TradeRequest",
-                        targetSkillId);
+                        requestId);
                 }
             }
             catch (Exception ex)
@@ -78,12 +92,22 @@ namespace Co_LAB
         {
             try
             {
-                string query = @"SELECT r.SenderName, r.SenderEmail, s.SkillTitle, s.OfferedBy 
-                                 FROM tbl_traderequests r 
-                                 INNER JOIN tbl_skills s ON r.TargetSkillId = s.SkillId 
-                                 WHERE r.RequestId = @rid LIMIT 1";
-                DataTable dt = DatabaseHelper.ExecuteQuery(query, new MySqlParameter("@rid", requestId));
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand cmd = new MySqlCommand();
+                DataSet ds = new DataSet();
+                MySqlDataAdapter da = new MySqlDataAdapter();
+                conn.Open();
+                cmd.CommandText = @"SELECT r.SenderName, r.SenderEmail, s.SkillTitle, s.OfferedBy 
+                                    FROM tbl_traderequests r 
+                                    INNER JOIN tbl_skills s ON r.TargetSkillId = s.SkillId 
+                                    WHERE r.RequestId = @rid LIMIT 1";
+                cmd.Connection = conn;
+                cmd.Parameters.AddWithValue("@rid", requestId);
+                da.SelectCommand = cmd;
+                da.Fill(ds, "req");
+                conn.Close();
 
+                DataTable dt = ds.Tables["req"]!;
                 if (dt != null && dt.Rows.Count > 0)
                 {
                     string senderEmail = dt.Rows[0]["SenderEmail"]?.ToString() ?? "";
@@ -151,8 +175,12 @@ namespace Co_LAB
         {
             try
             {
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                conn.Open();
+
                 // For Admin: Sync pending reports
-                string sqlAdmin = @"
+                MySqlCommand cmdAdmin = new MySqlCommand();
+                cmdAdmin.CommandText = @"
                     INSERT INTO tbl_notifications (TargetRole, Title, Message, Type, RelatedId, IsRead, CreatedAt)
                     SELECT 'Admin', '🚩 Pending Incident Report', 
                            CONCAT('Student ""', r.ReportedUser, '"" has a pending report: ', r.Reason), 
@@ -163,23 +191,28 @@ namespace Co_LAB
                           SELECT 1 FROM tbl_notifications n 
                           WHERE n.TargetRole = 'Admin' AND n.Type = 'Report' AND n.RelatedId = r.ReportId
                       )";
-                DatabaseHelper.ExecuteNonQuery(sqlAdmin);
+                cmdAdmin.Connection = conn;
+                cmdAdmin.ExecuteNonQuery();
 
                 // For Students: Sync pending incoming trade requests
-                string sqlStudents = @"
+                MySqlCommand cmdStudents = new MySqlCommand();
+                cmdStudents.CommandText = @"
                     INSERT INTO tbl_notifications (UserId, UserEmail, TargetRole, Title, Message, Type, RelatedId, IsRead, CreatedAt)
                     SELECT s.UserId, u.Email, 'Student', '🤝 Incoming Trade Request',
                            CONCAT(r.SenderName, ' sent a trade proposal for your skill ""', s.SkillTitle, '"".'),
-                           'TradeRequest', r.TargetSkillId, 0, r.RequestDate
+                           'TradeRequest', r.RequestId, 0, r.RequestDate
                     FROM tbl_traderequests r
                     JOIN tbl_skills s ON r.TargetSkillId = s.SkillId
                     LEFT JOIN tbl_users u ON s.UserId = u.UserId
                     WHERE r.Status = 'Pending'
                       AND NOT EXISTS (
                           SELECT 1 FROM tbl_notifications n 
-                          WHERE n.TargetRole = 'Student' AND n.Type = 'TradeRequest' AND n.RelatedId = r.TargetSkillId
+                          WHERE n.TargetRole = 'Student' AND n.Type = 'TradeRequest' AND n.RelatedId = r.RequestId
                       )";
-                DatabaseHelper.ExecuteNonQuery(sqlStudents);
+                cmdStudents.Connection = conn;
+                cmdStudents.ExecuteNonQuery();
+
+                conn.Close();
             }
             catch (Exception ex)
             {
@@ -194,20 +227,29 @@ namespace Co_LAB
         {
             try
             {
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand cmd = new MySqlCommand();
+                conn.Open();
                 if (string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
                 {
-                    string sql = "SELECT COUNT(*) FROM tbl_notifications WHERE TargetRole = 'Admin' AND IsRead = 0";
-                    object? res = DatabaseHelper.ExecuteScalar(sql);
-                    return res != null && res != DBNull.Value ? Convert.ToInt32(res) : 0;
+                    cmd.CommandText = "SELECT COUNT(*) FROM tbl_notifications WHERE TargetRole = 'Admin' AND IsRead = 0";
                 }
                 else
                 {
-                    string sql = "SELECT COUNT(*) FROM tbl_notifications WHERE TargetRole = 'Student' AND (UserEmail = @email OR (UserEmail IS NULL AND UserId = @uid)) AND IsRead = 0";
-                    object? res = DatabaseHelper.ExecuteScalar(sql,
-                        new MySqlParameter("@email", userEmail),
-                        new MySqlParameter("@uid", UserSession.UserId));
-                    return res != null && res != DBNull.Value ? Convert.ToInt32(res) : 0;
+                    cmd.CommandText = "SELECT COUNT(*) FROM tbl_notifications WHERE TargetRole = 'Student' AND ((@email != '' AND UserEmail = @email) OR (UserId = @uid AND @uid > 0)) AND IsRead = 0";
+                    cmd.Parameters.AddWithValue("@email", userEmail ?? string.Empty);
+                    cmd.Parameters.AddWithValue("@uid", UserSession.UserId);
                 }
+                cmd.Connection = conn;
+
+                int unread = 0;
+                using MySqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read() && reader[0] != DBNull.Value)
+                {
+                    unread = Convert.ToInt32(reader[0]);
+                }
+                conn.Close();
+                return unread;
             }
             catch
             {
@@ -222,18 +264,29 @@ namespace Co_LAB
         {
             try
             {
+                int safeLimit = Math.Clamp(limit, 1, 200);
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand cmd = new MySqlCommand();
+                DataSet ds = new DataSet();
+                MySqlDataAdapter da = new MySqlDataAdapter();
+                conn.Open();
+
                 if (string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
                 {
-                    string sql = $"SELECT * FROM tbl_notifications WHERE TargetRole = 'Admin' ORDER BY NotificationId DESC LIMIT {limit}";
-                    return DatabaseHelper.ExecuteQuery(sql);
+                    cmd.CommandText = $"SELECT * FROM tbl_notifications WHERE TargetRole = 'Admin' ORDER BY NotificationId DESC LIMIT {safeLimit}";
                 }
                 else
                 {
-                    string sql = $"SELECT * FROM tbl_notifications WHERE TargetRole = 'Student' AND (UserEmail = @email OR (UserEmail IS NULL AND UserId = @uid)) ORDER BY NotificationId DESC LIMIT {limit}";
-                    return DatabaseHelper.ExecuteQuery(sql,
-                        new MySqlParameter("@email", userEmail),
-                        new MySqlParameter("@uid", UserSession.UserId));
+                    cmd.CommandText = $"SELECT * FROM tbl_notifications WHERE TargetRole = 'Student' AND ((@email != '' AND UserEmail = @email) OR (UserId = @uid AND @uid > 0)) ORDER BY NotificationId DESC LIMIT {safeLimit}";
+                    cmd.Parameters.AddWithValue("@email", userEmail ?? string.Empty);
+                    cmd.Parameters.AddWithValue("@uid", UserSession.UserId);
                 }
+
+                cmd.Connection = conn;
+                da.SelectCommand = cmd;
+                da.Fill(ds, "notifications");
+                conn.Close();
+                return ds.Tables["notifications"]!;
             }
             catch
             {
@@ -248,9 +301,14 @@ namespace Co_LAB
         {
             try
             {
-                DatabaseHelper.ExecuteNonQuery(
-                    "UPDATE tbl_notifications SET IsRead = 1 WHERE NotificationId = @id",
-                    new MySqlParameter("@id", notificationId));
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand cmd = new MySqlCommand();
+                conn.Open();
+                cmd.CommandText = "UPDATE tbl_notifications SET IsRead = 1 WHERE NotificationId = @id";
+                cmd.Connection = conn;
+                cmd.Parameters.AddWithValue("@id", notificationId);
+                cmd.ExecuteNonQuery();
+                conn.Close();
             }
             catch { }
         }
@@ -262,17 +320,22 @@ namespace Co_LAB
         {
             try
             {
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand cmd = new MySqlCommand();
+                conn.Open();
                 if (string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
                 {
-                    DatabaseHelper.ExecuteNonQuery("UPDATE tbl_notifications SET IsRead = 1 WHERE TargetRole = 'Admin'");
+                    cmd.CommandText = "UPDATE tbl_notifications SET IsRead = 1 WHERE TargetRole = 'Admin'";
                 }
                 else
                 {
-                    DatabaseHelper.ExecuteNonQuery(
-                        "UPDATE tbl_notifications SET IsRead = 1 WHERE TargetRole = 'Student' AND (UserEmail = @email OR (UserEmail IS NULL AND UserId = @uid))",
-                        new MySqlParameter("@email", userEmail),
-                        new MySqlParameter("@uid", UserSession.UserId));
+                    cmd.CommandText = "UPDATE tbl_notifications SET IsRead = 1 WHERE TargetRole = 'Student' AND ((@email != '' AND UserEmail = @email) OR (UserId = @uid AND @uid > 0))";
+                    cmd.Parameters.AddWithValue("@email", userEmail ?? string.Empty);
+                    cmd.Parameters.AddWithValue("@uid", UserSession.UserId);
                 }
+                cmd.Connection = conn;
+                cmd.ExecuteNonQuery();
+                conn.Close();
             }
             catch { }
         }

@@ -70,11 +70,22 @@ namespace Co_LAB.UCAuth
 
             try
             {
-                string query = @"SELECT UserId, FullName, Email, Password, Role, is_blacklisted, BanReason,
-                                        is_logged_in, last_active,
-                                        TIMESTAMPDIFF(SECOND, last_active, NOW()) AS inactive_seconds
-                                 FROM tbl_users WHERE Email = @Email LIMIT 1";
-                DataTable dt = DatabaseHelper.ExecuteQuery(query, new MySqlParameter("@Email", email));
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand cmd = new MySqlCommand();
+                DataSet ds = new DataSet();
+                MySqlDataAdapter da = new MySqlDataAdapter();
+                conn.Open();
+                cmd.CommandText = @"SELECT UserId, FullName, Email, Password, Role, is_blacklisted, BanReason,
+                                           is_logged_in, last_active,
+                                           TIMESTAMPDIFF(SECOND, last_active, NOW()) AS inactive_seconds
+                                    FROM tbl_users WHERE Email = @Email LIMIT 1";
+                cmd.Connection = conn;
+                cmd.Parameters.AddWithValue("@Email", email);
+                da.SelectCommand = cmd;
+                da.Fill(ds, "users");
+                conn.Close();
+
+                DataTable dt = ds.Tables["users"]!;
 
                 if (dt.Rows.Count == 0)
                 {
@@ -91,6 +102,28 @@ namespace Co_LAB.UCAuth
                     lblGeneralError.Text = "Invalid email or password.";
                     lblGeneralError.Visible = true;
                     return;
+                }
+
+                int userId = Convert.ToInt32(row["UserId"]);
+                if (!AuthHelper.IsHashed(storedPassword))
+                {
+                    try
+                    {
+                        string migratedHash = AuthHelper.HashPassword(password);
+                        using MySqlConnection migConn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                        MySqlCommand migCmd = new MySqlCommand();
+                        migConn.Open();
+                        migCmd.CommandText = "UPDATE tbl_users SET Password = @Password WHERE UserId = @uid";
+                        migCmd.Connection = migConn;
+                        migCmd.Parameters.AddWithValue("@Password", migratedHash);
+                        migCmd.Parameters.AddWithValue("@uid", userId);
+                        migCmd.ExecuteNonQuery();
+                        migConn.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Password migration error: {ex.Message}");
+                    }
                 }
 
                 int isBlacklisted = 0;
@@ -114,7 +147,6 @@ namespace Co_LAB.UCAuth
                     return;
                 }
 
-                int userId = Convert.ToInt32(row["UserId"]);
                 string fullName = row["FullName"]?.ToString() ?? "";
                 string role = row["Role"]?.ToString() ?? "Student";
 
@@ -145,11 +177,15 @@ namespace Co_LAB.UCAuth
 
                 // Generate new session token and register session in DB
                 string newSessionId = Guid.NewGuid().ToString("N");
-                DatabaseHelper.ExecuteNonQuery(
-                    "UPDATE tbl_users SET is_logged_in = 1, last_active = NOW(), session_id = @sid WHERE UserId = @uid",
-                    new MySqlParameter("@sid", newSessionId),
-                    new MySqlParameter("@uid", userId)
-                );
+                using MySqlConnection sessConn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand sessCmd = new MySqlCommand();
+                sessConn.Open();
+                sessCmd.CommandText = "UPDATE tbl_users SET is_logged_in = 1, last_active = NOW(), session_id = @sid WHERE UserId = @uid";
+                sessCmd.Connection = sessConn;
+                sessCmd.Parameters.AddWithValue("@sid", newSessionId);
+                sessCmd.Parameters.AddWithValue("@uid", userId);
+                sessCmd.ExecuteNonQuery();
+                sessConn.Close();
 
                 UserSession.Set(userId, fullName, email, role, newSessionId);
 

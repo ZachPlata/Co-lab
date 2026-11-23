@@ -18,6 +18,7 @@ namespace Co_LAB.UCStudents
         private void InitializeComponent()
         {
             lblCategoryBadge = new Label();
+            lblOngoingBadge = new Label();
             lblDeliveryMode = new Label();
             lblSkillTitle = new Label();
             lblDescription = new Label();
@@ -37,6 +38,19 @@ namespace Co_LAB.UCStudents
             lblCategoryBadge.Size = new Size(55, 12);
             lblCategoryBadge.TabIndex = 0;
             lblCategoryBadge.Text = "CATEGORY";
+            // 
+            // lblOngoingBadge
+            // 
+            lblOngoingBadge.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblOngoingBadge.AutoSize = true;
+            lblOngoingBadge.Font = new Font("Segoe UI", 7.5F, FontStyle.Bold);
+            lblOngoingBadge.Location = new Point(180, 10);
+            lblOngoingBadge.Name = "lblOngoingBadge";
+            lblOngoingBadge.Padding = new Padding(6, 2, 6, 2);
+            lblOngoingBadge.Size = new Size(70, 16);
+            lblOngoingBadge.TabIndex = 8;
+            lblOngoingBadge.Text = "● ONGOING";
+            lblOngoingBadge.Visible = false;
             // 
             // lblDeliveryMode
             // 
@@ -137,6 +151,7 @@ namespace Co_LAB.UCStudents
             Controls.Add(lblDescription);
             Controls.Add(lblSkillTitle);
             Controls.Add(lblDeliveryMode);
+            Controls.Add(lblOngoingBadge);
             Controls.Add(lblCategoryBadge);
             Margin = new Padding(10);
             Name = "uc_SkillCard";
@@ -148,6 +163,7 @@ namespace Co_LAB.UCStudents
         #endregion
 
         private Label lblCategoryBadge;
+        private Label lblOngoingBadge;
         private Label lblDeliveryMode;
         private Label lblSkillTitle;
         private Label lblDescription;

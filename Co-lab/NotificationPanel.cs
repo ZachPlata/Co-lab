@@ -6,14 +6,8 @@ using System.Windows.Forms;
 namespace Co_LAB
 {
     [System.ComponentModel.DesignerCategory("UserControl")]
-    public class NotificationPanel : UserControl
+    public partial class NotificationPanel : UserControl
     {
-        private FlowLayoutPanel flpList = null!;
-        private Label lblHeader = null!;
-        private Button btnMarkAllRead = null!;
-        private Button btnClose = null!;
-        private Panel pnlHeader = null!;
-
         private string _userEmail = "";
         private string _role = "Student";
 
@@ -25,84 +19,15 @@ namespace Co_LAB
             InitializeComponent();
         }
 
-        private void InitializeComponent()
+        private void btnMarkAllRead_Click(object? sender, EventArgs e)
         {
-            SuspendLayout();
+            NotificationHelper.MarkAllAsRead(_userEmail, _role);
+            RefreshNotifications(_userEmail, _role);
+        }
 
-            BackColor = Color.FromArgb(16, 22, 18);
-            BorderStyle = BorderStyle.FixedSingle;
-            Size = new Size(380, 440);
-
-            // Header panel
-            pnlHeader = new Panel
-            {
-                Dock = DockStyle.Top,
-                Height = 44,
-                BackColor = Color.FromArgb(20, 28, 23),
-                Padding = new Padding(12, 8, 12, 8)
-            };
-
-            lblHeader = new Label
-            {
-                Text = "🔔 Notifications",
-                Font = new Font("Segoe UI Semibold", 10.5F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(74, 222, 128),
-                AutoSize = true,
-                Location = new Point(12, 11)
-            };
-
-            btnMarkAllRead = new Button
-            {
-                Text = "Mark all read",
-                Font = new Font("Segoe UI", 8F),
-                ForeColor = Color.FromArgb(161, 161, 170),
-                BackColor = Color.Transparent,
-                FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand,
-                AutoSize = true,
-                Location = new Point(230, 9),
-                Height = 26
-            };
-            btnMarkAllRead.FlatAppearance.BorderSize = 0;
-            btnMarkAllRead.Click += (s, e) =>
-            {
-                NotificationHelper.MarkAllAsRead(_userEmail, _role);
-                RefreshNotifications(_userEmail, _role);
-            };
-
-            btnClose = new Button
-            {
-                Text = "✕",
-                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(161, 161, 170),
-                BackColor = Color.Transparent,
-                FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand,
-                Size = new Size(26, 26),
-                Location = new Point(345, 9)
-            };
-            btnClose.FlatAppearance.BorderSize = 0;
-            btnClose.Click += (s, e) => CloseRequested?.Invoke(this, EventArgs.Empty);
-
-            pnlHeader.Controls.Add(lblHeader);
-            pnlHeader.Controls.Add(btnMarkAllRead);
-            pnlHeader.Controls.Add(btnClose);
-
-            // Flow layout list
-            flpList = new FlowLayoutPanel
-            {
-                Dock = DockStyle.Fill,
-                AutoScroll = true,
-                FlowDirection = FlowDirection.TopDown,
-                WrapContents = false,
-                Padding = new Padding(8, 8, 8, 8),
-                BackColor = Color.FromArgb(14, 19, 16)
-            };
-
-            Controls.Add(flpList);
-            Controls.Add(pnlHeader);
-
-            ResumeLayout(false);
+        private void btnClose_Click(object? sender, EventArgs e)
+        {
+            CloseRequested?.Invoke(this, EventArgs.Empty);
         }
 
         public void RefreshNotifications(string userEmail, string role)
@@ -111,25 +36,23 @@ namespace Co_LAB
             _role = role;
 
             flpList.SuspendLayout();
-            flpList.Controls.Clear();
+            for (int i = flpList.Controls.Count - 1; i >= 0; i--)
+            {
+                Control old = flpList.Controls[i];
+                flpList.Controls.RemoveAt(i);
+                old.Dispose();
+            }
 
             DataTable dt = NotificationHelper.GetNotifications(userEmail, role, 30);
 
             if (dt == null || dt.Rows.Count == 0)
             {
-                Label lblEmpty = new Label
-                {
-                    Text = "No notifications yet.\nYou're all caught up! ✨",
-                    ForeColor = Color.FromArgb(140, 150, 142),
-                    Font = new Font("Segoe UI", 9.5F),
-                    TextAlign = ContentAlignment.MiddleCenter,
-                    Size = new Size(350, 120),
-                    Margin = new Padding(0, 80, 0, 0)
-                };
-                flpList.Controls.Add(lblEmpty);
+                lblEmpty.Visible = true;
+                lblEmpty.BringToFront();
             }
             else
             {
+                lblEmpty.Visible = false;
                 foreach (DataRow row in dt.Rows)
                 {
                     int notifId = Convert.ToInt32(row["NotificationId"]);

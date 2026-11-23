@@ -25,8 +25,6 @@ namespace Co_LAB.UCStudents
 
         public CardTradeState CurrentState { get; private set; } = CardTradeState.Available;
 
-        private Label? _lblOngoingBadge;
-
         // Events exposed to parent (uc_SkillExchange)
         public event EventHandler<SkillCardEventArgs>? RequestTradeClicked;
         public event EventHandler<SkillCardEventArgs>? ReportClicked;
@@ -34,24 +32,6 @@ namespace Co_LAB.UCStudents
         public uc_SkillCard()
         {
             InitializeComponent();
-            EnsureOngoingBadge();
-        }
-
-        private void EnsureOngoingBadge()
-        {
-            if (_lblOngoingBadge == null)
-            {
-                _lblOngoingBadge = new Label
-                {
-                    AutoSize = true,
-                    Font = new Font("Segoe UI", 7.5F, FontStyle.Bold),
-                    Padding = new Padding(6, 2, 6, 2),
-                    Visible = false,
-                    Anchor = AnchorStyles.Top | AnchorStyles.Right
-                };
-                Controls.Add(_lblOngoingBadge);
-                _lblOngoingBadge.BringToFront();
-            }
         }
 
         /// <summary>
@@ -80,16 +60,15 @@ namespace Co_LAB.UCStudents
         public void SetTradeState(CardTradeState state)
         {
             CurrentState = state;
-            EnsureOngoingBadge();
 
             switch (state)
             {
                 case CardTradeState.OngoingTrade:
-                    _lblOngoingBadge!.Text = "● ONGOING";
-                    _lblOngoingBadge.BackColor = Color.FromArgb(70, 48, 15);
-                    _lblOngoingBadge.ForeColor = Color.FromArgb(251, 191, 36); // Amber Gold
-                    _lblOngoingBadge.Visible = true;
-                    _lblOngoingBadge.Location = new Point(Width - _lblOngoingBadge.PreferredWidth - 14, 10);
+                    lblOngoingBadge.Text = "● ONGOING";
+                    lblOngoingBadge.BackColor = Color.FromArgb(70, 48, 15);
+                    lblOngoingBadge.ForeColor = Color.FromArgb(251, 191, 36); // Amber Gold
+                    lblOngoingBadge.Visible = true;
+                    lblOngoingBadge.Location = new Point(Width - lblOngoingBadge.PreferredWidth - 14, 10);
                     lblDeliveryMode.Visible = false;
 
                     btnRequestTrade.Text = "🔒 Ongoing";
@@ -102,11 +81,11 @@ namespace Co_LAB.UCStudents
                     break;
 
                 case CardTradeState.UserPending:
-                    _lblOngoingBadge!.Text = "⏳ REQUEST SENT";
-                    _lblOngoingBadge.BackColor = Color.FromArgb(20, 60, 35);
-                    _lblOngoingBadge.ForeColor = Color.FromArgb(134, 239, 172); // Light mint green
-                    _lblOngoingBadge.Visible = true;
-                    _lblOngoingBadge.Location = new Point(Width - _lblOngoingBadge.PreferredWidth - 14, 10);
+                    lblOngoingBadge.Text = "⏳ REQUEST SENT";
+                    lblOngoingBadge.BackColor = Color.FromArgb(20, 60, 35);
+                    lblOngoingBadge.ForeColor = Color.FromArgb(134, 239, 172); // Light mint green
+                    lblOngoingBadge.Visible = true;
+                    lblOngoingBadge.Location = new Point(Width - lblOngoingBadge.PreferredWidth - 14, 10);
                     lblDeliveryMode.Visible = false;
 
                     btnRequestTrade.Text = "⏳ Request Sent";
@@ -119,7 +98,7 @@ namespace Co_LAB.UCStudents
                     break;
 
                 case CardTradeState.OwnListing:
-                    _lblOngoingBadge!.Visible = false;
+                    lblOngoingBadge.Visible = false;
                     lblDeliveryMode.Visible = true;
 
                     btnRequestTrade.Text = "👤 Your Skill";
@@ -133,7 +112,7 @@ namespace Co_LAB.UCStudents
 
                 case CardTradeState.Available:
                 default:
-                    _lblOngoingBadge!.Visible = false;
+                    lblOngoingBadge.Visible = false;
                     lblDeliveryMode.Visible = true;
 
                     btnRequestTrade.Text = "🤝 Request Trade";

@@ -15,7 +15,7 @@ namespace Co_LAB
         /// Current student's full name matching tbl_users.FullName, tbl_skills.OfferedBy, and tbl_traderequests.SenderName
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public string CurrentStudentName { get; set; } = "Juan Dela Cruz";
+        public string CurrentStudentName { get; set; } = string.Empty;
 
         private System.Windows.Forms.Timer? _liveRefreshTimer;
         private string _lastDashboardFingerprint = "";
@@ -71,15 +71,28 @@ namespace Co_LAB
         {
             try
             {
-                string sql = @"SELECT CONCAT(
-                                  COALESCE((SELECT COUNT(*) FROM tbl_traderequests r JOIN tbl_skills s ON r.TargetSkillId = s.SkillId WHERE s.OfferedBy = @name OR s.UserId = @uid), 0), ':',
-                                  COALESCE((SELECT MAX(r.RequestId) FROM tbl_traderequests r JOIN tbl_skills s ON r.TargetSkillId = s.SkillId WHERE s.OfferedBy = @name OR s.UserId = @uid), 0), ':',
-                                  COALESCE((SELECT MAX(r.Status) FROM tbl_traderequests r JOIN tbl_skills s ON r.TargetSkillId = s.SkillId WHERE s.OfferedBy = @name OR s.UserId = @uid), '')
-                               )";
-                object? check = DatabaseHelper.ExecuteScalar(sql,
-                    new MySqlParameter("@name", CurrentStudentName),
-                    new MySqlParameter("@uid", UserSession.UserId));
-                string fp = check?.ToString() ?? "";
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand cmd = new MySqlCommand();
+                conn.Open();
+                cmd.CommandText = @"SELECT CONCAT(
+                                      COALESCE((SELECT COUNT(*) FROM tbl_traderequests r JOIN tbl_skills s ON r.TargetSkillId = s.SkillId WHERE s.OfferedBy = @name OR s.UserId = @uid), 0), ':',
+                                      COALESCE((SELECT MAX(r.RequestId) FROM tbl_traderequests r JOIN tbl_skills s ON r.TargetSkillId = s.SkillId WHERE s.OfferedBy = @name OR s.UserId = @uid), 0), ':',
+                                      COALESCE((SELECT MAX(r.Status) FROM tbl_traderequests r JOIN tbl_skills s ON r.TargetSkillId = s.SkillId WHERE s.OfferedBy = @name OR s.UserId = @uid), '')
+                                   )";
+                cmd.Connection = conn;
+                cmd.Parameters.AddWithValue("@name", CurrentStudentName);
+                cmd.Parameters.AddWithValue("@uid", UserSession.UserId);
+
+                string fp = "";
+                using (MySqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read() && reader[0] != DBNull.Value)
+                    {
+                        fp = reader[0].ToString() ?? "";
+                    }
+                }
+                conn.Close();
+
                 if (fp != _lastDashboardFingerprint)
                 {
                     _lastDashboardFingerprint = fp;
@@ -90,7 +103,7 @@ namespace Co_LAB
         }
 
         /// <summary>
-        /// Loads live metrics and table data from MySQL using DatabaseHelper.
+        /// Loads live metrics and table data from MySQL.
         /// When there are no records, tables remain blank without dummy data.
         /// </summary>
         public void LoadDashboardData()
@@ -114,14 +127,23 @@ namespace Co_LAB
 
             try
             {
-                DataTable dt = DatabaseHelper.ExecuteQuery(
-                    @"SELECT UserSkillId, SkillName, Category, ProficiencyLevel 
-                      FROM tbl_user_skills 
-                      WHERE UserId = @uid OR UserId = (SELECT UserId FROM tbl_users WHERE FullName = @name LIMIT 1) 
-                      ORDER BY UserSkillId DESC",
-                    new MySqlParameter("@uid", uid),
-                    new MySqlParameter("@name", studentName));
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand cmd = new MySqlCommand();
+                DataSet ds = new DataSet();
+                MySqlDataAdapter da = new MySqlDataAdapter();
+                conn.Open();
+                cmd.CommandText = @"SELECT UserSkillId, SkillName, Category, ProficiencyLevel 
+                                    FROM tbl_user_skills 
+                                    WHERE UserId = @uid OR UserId = (SELECT UserId FROM tbl_users WHERE FullName = @name LIMIT 1) 
+                                    ORDER BY UserSkillId DESC";
+                cmd.Connection = conn;
+                cmd.Parameters.AddWithValue("@uid", uid);
+                cmd.Parameters.AddWithValue("@name", studentName);
+                da.SelectCommand = cmd;
+                da.Fill(ds, "knownSkills");
+                conn.Close();
 
+                DataTable dt = ds.Tables["knownSkills"]!;
                 BindMySkillsGrid(dt);
 
                 int count = (dt != null) ? dt.Rows.Count : 0;
@@ -146,58 +168,75 @@ namespace Co_LAB
 
             try
             {
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                conn.Open();
+
                 // 1. Pending Incoming Requests (targeted at this student's skills)
-                object? pObj = DatabaseHelper.ExecuteScalar(
-                    @"SELECT COUNT(*) 
-                      FROM tbl_traderequests r 
-                      INNER JOIN tbl_skills s ON r.TargetSkillId = s.SkillId 
-                      WHERE (s.UserId = @uid OR s.OfferedBy = @name) 
-                        AND (r.Status = 'Pending' OR r.Status IS NULL)",
-                    new MySqlParameter("@uid", uid),
-                    new MySqlParameter("@name", studentName));
-                if (pObj != null && int.TryParse(pObj.ToString(), out int c2))
+                MySqlCommand pCmd = new MySqlCommand();
+                pCmd.CommandText = @"SELECT COUNT(*) 
+                                     FROM tbl_traderequests r 
+                                     INNER JOIN tbl_skills s ON r.TargetSkillId = s.SkillId 
+                                     WHERE (s.UserId = @uid OR s.OfferedBy = @name) 
+                                       AND (r.Status = 'Pending' OR r.Status IS NULL)";
+                pCmd.Connection = conn;
+                pCmd.Parameters.AddWithValue("@uid", uid);
+                pCmd.Parameters.AddWithValue("@name", studentName);
+                using (MySqlDataReader reader = pCmd.ExecuteReader())
                 {
-                    pendingRequestsCount = c2;
+                    if (reader.Read() && reader[0] != DBNull.Value)
+                        int.TryParse(reader[0].ToString(), out pendingRequestsCount);
                 }
 
                 // 2. Accepted Trades (where this student is either owner or requester)
-                object? aObj = DatabaseHelper.ExecuteScalar(
-                    @"SELECT COUNT(*) 
-                      FROM tbl_traderequests r 
-                      INNER JOIN tbl_skills s ON r.TargetSkillId = s.SkillId 
-                      WHERE (s.UserId = @uid OR s.OfferedBy = @name OR r.SenderName = @name) 
-                        AND r.Status = 'Accepted'",
-                    new MySqlParameter("@uid", uid),
-                    new MySqlParameter("@name", studentName));
-                if (aObj != null && int.TryParse(aObj.ToString(), out int c3))
+                MySqlCommand aCmd = new MySqlCommand();
+                aCmd.CommandText = @"SELECT COUNT(*) 
+                                     FROM tbl_traderequests r 
+                                     INNER JOIN tbl_skills s ON r.TargetSkillId = s.SkillId 
+                                     WHERE (s.UserId = @uid OR s.OfferedBy = @name OR r.SenderName = @name) 
+                                       AND r.Status = 'Accepted'";
+                aCmd.Connection = conn;
+                aCmd.Parameters.AddWithValue("@uid", uid);
+                aCmd.Parameters.AddWithValue("@name", studentName);
+                using (MySqlDataReader reader = aCmd.ExecuteReader())
                 {
-                    acceptedTradesCount = c3;
+                    if (reader.Read() && reader[0] != DBNull.Value)
+                        int.TryParse(reader[0].ToString(), out acceptedTradesCount);
                 }
 
                 // 3. Outgoing Requests (sent by this student)
-                object? oObj = DatabaseHelper.ExecuteScalar(
-                    "SELECT COUNT(*) FROM tbl_traderequests WHERE SenderName = @name",
-                    new MySqlParameter("@name", studentName));
-                if (oObj != null && int.TryParse(oObj.ToString(), out int c4))
+                MySqlCommand oCmd = new MySqlCommand();
+                oCmd.CommandText = "SELECT COUNT(*) FROM tbl_traderequests WHERE SenderName = @name";
+                oCmd.Connection = conn;
+                oCmd.Parameters.AddWithValue("@name", studentName);
+                using (MySqlDataReader reader = oCmd.ExecuteReader())
                 {
-                    outgoingRequestsCount = c4;
+                    if (reader.Read() && reader[0] != DBNull.Value)
+                        int.TryParse(reader[0].ToString(), out outgoingRequestsCount);
                 }
 
                 // 4. Query Incoming Requests for dgvIncoming
-                dtIncoming = DatabaseHelper.ExecuteQuery(
-                    @"SELECT 
-                        r.RequestId, 
-                        r.SenderName AS Requester, 
-                        r.OfferedSkillTitle AS `Their Offer Back`, 
-                        r.MeetingMode AS Mode, 
-                        r.Status 
-                      FROM tbl_traderequests r 
-                      INNER JOIN tbl_skills s ON r.TargetSkillId = s.SkillId 
-                      WHERE (s.UserId = @uid OR s.OfferedBy = @name) 
-                        AND (r.Status = 'Pending' OR r.Status IS NULL) 
-                      ORDER BY r.RequestId DESC",
-                    new MySqlParameter("@uid", uid),
-                    new MySqlParameter("@name", studentName));
+                MySqlCommand inCmd = new MySqlCommand();
+                inCmd.CommandText = @"SELECT 
+                                        r.RequestId, 
+                                        r.SenderName AS Requester, 
+                                        r.OfferedSkillTitle AS `Their Offer Back`, 
+                                        r.MeetingMode AS Mode, 
+                                        r.Status 
+                                      FROM tbl_traderequests r 
+                                      INNER JOIN tbl_skills s ON r.TargetSkillId = s.SkillId 
+                                      WHERE (s.UserId = @uid OR s.OfferedBy = @name) 
+                                        AND (r.Status = 'Pending' OR r.Status IS NULL) 
+                                      ORDER BY r.RequestId DESC";
+                inCmd.Connection = conn;
+                inCmd.Parameters.AddWithValue("@uid", uid);
+                inCmd.Parameters.AddWithValue("@name", studentName);
+                DataSet ds = new DataSet();
+                MySqlDataAdapter da = new MySqlDataAdapter();
+                da.SelectCommand = inCmd;
+                da.Fill(ds, "incoming");
+                dtIncoming = ds.Tables["incoming"];
+
+                conn.Close();
             }
             catch (Exception ex)
             {
@@ -262,14 +301,23 @@ namespace Co_LAB
             int uid = UserSession.UserId;
             if (uid <= 0)
             {
-                object? idObj = DatabaseHelper.ExecuteScalar(
-                    "SELECT UserId FROM tbl_users WHERE FullName = @name LIMIT 1",
-                    new MySqlParameter("@name", CurrentStudentName));
-                if (idObj != null && int.TryParse(idObj.ToString(), out int parsedUid))
+                try
                 {
-                    uid = parsedUid;
-                    UserSession.UserId = parsedUid;
+                    using MySqlConnection lookupConn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                    MySqlCommand lookupCmd = new MySqlCommand();
+                    lookupConn.Open();
+                    lookupCmd.CommandText = "SELECT UserId FROM tbl_users WHERE FullName = @name LIMIT 1";
+                    lookupCmd.Connection = lookupConn;
+                    lookupCmd.Parameters.AddWithValue("@name", CurrentStudentName);
+                    using MySqlDataReader reader = lookupCmd.ExecuteReader();
+                    if (reader.Read() && reader[0] != DBNull.Value && int.TryParse(reader[0].ToString(), out int parsedUid))
+                    {
+                        uid = parsedUid;
+                        UserSession.UserId = parsedUid;
+                    }
+                    lookupConn.Close();
                 }
+                catch { }
             }
 
             if (uid <= 0)
@@ -283,12 +331,17 @@ namespace Co_LAB
 
             try
             {
-                int rows = DatabaseHelper.ExecuteNonQuery(
-                    "INSERT INTO tbl_user_skills (UserId, SkillName, Category, ProficiencyLevel) VALUES (@uid, @name, @cat, @level)",
-                    new MySqlParameter("@uid", uid),
-                    new MySqlParameter("@name", skillName),
-                    new MySqlParameter("@cat", category),
-                    new MySqlParameter("@level", level));
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand cmd = new MySqlCommand();
+                conn.Open();
+                cmd.CommandText = "INSERT INTO tbl_user_skills (UserId, SkillName, Category, ProficiencyLevel) VALUES (@uid, @name, @cat, @level)";
+                cmd.Connection = conn;
+                cmd.Parameters.AddWithValue("@uid", uid);
+                cmd.Parameters.AddWithValue("@name", skillName);
+                cmd.Parameters.AddWithValue("@cat", category);
+                cmd.Parameters.AddWithValue("@level", level);
+                int rows = cmd.ExecuteNonQuery();
+                conn.Close();
 
                 if (rows > 0)
                 {
@@ -336,9 +389,14 @@ namespace Co_LAB
 
             try
             {
-                int rows = DatabaseHelper.ExecuteNonQuery(
-                    "DELETE FROM tbl_user_skills WHERE UserSkillId = @id",
-                    new MySqlParameter("@id", userSkillId));
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand cmd = new MySqlCommand();
+                conn.Open();
+                cmd.CommandText = "DELETE FROM tbl_user_skills WHERE UserSkillId = @id";
+                cmd.Connection = conn;
+                cmd.Parameters.AddWithValue("@id", userSkillId);
+                int rows = cmd.ExecuteNonQuery();
+                conn.Close();
 
                 if (rows > 0)
                 {
@@ -384,26 +442,39 @@ namespace Co_LAB
 
             try
             {
-                int rows = DatabaseHelper.ExecuteNonQuery(
-                    "UPDATE tbl_traderequests SET Status = 'Accepted' WHERE RequestId = @id",
-                    new MySqlParameter("@id", reqId));
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                conn.Open();
+
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.CommandText = "UPDATE tbl_traderequests SET Status = 'Accepted' WHERE RequestId = @id";
+                cmd.Connection = conn;
+                cmd.Parameters.AddWithValue("@id", reqId);
+                int rows = cmd.ExecuteNonQuery();
 
                 if (rows > 0)
                 {
                     try
                     {
-                        DatabaseHelper.ExecuteNonQuery(
-                            @"UPDATE tbl_skills SET Status = 'Paused' 
-                              WHERE SkillId = (SELECT TargetSkillId FROM tbl_traderequests WHERE RequestId = @id)",
-                            new MySqlParameter("@id", reqId));
+                        MySqlCommand pauseCmd = new MySqlCommand();
+                        pauseCmd.CommandText = @"UPDATE tbl_skills SET Status = 'Paused' 
+                                                 WHERE SkillId = (SELECT TargetSkillId FROM tbl_traderequests WHERE RequestId = @id)";
+                        pauseCmd.Connection = conn;
+                        pauseCmd.Parameters.AddWithValue("@id", reqId);
+                        pauseCmd.ExecuteNonQuery();
                     }
                     catch { }
+
+                    conn.Close();
 
                     string student = string.IsNullOrWhiteSpace(UserSession.FullName) ? CurrentStudentName : UserSession.FullName;
                     NotificationHelper.NotifyTradeStatusUpdate(reqId, "Accepted", student);
 
                     MessageBox.Show("Trade request accepted successfully! The listing has been marked ongoing on the marketplace.", "Request Accepted", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadDashboardData();
+                }
+                else
+                {
+                    conn.Close();
                 }
             }
             catch (Exception ex)
@@ -439,32 +510,45 @@ namespace Co_LAB
 
             try
             {
-                int rows = DatabaseHelper.ExecuteNonQuery(
-                    "UPDATE tbl_traderequests SET Status = 'Declined' WHERE RequestId = @id",
-                    new MySqlParameter("@id", reqId));
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                conn.Open();
+
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.CommandText = "UPDATE tbl_traderequests SET Status = 'Declined' WHERE RequestId = @id";
+                cmd.Connection = conn;
+                cmd.Parameters.AddWithValue("@id", reqId);
+                int rows = cmd.ExecuteNonQuery();
 
                 if (rows > 0)
                 {
                     try
                     {
-                        DatabaseHelper.ExecuteNonQuery(
-                            @"UPDATE tbl_skills s
-                              SET s.Status = 'Active'
-                              WHERE s.SkillId = (SELECT TargetSkillId FROM tbl_traderequests WHERE RequestId = @id)
-                                AND s.Status = 'Paused'
-                                AND NOT EXISTS (
-                                    SELECT 1 FROM tbl_traderequests r2 
-                                    WHERE r2.TargetSkillId = s.SkillId AND r2.Status = 'Accepted'
-                                )",
-                            new MySqlParameter("@id", reqId));
+                        MySqlCommand restoreCmd = new MySqlCommand();
+                        restoreCmd.CommandText = @"UPDATE tbl_skills s
+                                                   SET s.Status = 'Active'
+                                                   WHERE s.SkillId = (SELECT TargetSkillId FROM tbl_traderequests WHERE RequestId = @id)
+                                                     AND s.Status = 'Paused'
+                                                     AND NOT EXISTS (
+                                                         SELECT 1 FROM tbl_traderequests r2 
+                                                         WHERE r2.TargetSkillId = s.SkillId AND r2.Status = 'Accepted'
+                                                     )";
+                        restoreCmd.Connection = conn;
+                        restoreCmd.Parameters.AddWithValue("@id", reqId);
+                        restoreCmd.ExecuteNonQuery();
                     }
                     catch { }
+
+                    conn.Close();
 
                     string student = string.IsNullOrWhiteSpace(UserSession.FullName) ? CurrentStudentName : UserSession.FullName;
                     NotificationHelper.NotifyTradeStatusUpdate(reqId, "Declined", student);
 
                     MessageBox.Show("Trade request declined.", "Request Declined", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadDashboardData();
+                }
+                else
+                {
+                    conn.Close();
                 }
             }
             catch (Exception ex)

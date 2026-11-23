@@ -90,6 +90,7 @@ namespace Co_LAB.UCStudents
             txtNotes.Location = new Point(20, 313);
             txtNotes.Multiline = true;
             txtNotes.Name = "txtNotes";
+            txtNotes.ReadOnly = true;
             txtNotes.ScrollBars = ScrollBars.Vertical;
             txtNotes.Size = new Size(430, 110);
             txtNotes.TabIndex = 27;
@@ -191,6 +192,7 @@ namespace Co_LAB.UCStudents
             textBox1.ForeColor = Color.White;
             textBox1.Location = new Point(21, 137);
             textBox1.Name = "textBox1";
+            textBox1.ReadOnly = true;
             textBox1.Size = new Size(429, 23);
             textBox1.TabIndex = 30;
             // 
@@ -202,6 +204,7 @@ namespace Co_LAB.UCStudents
             textBox2.ForeColor = Color.White;
             textBox2.Location = new Point(20, 198);
             textBox2.Name = "textBox2";
+            textBox2.ReadOnly = true;
             textBox2.Size = new Size(430, 23);
             textBox2.TabIndex = 31;
             // 
@@ -213,6 +216,7 @@ namespace Co_LAB.UCStudents
             textBox3.ForeColor = Color.White;
             textBox3.Location = new Point(20, 258);
             textBox3.Name = "textBox3";
+            textBox3.ReadOnly = true;
             textBox3.Size = new Size(430, 23);
             textBox3.TabIndex = 32;
             // 

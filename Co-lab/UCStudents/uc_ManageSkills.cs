@@ -36,6 +36,59 @@ namespace Co_LAB
             LoadMyListings();
         }
 
+        private int ResolveCurrentUserId()
+        {
+            if (UserSession.UserId > 0)
+            {
+                return UserSession.UserId;
+            }
+
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(UserSession.Email))
+                {
+                    using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                    MySqlCommand cmd = new MySqlCommand();
+                    conn.Open();
+                    cmd.CommandText = "SELECT UserId FROM tbl_users WHERE Email = @email LIMIT 1";
+                    cmd.Connection = conn;
+                    cmd.Parameters.AddWithValue("@email", UserSession.Email.Trim());
+                    using MySqlDataReader reader = cmd.ExecuteReader();
+                    if (reader.Read() && int.TryParse(reader[0]?.ToString(), out int parsedByEmail) && parsedByEmail > 0)
+                    {
+                        UserSession.UserId = parsedByEmail;
+                        conn.Close();
+                        return parsedByEmail;
+                    }
+                    conn.Close();
+                }
+
+                if (!string.IsNullOrWhiteSpace(UserSession.FullName))
+                {
+                    using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                    MySqlCommand cmd = new MySqlCommand();
+                    conn.Open();
+                    cmd.CommandText = "SELECT UserId FROM tbl_users WHERE FullName = @name LIMIT 1";
+                    cmd.Connection = conn;
+                    cmd.Parameters.AddWithValue("@name", UserSession.FullName.Trim());
+                    using MySqlDataReader reader = cmd.ExecuteReader();
+                    if (reader.Read() && int.TryParse(reader[0]?.ToString(), out int parsedByName) && parsedByName > 0)
+                    {
+                        UserSession.UserId = parsedByName;
+                        conn.Close();
+                        return parsedByName;
+                    }
+                    conn.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error resolving current user ID: {ex.Message}");
+            }
+
+            return 0;
+        }
+
         /// <summary>
         /// Populates the dropdown with skills the logged-in student has in tbl_user_skills.
         /// </summary>
@@ -45,24 +98,27 @@ namespace Co_LAB
 
             try
             {
-                int uid = UserSession.UserId;
-                DataTable dt;
+                int uid = ResolveCurrentUserId();
+                if (uid <= 0)
+                {
+                    cmbKnownSkills.Items.Add("-- No known skills yet (Add in Dashboard first) --");
+                    cmbKnownSkills.SelectedIndex = 0;
+                    return;
+                }
 
-                if (uid > 0)
-                {
-                    dt = DatabaseHelper.ExecuteQuery(
-                        "SELECT UserSkillId, SkillName, Category FROM tbl_user_skills WHERE UserId = @uid ORDER BY SkillName ASC",
-                        new MySqlParameter("@uid", uid));
-                }
-                else
-                {
-                    dt = DatabaseHelper.ExecuteQuery(
-                        @"SELECT s.UserSkillId, s.SkillName, s.Category 
-                          FROM tbl_user_skills s 
-                          INNER JOIN tbl_users u ON s.UserId = u.UserId 
-                          WHERE u.FullName = @name ORDER BY s.SkillName ASC",
-                        new MySqlParameter("@name", UserSession.FullName));
-                }
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand cmd = new MySqlCommand();
+                DataSet ds = new DataSet();
+                MySqlDataAdapter da = new MySqlDataAdapter();
+                conn.Open();
+                cmd.CommandText = "SELECT UserSkillId, SkillName, Category FROM tbl_user_skills WHERE UserId = @uid ORDER BY SkillName ASC";
+                cmd.Connection = conn;
+                cmd.Parameters.AddWithValue("@uid", uid);
+                da.SelectCommand = cmd;
+                da.Fill(ds, "known");
+                conn.Close();
+
+                DataTable dt = ds.Tables["known"]!;
 
                 if (dt != null && dt.Rows.Count > 0)
                 {
@@ -96,25 +152,42 @@ namespace Co_LAB
         {
             try
             {
-                int uid = UserSession.UserId;
-                string fullName = UserSession.FullName;
+                int uid = ResolveCurrentUserId();
+                string fullName = UserSession.FullName?.Trim() ?? string.Empty;
 
-                string query = @"SELECT 
-                                    SkillId, 
-                                    SkillTitle AS `Offered Skill`, 
-                                    Category, 
-                                    DesiredSkill AS `Wanted In Exchange`, 
-                                    DeliveryMode AS `Mode`, 
-                                    Location AS `Meeting Place / Tool`, 
-                                    Status, 
-                                    CreatedAt AS `Date Posted` 
-                                 FROM tbl_skills 
-                                 WHERE (UserId = @uid OR OfferedBy = @name) AND Status != 'Archived' 
-                                 ORDER BY SkillId DESC";
+                if (uid <= 0 && string.IsNullOrWhiteSpace(fullName))
+                {
+                    dgvMyListings.DataSource = null;
+                    lblListingsCount.Text = "0 active listings";
+                    return;
+                }
 
-                DataTable dt = DatabaseHelper.ExecuteQuery(query,
-                    new MySqlParameter("@uid", uid),
-                    new MySqlParameter("@name", fullName));
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand cmd = new MySqlCommand();
+                DataSet ds = new DataSet();
+                MySqlDataAdapter da = new MySqlDataAdapter();
+                conn.Open();
+                cmd.CommandText = @"SELECT 
+                                        SkillId, 
+                                        SkillTitle AS `Offered Skill`, 
+                                        Category, 
+                                        DesiredSkill AS `Wanted In Exchange`, 
+                                        DeliveryMode AS `Mode`, 
+                                        Location AS `Meeting Place / Tool`, 
+                                        Status, 
+                                        CreatedAt AS `Date Posted` 
+                                    FROM tbl_skills 
+                                    WHERE ((@uid > 0 AND UserId = @uid) OR (@name != '' AND OfferedBy = @name))
+                                      AND Status != 'Archived' 
+                                    ORDER BY SkillId DESC";
+                cmd.Connection = conn;
+                cmd.Parameters.AddWithValue("@uid", uid);
+                cmd.Parameters.AddWithValue("@name", fullName);
+                da.SelectCommand = cmd;
+                da.Fill(ds, "listings");
+                conn.Close();
+
+                DataTable dt = ds.Tables["listings"]!;
 
                 dgvMyListings.DataSource = dt;
 
@@ -182,26 +255,40 @@ namespace Co_LAB
                 return;
             }
 
-            int uid = UserSession.UserId;
-            string offeredBy = string.IsNullOrWhiteSpace(UserSession.FullName) ? "Zach Plata" : UserSession.FullName;
+            int uid = ResolveCurrentUserId();
+            string offeredBy = UserSession.FullName?.Trim() ?? string.Empty;
+            if (uid <= 0 || string.IsNullOrWhiteSpace(offeredBy))
+            {
+                MessageBox.Show(
+                    "Your user session is no longer valid. Please sign out and log in again before publishing a skill.",
+                    "Session Expired",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
+            }
 
             try
             {
-                string insertSql = @"INSERT INTO tbl_skills 
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand cmd = new MySqlCommand();
+                conn.Open();
+                cmd.CommandText = @"INSERT INTO tbl_skills 
                     (UserId, UserSkillId, SkillTitle, Category, Description, OfferedBy, DesiredSkill, DeliveryMode, Location, Status) 
                     VALUES 
                     (@uid, @userSkillId, @title, @category, @desc, @offeredBy, @desired, @mode, @loc, 'Active')";
+                cmd.Connection = conn;
+                cmd.Parameters.AddWithValue("@uid", uid);
+                cmd.Parameters.AddWithValue("@userSkillId", selectedKnownSkill.UserSkillId);
+                cmd.Parameters.AddWithValue("@title", selectedKnownSkill.SkillName);
+                cmd.Parameters.AddWithValue("@category", selectedKnownSkill.Category);
+                cmd.Parameters.AddWithValue("@desc", description);
+                cmd.Parameters.AddWithValue("@offeredBy", offeredBy);
+                cmd.Parameters.AddWithValue("@desired", desiredSkill);
+                cmd.Parameters.AddWithValue("@mode", deliveryMode);
+                cmd.Parameters.AddWithValue("@loc", location);
 
-                int rows = DatabaseHelper.ExecuteNonQuery(insertSql,
-                    new MySqlParameter("@uid", uid),
-                    new MySqlParameter("@userSkillId", selectedKnownSkill.UserSkillId),
-                    new MySqlParameter("@title", selectedKnownSkill.SkillName),
-                    new MySqlParameter("@category", selectedKnownSkill.Category),
-                    new MySqlParameter("@desc", description),
-                    new MySqlParameter("@offeredBy", offeredBy),
-                    new MySqlParameter("@desired", desiredSkill),
-                    new MySqlParameter("@mode", deliveryMode),
-                    new MySqlParameter("@loc", location));
+                int rows = cmd.ExecuteNonQuery();
+                conn.Close();
 
                 if (rows > 0)
                 {
@@ -251,10 +338,15 @@ namespace Co_LAB
 
             try
             {
-                int rows = DatabaseHelper.ExecuteNonQuery(
-                    "UPDATE tbl_skills SET Status = @status WHERE SkillId = @id",
-                    new MySqlParameter("@status", newStatus),
-                    new MySqlParameter("@id", skillId));
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand cmd = new MySqlCommand();
+                conn.Open();
+                cmd.CommandText = "UPDATE tbl_skills SET Status = @status WHERE SkillId = @id";
+                cmd.Connection = conn;
+                cmd.Parameters.AddWithValue("@status", newStatus);
+                cmd.Parameters.AddWithValue("@id", skillId);
+                int rows = cmd.ExecuteNonQuery();
+                conn.Close();
 
                 if (rows > 0)
                 {
@@ -293,9 +385,14 @@ namespace Co_LAB
 
             try
             {
-                int rows = DatabaseHelper.ExecuteNonQuery(
-                    "DELETE FROM tbl_skills WHERE SkillId = @id",
-                    new MySqlParameter("@id", skillId));
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand cmd = new MySqlCommand();
+                conn.Open();
+                cmd.CommandText = "DELETE FROM tbl_skills WHERE SkillId = @id";
+                cmd.Connection = conn;
+                cmd.Parameters.AddWithValue("@id", skillId);
+                int rows = cmd.ExecuteNonQuery();
+                conn.Close();
 
                 if (rows > 0)
                 {

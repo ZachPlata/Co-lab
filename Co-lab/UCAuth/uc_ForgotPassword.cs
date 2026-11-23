@@ -75,8 +75,19 @@ namespace Co_LAB.UCAuth
 
             try
             {
-                string query = "SELECT SecurityQuestion, SecurityAnswer FROM tbl_users WHERE Email = @Email LIMIT 1";
-                DataTable dt = DatabaseHelper.ExecuteQuery(query, new MySqlParameter("@Email", email));
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand cmd = new MySqlCommand();
+                DataSet ds = new DataSet();
+                MySqlDataAdapter da = new MySqlDataAdapter();
+                conn.Open();
+                cmd.CommandText = "SELECT SecurityQuestion, SecurityAnswer FROM tbl_users WHERE Email = @Email LIMIT 1";
+                cmd.Connection = conn;
+                cmd.Parameters.AddWithValue("@Email", email);
+                da.SelectCommand = cmd;
+                da.Fill(ds, "users");
+                conn.Close();
+
+                DataTable dt = ds.Tables["users"]!;
 
                 if (dt.Rows.Count == 0 ||
                     dt.Rows[0]["SecurityQuestion"] == DBNull.Value ||
@@ -183,12 +194,15 @@ namespace Co_LAB.UCAuth
             try
             {
                 string hashedPassword = AuthHelper.HashPassword(newPassword);
-                string updateQuery = "UPDATE tbl_users SET Password = @Password WHERE Email = @Email";
-
-                int affected = DatabaseHelper.ExecuteNonQuery(
-                    updateQuery,
-                    new MySqlParameter("@Password", hashedPassword),
-                    new MySqlParameter("@Email", _recoveryEmail));
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand cmd = new MySqlCommand();
+                conn.Open();
+                cmd.CommandText = "UPDATE tbl_users SET Password = @Password WHERE Email = @Email";
+                cmd.Connection = conn;
+                cmd.Parameters.AddWithValue("@Password", hashedPassword);
+                cmd.Parameters.AddWithValue("@Email", _recoveryEmail);
+                int affected = cmd.ExecuteNonQuery();
+                conn.Close();
 
                 if (affected > 0)
                 {

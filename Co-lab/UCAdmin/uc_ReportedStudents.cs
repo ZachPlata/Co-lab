@@ -14,6 +14,7 @@ namespace Co_LAB
         private class Report
         {
             public int ReportId { get; set; }
+            public int? ReportedUserId { get; set; }
             public string Student { get; set; } = string.Empty;
             public string Reporter { get; set; } = string.Empty;
             public string Reason { get; set; } = string.Empty;
@@ -108,9 +109,22 @@ namespace Co_LAB
         {
             try
             {
-                string sql = "SELECT CONCAT(COALESCE(COUNT(*), 0), ':', COALESCE(MAX(ReportId), 0), ':', COALESCE(MAX(Status), '')) FROM tbl_reports";
-                object? check = DatabaseHelper.ExecuteScalar(sql);
-                string fp = check?.ToString() ?? "";
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand cmd = new MySqlCommand();
+                conn.Open();
+                cmd.CommandText = "SELECT CONCAT(COALESCE(COUNT(*), 0), ':', COALESCE(MAX(ReportId), 0), ':', COALESCE(MAX(Status), '')) FROM tbl_reports";
+                cmd.Connection = conn;
+
+                string fp = "";
+                using (MySqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read() && reader[0] != DBNull.Value)
+                    {
+                        fp = reader[0].ToString() ?? "";
+                    }
+                }
+                conn.Close();
+
                 if (fp != _lastReportsFingerprint)
                 {
                     _lastReportsFingerprint = fp;
@@ -118,6 +132,46 @@ namespace Co_LAB
                 }
             }
             catch { }
+        }
+
+        private static bool _reportedUserIdColumnChecked = false;
+
+        private void EnsureReportedUserIdColumnExists()
+        {
+            if (_reportedUserIdColumnChecked) return;
+            try
+            {
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                conn.Open();
+                MySqlCommand checkCmd = new MySqlCommand();
+                checkCmd.CommandText = @"SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS 
+                                         WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'tbl_reports' AND COLUMN_NAME = 'ReportedUserId'";
+                checkCmd.Connection = conn;
+
+                int exists = 0;
+                using (MySqlDataReader reader = checkCmd.ExecuteReader())
+                {
+                    if (reader.Read() && reader[0] != DBNull.Value)
+                    {
+                        exists = Convert.ToInt32(reader[0]);
+                    }
+                }
+
+                if (exists == 0)
+                {
+                    MySqlCommand alterCmd = new MySqlCommand();
+                    alterCmd.CommandText = "ALTER TABLE tbl_reports ADD COLUMN ReportedUserId INT DEFAULT NULL";
+                    alterCmd.Connection = conn;
+                    alterCmd.ExecuteNonQuery();
+                }
+
+                conn.Close();
+                _reportedUserIdColumnChecked = true;
+            }
+            catch
+            {
+                // Column may already exist or DB offline
+            }
         }
 
         /// <summary>
@@ -132,25 +186,56 @@ namespace Co_LAB
 
             try
             {
+                EnsureReportedUserIdColumnExists();
+
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand cmd = new MySqlCommand();
+                DataSet ds = new DataSet();
+                MySqlDataAdapter da = new MySqlDataAdapter();
+                conn.Open();
+
                 string query = @"
-                    SELECT r.ReportId, r.ReportedUser, 
+                    SELECT r.ReportId, r.ReportedUser,
+                           COALESCE(
+                               r.ReportedUserId,
+                               s.UserId,
+                               CASE
+                                   WHEN (SELECT COUNT(*) FROM tbl_users u2 WHERE u2.FullName = r.ReportedUser) = 1
+                                   THEN (SELECT u2.UserId FROM tbl_users u2 WHERE u2.FullName = r.ReportedUser LIMIT 1)
+                                   ELSE NULL
+                               END
+                           ) AS ResolvedUserId,
                            'Student Peer' AS Reporter,
                            r.Reason, r.ReportDate, r.Status,
                            COALESCE(u.is_blacklisted, 0) AS is_blacklisted
                     FROM tbl_reports r
-                    LEFT JOIN tbl_users u ON u.FullName = r.ReportedUser
+                    LEFT JOIN tbl_skills s ON r.SkillId = s.SkillId
+                    LEFT JOIN tbl_users u ON u.UserId = COALESCE(
+                        r.ReportedUserId,
+                        s.UserId,
+                        CASE
+                            WHEN (SELECT COUNT(*) FROM tbl_users u2 WHERE u2.FullName = r.ReportedUser) = 1
+                            THEN (SELECT u2.UserId FROM tbl_users u2 WHERE u2.FullName = r.ReportedUser LIMIT 1)
+                            ELSE NULL
+                        END
+                    )
                     WHERE 1=1";
 
-                var parameters = new List<MySqlParameter>();
                 if (!string.IsNullOrWhiteSpace(trimmedKw))
                 {
                     query += " AND (r.ReportedUser LIKE @kw OR r.Reason LIKE @kw OR r.Status LIKE @kw)";
-                    parameters.Add(new MySqlParameter("@kw", "%" + trimmedKw + "%"));
+                    cmd.Parameters.AddWithValue("@kw", "%" + trimmedKw + "%");
                 }
 
                 query += " ORDER BY r.ReportId DESC";
 
-                DataTable dt = DatabaseHelper.ExecuteQuery(query, parameters.ToArray());
+                cmd.CommandText = query;
+                cmd.Connection = conn;
+                da.SelectCommand = cmd;
+                da.Fill(ds, "reports");
+                conn.Close();
+
+                DataTable dt = ds.Tables["reports"]!;
 
                 if (dt != null && dt.Rows.Count > 0)
                 {
@@ -159,6 +244,7 @@ namespace Co_LAB
                         var report = new Report
                         {
                             ReportId = Convert.ToInt32(row["ReportId"]),
+                            ReportedUserId = row["ResolvedUserId"] != DBNull.Value ? Convert.ToInt32(row["ResolvedUserId"]) : null,
                             Student = row["ReportedUser"]?.ToString() ?? "Unknown Student",
                             Reporter = row["Reporter"]?.ToString() ?? "Anonymous",
                             Reason = row["Reason"]?.ToString() ?? "No reason specified",
@@ -226,6 +312,56 @@ namespace Co_LAB
             var row = dataGridViewReports.Rows[e.RowIndex];
             if (row.Tag is Report report)
             {
+                int targetUserId = report.ReportedUserId ?? 0;
+                bool dbReachable = true;
+                if (targetUserId <= 0 && !string.IsNullOrWhiteSpace(report.Student))
+                {
+                    try
+                    {
+                        using MySqlConnection lookupConn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                        MySqlCommand lookupCmd = new MySqlCommand();
+                        DataSet ds = new DataSet();
+                        MySqlDataAdapter da = new MySqlDataAdapter();
+                        lookupConn.Open();
+                        lookupCmd.CommandText = "SELECT UserId FROM tbl_users WHERE FullName = @name";
+                        lookupCmd.Connection = lookupConn;
+                        lookupCmd.Parameters.AddWithValue("@name", report.Student);
+                        da.SelectCommand = lookupCmd;
+                        da.Fill(ds, "matches");
+                        lookupConn.Close();
+
+                        DataTable matches = ds.Tables["matches"]!;
+                        if (matches.Rows.Count == 1)
+                        {
+                            targetUserId = Convert.ToInt32(matches.Rows[0]["UserId"]);
+                            report.ReportedUserId = targetUserId;
+                        }
+                        else if (matches.Rows.Count > 1)
+                        {
+                            MessageBox.Show(
+                                $"Multiple user accounts match '{report.Student}'. Cannot update blacklist status without a unique UserId.",
+                                "Ambiguous Account",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Warning);
+                            return;
+                        }
+                    }
+                    catch
+                    {
+                        dbReachable = false;
+                    }
+                }
+
+                if (dbReachable && targetUserId <= 0)
+                {
+                    MessageBox.Show(
+                        $"Could not find a unique user account for '{report.Student}'.",
+                        "User Not Found",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                    return;
+                }
+
                 string actionWord = report.IsBlacklisted ? "unblacklist" : "blacklist";
                 string warningNotice = report.IsBlacklisted
                     ? $"Lift blacklist for student '{report.Student}' and restore their account access?"
@@ -245,22 +381,34 @@ namespace Co_LAB
                 row.Cells["colBlacklist"].Value = newAction;
 
                 // Persist to database if available
-                try
+                if (targetUserId > 0)
                 {
-                    DatabaseHelper.ExecuteNonQuery(
-                        "UPDATE tbl_users SET is_blacklisted = @status, BanReason = @reason WHERE FullName = @name",
-                        new MySqlParameter("@status", report.IsBlacklisted ? 1 : 0),
-                        new MySqlParameter("@reason", report.IsBlacklisted ? $"Blacklisted via Report #{report.ReportId}: {report.Reason}" : ""),
-                        new MySqlParameter("@name", report.Student));
+                    try
+                    {
+                        using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                        conn.Open();
 
-                    DatabaseHelper.ExecuteNonQuery(
-                        "UPDATE tbl_reports SET Status = @status WHERE ReportId = @id",
-                        new MySqlParameter("@status", report.IsBlacklisted ? "Reviewed" : "Dismissed"),
-                        new MySqlParameter("@id", report.ReportId));
-                }
-                catch
-                {
-                    // Fallback to local in-memory toggle
+                        MySqlCommand userCmd = new MySqlCommand();
+                        userCmd.CommandText = "UPDATE tbl_users SET is_blacklisted = @status, BanReason = @reason WHERE UserId = @uid";
+                        userCmd.Connection = conn;
+                        userCmd.Parameters.AddWithValue("@status", report.IsBlacklisted ? 1 : 0);
+                        userCmd.Parameters.AddWithValue("@reason", report.IsBlacklisted ? $"Blacklisted via Report #{report.ReportId}: {report.Reason}" : (object)DBNull.Value);
+                        userCmd.Parameters.AddWithValue("@uid", targetUserId);
+                        userCmd.ExecuteNonQuery();
+
+                        MySqlCommand reportCmd = new MySqlCommand();
+                        reportCmd.CommandText = "UPDATE tbl_reports SET Status = @status WHERE ReportId = @id";
+                        reportCmd.Connection = conn;
+                        reportCmd.Parameters.AddWithValue("@status", report.IsBlacklisted ? "Reviewed" : "Dismissed");
+                        reportCmd.Parameters.AddWithValue("@id", report.ReportId);
+                        reportCmd.ExecuteNonQuery();
+
+                        conn.Close();
+                    }
+                    catch
+                    {
+                        // Fallback to local in-memory toggle
+                    }
                 }
 
                 MessageBox.Show(

@@ -26,6 +26,7 @@ namespace Co_LAB
             txtSearch = new TextBox();
             lblSearch = new Label();
             flpMarketplace = new FlowLayoutPanel();
+            lblEmpty = new Label();
             pnlFilterBar.SuspendLayout();
             SuspendLayout();
             // 
@@ -153,11 +154,26 @@ namespace Co_LAB
             flpMarketplace.TabIndex = 1;
             flpMarketplace.Paint += flpMarketplace_Paint;
             // 
+            // lblEmpty
+            // 
+            lblEmpty.BackColor = Color.FromArgb(14, 20, 16);
+            lblEmpty.Dock = DockStyle.Fill;
+            lblEmpty.Font = new Font("Segoe UI", 10.5F);
+            lblEmpty.ForeColor = Color.FromArgb(161, 161, 170);
+            lblEmpty.Location = new Point(0, 68);
+            lblEmpty.Name = "lblEmpty";
+            lblEmpty.Size = new Size(950, 564);
+            lblEmpty.TabIndex = 2;
+            lblEmpty.Text = "No skill listings found matching your search.";
+            lblEmpty.TextAlign = ContentAlignment.MiddleCenter;
+            lblEmpty.Visible = false;
+            // 
             // uc_SkillExchange
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(14, 20, 16);
+            Controls.Add(lblEmpty);
             Controls.Add(flpMarketplace);
             Controls.Add(pnlFilterBar);
             Name = "uc_SkillExchange";
@@ -179,5 +195,6 @@ namespace Co_LAB
         private Button btnReset;
         private Label lblListingCount;
         private FlowLayoutPanel flpMarketplace;
+        private Label lblEmpty;
     }
 }

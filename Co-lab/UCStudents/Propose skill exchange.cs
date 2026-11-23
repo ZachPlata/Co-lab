@@ -40,12 +40,22 @@ namespace Co_LAB
             // Fetch details from tbl_skills (desired skill, college/dept if available)
             try
             {
-                DataTable dt = DatabaseHelper.ExecuteQuery(
-                    @"SELECT s.DesiredSkill, s.Location, s.DeliveryMode, u.College 
-                      FROM tbl_skills s 
-                      LEFT JOIN tbl_users u ON s.UserId = u.UserId 
-                      WHERE s.SkillId = @id LIMIT 1",
-                    new MySqlParameter("@id", skillId));
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand cmd = new MySqlCommand();
+                DataSet ds = new DataSet();
+                MySqlDataAdapter da = new MySqlDataAdapter();
+                conn.Open();
+                cmd.CommandText = @"SELECT s.DesiredSkill, s.Location, s.DeliveryMode, u.College 
+                                    FROM tbl_skills s 
+                                    LEFT JOIN tbl_users u ON s.UserId = u.UserId 
+                                    WHERE s.SkillId = @id LIMIT 1";
+                cmd.Connection = conn;
+                cmd.Parameters.AddWithValue("@id", skillId);
+                da.SelectCommand = cmd;
+                da.Fill(ds, "skill");
+                conn.Close();
+
+                DataTable dt = ds.Tables["skill"]!;
 
                 if (dt != null && dt.Rows.Count > 0)
                 {
@@ -96,18 +106,40 @@ namespace Co_LAB
 
                 if (uid > 0)
                 {
-                    dt = DatabaseHelper.ExecuteQuery(
-                        "SELECT SkillName, Category FROM tbl_user_skills WHERE UserId = @uid ORDER BY SkillName ASC",
-                        new MySqlParameter("@uid", uid));
+                    using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                    MySqlCommand cmd = new MySqlCommand();
+                    DataSet ds = new DataSet();
+                    MySqlDataAdapter da = new MySqlDataAdapter();
+                    conn.Open();
+                    cmd.CommandText = "SELECT SkillName, Category FROM tbl_user_skills WHERE UserId = @uid ORDER BY SkillName ASC";
+                    cmd.Connection = conn;
+                    cmd.Parameters.AddWithValue("@uid", uid);
+                    da.SelectCommand = cmd;
+                    da.Fill(ds, "skills");
+                    conn.Close();
+                    dt = ds.Tables["skills"]!;
+                }
+                else if (!string.IsNullOrWhiteSpace(UserSession.FullName))
+                {
+                    using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                    MySqlCommand cmd = new MySqlCommand();
+                    DataSet ds = new DataSet();
+                    MySqlDataAdapter da = new MySqlDataAdapter();
+                    conn.Open();
+                    cmd.CommandText = @"SELECT s.SkillName, s.Category 
+                                        FROM tbl_user_skills s 
+                                        INNER JOIN tbl_users u ON s.UserId = u.UserId 
+                                        WHERE u.FullName = @name ORDER BY s.SkillName ASC";
+                    cmd.Connection = conn;
+                    cmd.Parameters.AddWithValue("@name", UserSession.FullName);
+                    da.SelectCommand = cmd;
+                    da.Fill(ds, "skills");
+                    conn.Close();
+                    dt = ds.Tables["skills"]!;
                 }
                 else
                 {
-                    dt = DatabaseHelper.ExecuteQuery(
-                        @"SELECT s.SkillName, s.Category 
-                          FROM tbl_user_skills s 
-                          INNER JOIN tbl_users u ON s.UserId = u.UserId 
-                          WHERE u.FullName = @name ORDER BY s.SkillName ASC",
-                        new MySqlParameter("@name", UserSession.FullName));
+                    dt = new DataTable();
                 }
 
                 if (dt != null && dt.Rows.Count > 0)
@@ -196,24 +228,47 @@ namespace Co_LAB
             }
 
             string notes = txtNotes.Text.Trim();
-            string senderName = string.IsNullOrWhiteSpace(UserSession.FullName) ? "Zach Plata" : UserSession.FullName;
-            string senderEmail = string.IsNullOrWhiteSpace(UserSession.Email) ? "plata.zachbenedict@ue.edu.ph" : UserSession.Email;
+            string senderName = UserSession.FullName?.Trim() ?? string.Empty;
+            string senderEmail = UserSession.Email?.Trim() ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(senderName) || string.IsNullOrWhiteSpace(senderEmail))
+            {
+                MessageBox.Show(
+                    "Your user session is not valid. Please sign out and log in again before sending a trade proposal.",
+                    "Session Expired",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
+            }
 
             try
             {
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                conn.Open();
+
                 // Guard: Check if duplicate request already exists in Pending or Accepted state
-                string dupCheck = @"SELECT Status FROM tbl_traderequests 
-                                    WHERE TargetSkillId = @targetId 
-                                      AND (SenderEmail = @email OR SenderName = @sender) 
-                                      AND Status IN ('Pending', 'Accepted') 
-                                    LIMIT 1";
-                object? existing = DatabaseHelper.ExecuteScalar(dupCheck,
-                    new MySqlParameter("@targetId", TargetSkillId),
-                    new MySqlParameter("@email", senderEmail),
-                    new MySqlParameter("@sender", senderName));
+                MySqlCommand dupCmd = new MySqlCommand();
+                dupCmd.CommandText = @"SELECT Status FROM tbl_traderequests 
+                                       WHERE TargetSkillId = @targetId 
+                                         AND ((@email != '' AND SenderEmail = @email) OR (@sender != '' AND SenderName = @sender)) 
+                                         AND Status IN ('Pending', 'Accepted') 
+                                       LIMIT 1";
+                dupCmd.Connection = conn;
+                dupCmd.Parameters.AddWithValue("@targetId", TargetSkillId);
+                dupCmd.Parameters.AddWithValue("@email", senderEmail);
+                dupCmd.Parameters.AddWithValue("@sender", senderName);
+
+                object? existing = null;
+                using (MySqlDataReader reader = dupCmd.ExecuteReader())
+                {
+                    if (reader.Read() && reader[0] != DBNull.Value)
+                    {
+                        existing = reader[0];
+                    }
+                }
 
                 if (existing != null && existing != DBNull.Value)
                 {
+                    conn.Close();
                     MessageBox.Show(
                         $"You already have an ongoing trade proposal for this skill (Status: {existing}).\n\n" +
                         "You cannot submit duplicate proposals for the same skill.",
@@ -229,24 +284,28 @@ namespace Co_LAB
                     return;
                 }
 
-                string sql = @"INSERT INTO tbl_traderequests 
+                MySqlCommand insertCmd = new MySqlCommand();
+                insertCmd.CommandText = @"INSERT INTO tbl_traderequests 
                     (TargetSkillId, SenderName, SenderEmail, OfferedSkillTitle, MeetingMode, Location, Message, Status) 
                     VALUES 
-                    (@targetId, @sender, @email, @offer, @mode, @loc, @msg, 'Pending')";
+                    (@targetId, @sender, @email, @offer, @mode, @loc, @msg, 'Pending');
+                    SELECT LAST_INSERT_ID();";
+                insertCmd.Connection = conn;
+                insertCmd.Parameters.AddWithValue("@targetId", TargetSkillId);
+                insertCmd.Parameters.AddWithValue("@sender", senderName);
+                insertCmd.Parameters.AddWithValue("@email", senderEmail);
+                insertCmd.Parameters.AddWithValue("@offer", chosenSkill);
+                insertCmd.Parameters.AddWithValue("@mode", meetingMode);
+                insertCmd.Parameters.AddWithValue("@loc", location);
+                insertCmd.Parameters.AddWithValue("@msg", notes);
 
-                int rows = DatabaseHelper.ExecuteNonQuery(sql,
-                    new MySqlParameter("@targetId", TargetSkillId),
-                    new MySqlParameter("@sender", senderName),
-                    new MySqlParameter("@email", senderEmail),
-                    new MySqlParameter("@offer", chosenSkill),
-                    new MySqlParameter("@mode", meetingMode),
-                    new MySqlParameter("@loc", location),
-                    new MySqlParameter("@msg", notes));
+                object? insertedIdObj = insertCmd.ExecuteScalar();
+                conn.Close();
 
-                if (rows > 0)
+                if (insertedIdObj != null && int.TryParse(insertedIdObj.ToString(), out int newRequestId) && newRequestId > 0)
                 {
                     // Trigger notification to the skill listing owner
-                    NotificationHelper.NotifyTradeRequest(TargetSkillId, TargetSkillTitle, senderName, senderEmail);
+                    NotificationHelper.NotifyTradeRequest(newRequestId, TargetSkillId, TargetSkillTitle, senderName, senderEmail);
 
                     MessageBox.Show(
                         $"Your trade proposal has been sent to {TargetOwnerName}!\n\n" +

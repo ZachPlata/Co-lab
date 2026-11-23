@@ -244,9 +244,22 @@ namespace Co_LAB.UCAuth
             try
             {
                 // Check if email is already registered
-                string checkQuery = "SELECT COUNT(*) FROM tbl_users WHERE Email = @Email";
-                object? countObj = DatabaseHelper.ExecuteScalar(checkQuery, new MySqlParameter("@Email", email));
-                int count = Convert.ToInt32(countObj);
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand cmd = new MySqlCommand();
+                conn.Open();
+                cmd.CommandText = "SELECT COUNT(*) FROM tbl_users WHERE Email = @Email";
+                cmd.Connection = conn;
+                cmd.Parameters.AddWithValue("@Email", email);
+
+                int count = 0;
+                using (MySqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read() && reader[0] != DBNull.Value)
+                    {
+                        count = Convert.ToInt32(reader[0]);
+                    }
+                }
+                conn.Close();
 
                 if (count > 0)
                 {
@@ -260,16 +273,19 @@ namespace Co_LAB.UCAuth
 
                 // Insert student user
                 string hashedPassword = AuthHelper.HashPassword(password);
-                string insertQuery = @"INSERT INTO tbl_users (FullName, Email, Password, Role, SecurityQuestion, SecurityAnswer) 
-                                       VALUES (@FullName, @Email, @Password, 'Student', @SecurityQuestion, @SecurityAnswer)";
-
-                DatabaseHelper.ExecuteNonQuery(
-                    insertQuery,
-                    new MySqlParameter("@FullName", fullName),
-                    new MySqlParameter("@Email", email),
-                    new MySqlParameter("@Password", hashedPassword),
-                    new MySqlParameter("@SecurityQuestion", securityQuestion),
-                    new MySqlParameter("@SecurityAnswer", securityAnswer));
+                using MySqlConnection insertConn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand insertCmd = new MySqlCommand();
+                insertConn.Open();
+                insertCmd.CommandText = @"INSERT INTO tbl_users (FullName, Email, Password, Role, SecurityQuestion, SecurityAnswer) 
+                                          VALUES (@FullName, @Email, @Password, 'Student', @SecurityQuestion, @SecurityAnswer)";
+                insertCmd.Connection = insertConn;
+                insertCmd.Parameters.AddWithValue("@FullName", fullName);
+                insertCmd.Parameters.AddWithValue("@Email", email);
+                insertCmd.Parameters.AddWithValue("@Password", hashedPassword);
+                insertCmd.Parameters.AddWithValue("@SecurityQuestion", securityQuestion);
+                insertCmd.Parameters.AddWithValue("@SecurityAnswer", securityAnswer);
+                insertCmd.ExecuteNonQuery();
+                insertConn.Close();
 
                 MessageBox.Show(
                     "Registration successful! You can now sign in with your UE credentials.",

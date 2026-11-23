@@ -54,3 +54,6 @@ $RECYCLE.BIN/
 *.appx
 *.appxbundle
 *.msixbundle
+
+## Local database configuration
+dbconfig.json

@@ -19,26 +19,12 @@ namespace Co_LAB.UCStudents
         {
             InitializeComponent();
 
-            // Set up dark-theme styling and read-only behavior for information boxes
-            ApplyReadOnlyTheme(TheyOfferTxtBox);
-            ApplyReadOnlyTheme(YourOfferTxtBox);
-            ApplyReadOnlyTheme(TradeModeTxtBox);
-            ApplyReadOnlyTheme(txtNotes);
-
             // Connect button actions
             btnSendRequest.Click += BtnSendRequest_Click;
             btnCancel.Click += BtnCancel_Click;
 
             // Custom avatar painting with initials
             pnlAvatar.Paint += PnlAvatar_Paint;
-        }
-
-        private void ApplyReadOnlyTheme(TextBox tb)
-        {
-            tb.ReadOnly = true;
-            tb.BackColor = Color.FromArgb(14, 20, 16);
-            tb.ForeColor = Color.White;
-            tb.BorderStyle = BorderStyle.FixedSingle;
         }
 
         private void BtnSendRequest_Click(object? sender, EventArgs e)

@@ -32,10 +32,12 @@ namespace Co_LAB
             lblBrandSubtitle = new Label();
             lblBrandTitle = new Label();
             pnlHeader = new Panel();
+            btnNotificationBell = new Button();
             pnlDividerHeader = new Panel();
             lblAdminProfile = new Label();
             lblHeaderTitle = new Label();
             panelContent = new Panel();
+            _notificationPanel = new NotificationPanel();
             pnlSidebar.SuspendLayout();
             pnlNavContainer.SuspendLayout();
             pnlSidebarBottom.SuspendLayout();
@@ -253,6 +255,7 @@ namespace Co_LAB
             // pnlHeader
             // 
             pnlHeader.BackColor = Color.FromArgb(18, 25, 20);
+            pnlHeader.Controls.Add(btnNotificationBell);
             pnlHeader.Controls.Add(pnlDividerHeader);
             pnlHeader.Controls.Add(lblAdminProfile);
             pnlHeader.Controls.Add(lblHeaderTitle);
@@ -262,6 +265,35 @@ namespace Co_LAB
             pnlHeader.Name = "pnlHeader";
             pnlHeader.Size = new Size(1085, 113);
             pnlHeader.TabIndex = 1;
+            // 
+            // btnNotificationBell
+            // 
+            btnNotificationBell.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnNotificationBell.BackColor = Color.FromArgb(24, 34, 27);
+            btnNotificationBell.Cursor = Cursors.Hand;
+            btnNotificationBell.FlatAppearance.BorderColor = Color.FromArgb(46, 125, 70);
+            btnNotificationBell.FlatAppearance.BorderSize = 1;
+            btnNotificationBell.FlatStyle = FlatStyle.Flat;
+            btnNotificationBell.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
+            btnNotificationBell.ForeColor = Color.FromArgb(74, 222, 128);
+            btnNotificationBell.Location = new Point(795, 38);
+            btnNotificationBell.Name = "btnNotificationBell";
+            btnNotificationBell.Size = new Size(82, 32);
+            btnNotificationBell.TabIndex = 3;
+            btnNotificationBell.Text = "🔔 0";
+            btnNotificationBell.UseVisualStyleBackColor = false;
+            btnNotificationBell.Click += BtnNotificationBell_Click;
+            // 
+            // _notificationPanel
+            // 
+            _notificationPanel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            _notificationPanel.BackColor = Color.FromArgb(16, 22, 18);
+            _notificationPanel.BorderStyle = BorderStyle.FixedSingle;
+            _notificationPanel.Location = new Point(971, 115);
+            _notificationPanel.Name = "_notificationPanel";
+            _notificationPanel.Size = new Size(380, 440);
+            _notificationPanel.TabIndex = 3;
+            _notificationPanel.Visible = false;
             // 
             // pnlDividerHeader
             // 
@@ -312,6 +344,7 @@ namespace Co_LAB
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(14, 20, 16);
             ClientSize = new Size(1371, 960);
+            Controls.Add(_notificationPanel);
             Controls.Add(panelContent);
             Controls.Add(pnlHeader);
             Controls.Add(pnlSidebar);
@@ -348,10 +381,12 @@ namespace Co_LAB
         private Panel pnlDividerBottom;
         private Button btn_SignOut;
         private Panel pnlHeader;
+        private Button btnNotificationBell;
         private Label lblHeaderTitle;
         private Label lblAdminProfile;
         private Panel pnlDividerHeader;
         private Panel panelContent;
+        private NotificationPanel _notificationPanel;
     }
 }
 

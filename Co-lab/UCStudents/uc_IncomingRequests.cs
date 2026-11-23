@@ -68,31 +68,48 @@ namespace Co_LAB
             var loadedList = new List<TradeRequestModel>();
 
             int uid = UserSession.UserId;
-            string studentName = string.IsNullOrWhiteSpace(UserSession.FullName) ? "Zach Plata" : UserSession.FullName;
+            string studentName = UserSession.FullName?.Trim() ?? string.Empty;
+
+            if (uid <= 0 && string.IsNullOrWhiteSpace(studentName))
+            {
+                _lastFingerprint = string.Empty;
+                _requests = loadedList;
+                RenderCards();
+                return;
+            }
 
             try
             {
-                string query = @"SELECT 
-                                    r.RequestId, 
-                                    r.SenderName AS RequesterName, 
-                                    COALESCE(u.College, 'UE Student') AS RequesterProgram, 
-                                    s.SkillTitle AS WantsSkill, 
-                                    r.OfferedSkillTitle AS OffersSkill, 
-                                    r.RequestDate AS RequestDateTime, 
-                                    COALESCE(r.MeetingMode, 'Face-to-Face') AS MeetingMode,
-                                    r.Location, 
-                                    r.Message AS Note, 
-                                    r.Status 
-                                 FROM tbl_traderequests r 
-                                 INNER JOIN tbl_skills s ON r.TargetSkillId = s.SkillId 
-                                 LEFT JOIN tbl_users u ON r.SenderEmail = u.Email OR r.SenderName = u.FullName 
-                                 WHERE (s.UserId = @uid OR s.OfferedBy = @user) 
-                                   AND (r.Status != 'Declined') 
-                                 ORDER BY r.RequestId DESC";
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                MySqlCommand cmd = new MySqlCommand();
+                DataSet ds = new DataSet();
+                MySqlDataAdapter da = new MySqlDataAdapter();
+                conn.Open();
+                cmd.CommandText = @"SELECT 
+                                        r.RequestId, 
+                                        r.SenderName AS RequesterName, 
+                                        COALESCE(u.College, 'UE Student') AS RequesterProgram, 
+                                        s.SkillTitle AS WantsSkill, 
+                                        r.OfferedSkillTitle AS OffersSkill, 
+                                        r.RequestDate AS RequestDateTime, 
+                                        COALESCE(r.MeetingMode, 'Face-to-Face') AS MeetingMode,
+                                        r.Location, 
+                                        r.Message AS Note, 
+                                        r.Status 
+                                    FROM tbl_traderequests r 
+                                    INNER JOIN tbl_skills s ON r.TargetSkillId = s.SkillId 
+                                    LEFT JOIN tbl_users u ON (r.SenderEmail != '' AND r.SenderEmail = u.Email) OR (r.SenderEmail = '' AND r.SenderName = u.FullName) 
+                                    WHERE ((@uid > 0 AND s.UserId = @uid) OR (@user != '' AND s.OfferedBy = @user)) 
+                                      AND (r.Status != 'Declined') 
+                                    ORDER BY r.RequestId DESC";
+                cmd.Connection = conn;
+                cmd.Parameters.AddWithValue("@uid", uid);
+                cmd.Parameters.AddWithValue("@user", studentName);
+                da.SelectCommand = cmd;
+                da.Fill(ds, "incoming");
+                conn.Close();
 
-                DataTable dt = DatabaseHelper.ExecuteQuery(query,
-                    new MySqlParameter("@uid", uid),
-                    new MySqlParameter("@user", studentName));
+                DataTable dt = ds.Tables["incoming"]!;
 
                 if (dt != null && dt.Rows.Count > 0)
                 {
@@ -141,24 +158,22 @@ namespace Co_LAB
         private void RenderCards()
         {
             flpRequests.SuspendLayout();
-            flpRequests.Controls.Clear();
+            for (int i = flpRequests.Controls.Count - 1; i >= 0; i--)
+            {
+                Control old = flpRequests.Controls[i];
+                flpRequests.Controls.RemoveAt(i);
+                old.Dispose();
+            }
 
             if (_requests.Count == 0)
             {
-                Label lblEmpty = new Label
-                {
-                    Text = "No incoming trade requests yet.\nWhen other students propose to trade skills with you, their requests will appear here.",
-                    ForeColor = Color.FromArgb(161, 161, 170),
-                    Font = new Font("Segoe UI", 10.5F),
-                    AutoSize = false,
-                    Size = new Size(Math.Max(flpRequests.ClientSize.Width - 40, 600), 100),
-                    TextAlign = ContentAlignment.MiddleCenter,
-                    Margin = new Padding(20, 80, 0, 0)
-                };
-                flpRequests.Controls.Add(lblEmpty);
+                lblEmpty.Visible = true;
+                lblEmpty.BringToFront();
                 flpRequests.ResumeLayout(true);
                 return;
             }
+
+            lblEmpty.Visible = false;
 
             int cardWidth = GetResponsiveCardWidth();
 
@@ -467,41 +482,54 @@ namespace Co_LAB
         {
             try
             {
-                DatabaseHelper.ExecuteNonQuery(
-                    "UPDATE tbl_traderequests SET Status = @status WHERE RequestId = @id",
-                    new MySqlParameter("@status", newStatus),
-                    new MySqlParameter("@id", requestId));
+                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                conn.Open();
+
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.CommandText = "UPDATE tbl_traderequests SET Status = @status WHERE RequestId = @id";
+                cmd.Connection = conn;
+                cmd.Parameters.AddWithValue("@status", newStatus);
+                cmd.Parameters.AddWithValue("@id", requestId);
+                cmd.ExecuteNonQuery();
 
                 if (string.Equals(newStatus, "Accepted", StringComparison.OrdinalIgnoreCase))
                 {
                     // When a trade is accepted, pause listing so it displays as "ONGOING" on the marketplace
-                    DatabaseHelper.ExecuteNonQuery(
-                        @"UPDATE tbl_skills SET Status = 'Paused' 
-                          WHERE SkillId = (SELECT TargetSkillId FROM tbl_traderequests WHERE RequestId = @id)",
-                        new MySqlParameter("@id", requestId));
+                    MySqlCommand pauseCmd = new MySqlCommand();
+                    pauseCmd.CommandText = @"UPDATE tbl_skills SET Status = 'Paused' 
+                                             WHERE SkillId = (SELECT TargetSkillId FROM tbl_traderequests WHERE RequestId = @id)";
+                    pauseCmd.Connection = conn;
+                    pauseCmd.Parameters.AddWithValue("@id", requestId);
+                    pauseCmd.ExecuteNonQuery();
                 }
                 else if (string.Equals(newStatus, "Completed", StringComparison.OrdinalIgnoreCase))
                 {
                     // When trade is completed, mark skill completed
-                    DatabaseHelper.ExecuteNonQuery(
-                        @"UPDATE tbl_skills SET Status = 'Completed' 
-                          WHERE SkillId = (SELECT TargetSkillId FROM tbl_traderequests WHERE RequestId = @id)",
-                        new MySqlParameter("@id", requestId));
+                    MySqlCommand compCmd = new MySqlCommand();
+                    compCmd.CommandText = @"UPDATE tbl_skills SET Status = 'Completed' 
+                                            WHERE SkillId = (SELECT TargetSkillId FROM tbl_traderequests WHERE RequestId = @id)";
+                    compCmd.Connection = conn;
+                    compCmd.Parameters.AddWithValue("@id", requestId);
+                    compCmd.ExecuteNonQuery();
                 }
                 else if (string.Equals(newStatus, "Declined", StringComparison.OrdinalIgnoreCase))
                 {
                     // If declined and no other accepted trades exist for this skill, restore to Active
-                    DatabaseHelper.ExecuteNonQuery(
-                        @"UPDATE tbl_skills s
-                          SET s.Status = 'Active'
-                          WHERE s.SkillId = (SELECT TargetSkillId FROM tbl_traderequests WHERE RequestId = @id)
-                            AND s.Status = 'Paused'
-                            AND NOT EXISTS (
-                                SELECT 1 FROM tbl_traderequests r2 
-                                WHERE r2.TargetSkillId = s.SkillId AND r2.Status = 'Accepted'
-                            )",
-                        new MySqlParameter("@id", requestId));
+                    MySqlCommand restoreCmd = new MySqlCommand();
+                    restoreCmd.CommandText = @"UPDATE tbl_skills s
+                                               SET s.Status = 'Active'
+                                               WHERE s.SkillId = (SELECT TargetSkillId FROM tbl_traderequests WHERE RequestId = @id)
+                                                 AND s.Status = 'Paused'
+                                                 AND NOT EXISTS (
+                                                     SELECT 1 FROM tbl_traderequests r2 
+                                                     WHERE r2.TargetSkillId = s.SkillId AND r2.Status = 'Accepted'
+                                                 )";
+                    restoreCmd.Connection = conn;
+                    restoreCmd.Parameters.AddWithValue("@id", requestId);
+                    restoreCmd.ExecuteNonQuery();
                 }
+
+                conn.Close();
 
                 // Notify requester of status change
                 string studentName = string.IsNullOrWhiteSpace(UserSession.FullName) ? "Skill Owner" : UserSession.FullName;
