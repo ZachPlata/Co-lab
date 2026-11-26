@@ -153,7 +153,7 @@ namespace Co_LAB.UCAuth
             pnlConfirmPassword.Controls.Add(txtConfirmPassword);
             pnlConfirmPassword.Location = new Point(0, 406);
             pnlConfirmPassword.Name = "pnlConfirmPassword";
-            pnlConfirmPassword.Size = new Size(400, 27);
+            pnlConfirmPassword.Size = new Size(374, 27);
             pnlConfirmPassword.TabIndex = 12;
             // 
             // btnToggleConfirmPassword
@@ -164,7 +164,7 @@ namespace Co_LAB.UCAuth
             btnToggleConfirmPassword.FlatStyle = FlatStyle.Flat;
             btnToggleConfirmPassword.Font = new Font("Segoe UI", 8.5F);
             btnToggleConfirmPassword.ForeColor = Color.White;
-            btnToggleConfirmPassword.Location = new Point(360, 0);
+            btnToggleConfirmPassword.Location = new Point(334, 0);
             btnToggleConfirmPassword.Name = "btnToggleConfirmPassword";
             btnToggleConfirmPassword.Size = new Size(40, 26);
             btnToggleConfirmPassword.TabIndex = 1;
@@ -180,7 +180,7 @@ namespace Co_LAB.UCAuth
             txtConfirmPassword.ForeColor = Color.White;
             txtConfirmPassword.Location = new Point(0, 1);
             txtConfirmPassword.Name = "txtConfirmPassword";
-            txtConfirmPassword.Size = new Size(355, 24);
+            txtConfirmPassword.Size = new Size(329, 24);
             txtConfirmPassword.TabIndex = 0;
             txtConfirmPassword.UseSystemPasswordChar = true;
             // 
@@ -213,7 +213,7 @@ namespace Co_LAB.UCAuth
             pnlNewPassword.Controls.Add(txtNewPassword);
             pnlNewPassword.Location = new Point(0, 335);
             pnlNewPassword.Name = "pnlNewPassword";
-            pnlNewPassword.Size = new Size(400, 27);
+            pnlNewPassword.Size = new Size(374, 27);
             pnlNewPassword.TabIndex = 9;
             // 
             // btnToggleNewPassword
@@ -224,7 +224,7 @@ namespace Co_LAB.UCAuth
             btnToggleNewPassword.FlatStyle = FlatStyle.Flat;
             btnToggleNewPassword.Font = new Font("Segoe UI", 8.5F);
             btnToggleNewPassword.ForeColor = Color.White;
-            btnToggleNewPassword.Location = new Point(360, 0);
+            btnToggleNewPassword.Location = new Point(334, 0);
             btnToggleNewPassword.Name = "btnToggleNewPassword";
             btnToggleNewPassword.Size = new Size(40, 26);
             btnToggleNewPassword.TabIndex = 1;
@@ -240,7 +240,7 @@ namespace Co_LAB.UCAuth
             txtNewPassword.ForeColor = Color.White;
             txtNewPassword.Location = new Point(0, 1);
             txtNewPassword.Name = "txtNewPassword";
-            txtNewPassword.Size = new Size(355, 24);
+            txtNewPassword.Size = new Size(329, 24);
             txtNewPassword.TabIndex = 0;
             txtNewPassword.UseSystemPasswordChar = true;
             // 
@@ -275,7 +275,7 @@ namespace Co_LAB.UCAuth
             txtAnswer.ForeColor = Color.White;
             txtAnswer.Location = new Point(0, 266);
             txtAnswer.Name = "txtAnswer";
-            txtAnswer.Size = new Size(400, 25);
+            txtAnswer.Size = new Size(374, 25);
             txtAnswer.TabIndex = 6;
             // 
             // lblAnswer
@@ -405,7 +405,7 @@ namespace Co_LAB.UCAuth
             txtEmail.ForeColor = Color.White;
             txtEmail.Location = new Point(0, 232);
             txtEmail.Name = "txtEmail";
-            txtEmail.Size = new Size(400, 27);
+            txtEmail.Size = new Size(374, 27);
             txtEmail.TabIndex = 4;
             txtEmail.KeyDown += txtEmail_KeyDown;
             // 

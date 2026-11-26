@@ -59,7 +59,7 @@ namespace Co_LAB.UCAuth
             pnlCenter.Controls.Add(lblTitle);
             pnlCenter.Location = new Point(95, 30);
             pnlCenter.Name = "pnlCenter";
-            pnlCenter.Size = new Size(400, 530);
+            pnlCenter.Size = new Size(430, 530);
             pnlCenter.TabIndex = 0;
             // 
             // lnkTos

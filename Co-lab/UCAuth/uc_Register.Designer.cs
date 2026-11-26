@@ -98,7 +98,7 @@ namespace Co_LAB.UCAuth
             pnlCenter.Controls.Add(lblTitle);
             pnlCenter.Location = new Point(85, 12);
             pnlCenter.Name = "pnlCenter";
-            pnlCenter.Size = new Size(420, 570);
+            pnlCenter.Size = new Size(440, 570);
             pnlCenter.TabIndex = 0;
             // 
             // pnlBackToLogin

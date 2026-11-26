@@ -29,8 +29,16 @@ namespace Co_LAB.UCAuth
 
             txtEmail.TextChanged += (s, e) => ValidationHelper.ClearError(_errorProvider, txtEmail);
             txtAnswer.TextChanged += (s, e) => ValidationHelper.ClearError(_errorProvider, txtAnswer);
-            txtNewPassword.TextChanged += (s, e) => ValidationHelper.ClearError(_errorProvider, pnlNewPassword);
-            txtConfirmPassword.TextChanged += (s, e) => ValidationHelper.ClearError(_errorProvider, pnlConfirmPassword);
+            txtNewPassword.TextChanged += (s, e) =>
+            {
+                ValidationHelper.ClearError(_errorProvider, pnlNewPassword);
+                lblConfirmPasswordError.Visible = false;
+            };
+            txtConfirmPassword.TextChanged += (s, e) =>
+            {
+                ValidationHelper.ClearError(_errorProvider, pnlConfirmPassword);
+                lblConfirmPasswordError.Visible = false;
+            };
         }
 
         private void uc_ForgotPassword_Load(object sender, EventArgs e)
@@ -171,6 +179,8 @@ namespace Co_LAB.UCAuth
             if (string.IsNullOrEmpty(confirmPassword) || confirmPassword != newPassword)
             {
                 ValidationHelper.SetError(_errorProvider, pnlConfirmPassword, "Passwords do not match.");
+                lblConfirmPasswordError.Text = "Passwords do not match.";
+                lblConfirmPasswordError.Visible = true;
                 firstInvalid ??= txtConfirmPassword;
             }
 
