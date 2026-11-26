@@ -64,6 +64,7 @@ namespace Co_LAB
             colPendingName = new DataGridViewTextBoxColumn();
             colPendingEmail = new DataGridViewTextBoxColumn();
             colPendingApprove = new DataGridViewButtonColumn();
+            colPendingDecline = new DataGridViewButtonColumn();
 
             pnlBlacklisted = new Panel();
             lblBlacklistedTitle = new Label();
@@ -171,9 +172,9 @@ namespace Co_LAB
             pnlAdminBadge.BackColor = Color.FromArgb(20, 28, 23);
             pnlAdminBadge.Controls.Add(lblDot);
             pnlAdminBadge.Controls.Add(lblAdminText);
-            pnlAdminBadge.Location = new Point(730, 18);
+            pnlAdminBadge.Location = new Point(702, 18);
             pnlAdminBadge.Name = "pnlAdminBadge";
-            pnlAdminBadge.Size = new Size(196, 36);
+            pnlAdminBadge.Size = new Size(224, 41);
             pnlAdminBadge.TabIndex = 2;
             pnlAdminBadge.Paint += RoundPanel_Paint;
 
@@ -183,7 +184,7 @@ namespace Co_LAB
             lblDot.AutoSize = true;
             lblDot.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
             lblDot.ForeColor = Color.FromArgb(34, 197, 94);
-            lblDot.Location = new Point(14, 7);
+            lblDot.Location = new Point(14, 9);
             lblDot.Name = "lblDot";
             lblDot.Size = new Size(16, 20);
             lblDot.TabIndex = 0;
@@ -195,7 +196,7 @@ namespace Co_LAB
             lblAdminText.AutoSize = true;
             lblAdminText.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             lblAdminText.ForeColor = Color.White;
-            lblAdminText.Location = new Point(34, 10);
+            lblAdminText.Location = new Point(36, 12);
             lblAdminText.Name = "lblAdminText";
             lblAdminText.Size = new Size(147, 15);
             lblAdminText.TabIndex = 1;
@@ -399,40 +400,94 @@ namespace Co_LAB
             lblShortcutsSub.TabIndex = 1;
             lblShortcutsSub.Text = "One-click shortcuts to administration tools";
 
-            // 
-            // btnManageStudents
-            // 
-            FormatShortcutBtn(btnManageStudents, "👤 Students", new Point(18, 58), new Size(150, 36));
+            btnManageStudents.BackColor = Color.FromArgb(28, 38, 30);
+            btnManageStudents.Cursor = Cursors.Hand;
+            btnManageStudents.FlatAppearance.BorderColor = Color.FromArgb(42, 60, 48);
+            btnManageStudents.FlatAppearance.MouseOverBackColor = Color.FromArgb(42, 65, 48);
+            btnManageStudents.FlatStyle = FlatStyle.Flat;
+            btnManageStudents.Font = new Font("Segoe UI Semibold", 8.5F);
+            btnManageStudents.ForeColor = Color.FromArgb(220, 235, 225);
+            btnManageStudents.Location = new Point(18, 58);
+            btnManageStudents.Name = "btnManageStudents";
+            btnManageStudents.Size = new Size(150, 36);
+            btnManageStudents.TabIndex = 2;
+            btnManageStudents.Text = "👤 Students";
+            btnManageStudents.UseVisualStyleBackColor = false;
             btnManageStudents.Click += BtnManageStudents_Click;
 
-            // 
-            // btnCategories
-            // 
-            FormatShortcutBtn(btnCategories, "🏷️ Categories", new Point(178, 58), new Size(154, 36));
+            btnCategories.BackColor = Color.FromArgb(28, 38, 30);
+            btnCategories.Cursor = Cursors.Hand;
+            btnCategories.FlatAppearance.BorderColor = Color.FromArgb(42, 60, 48);
+            btnCategories.FlatAppearance.MouseOverBackColor = Color.FromArgb(42, 65, 48);
+            btnCategories.FlatStyle = FlatStyle.Flat;
+            btnCategories.Font = new Font("Segoe UI Semibold", 8.5F);
+            btnCategories.ForeColor = Color.FromArgb(220, 235, 225);
+            btnCategories.Location = new Point(178, 58);
+            btnCategories.Name = "btnCategories";
+            btnCategories.Size = new Size(154, 36);
+            btnCategories.TabIndex = 3;
+            btnCategories.Text = "🏷️ Categories";
+            btnCategories.UseVisualStyleBackColor = false;
             btnCategories.Click += BtnCategories_Click;
 
-            // 
-            // btnModerateListings
-            // 
-            FormatShortcutBtn(btnModerateListings, "🛡️ Listings", new Point(18, 102), new Size(150, 36));
+            btnModerateListings.BackColor = Color.FromArgb(28, 38, 30);
+            btnModerateListings.Cursor = Cursors.Hand;
+            btnModerateListings.FlatAppearance.BorderColor = Color.FromArgb(42, 60, 48);
+            btnModerateListings.FlatAppearance.MouseOverBackColor = Color.FromArgb(42, 65, 48);
+            btnModerateListings.FlatStyle = FlatStyle.Flat;
+            btnModerateListings.Font = new Font("Segoe UI Semibold", 8.5F);
+            btnModerateListings.ForeColor = Color.FromArgb(220, 235, 225);
+            btnModerateListings.Location = new Point(18, 102);
+            btnModerateListings.Name = "btnModerateListings";
+            btnModerateListings.Size = new Size(150, 36);
+            btnModerateListings.TabIndex = 4;
+            btnModerateListings.Text = "🛡️ Listings";
+            btnModerateListings.UseVisualStyleBackColor = false;
             btnModerateListings.Click += BtnModerateListings_Click;
 
-            // 
-            // btnReviewTickets
-            // 
-            FormatShortcutBtn(btnReviewTickets, "🚩 Reports", new Point(178, 102), new Size(154, 36));
+            btnReviewTickets.BackColor = Color.FromArgb(28, 38, 30);
+            btnReviewTickets.Cursor = Cursors.Hand;
+            btnReviewTickets.FlatAppearance.BorderColor = Color.FromArgb(42, 60, 48);
+            btnReviewTickets.FlatAppearance.MouseOverBackColor = Color.FromArgb(42, 65, 48);
+            btnReviewTickets.FlatStyle = FlatStyle.Flat;
+            btnReviewTickets.Font = new Font("Segoe UI Semibold", 8.5F);
+            btnReviewTickets.ForeColor = Color.FromArgb(220, 235, 225);
+            btnReviewTickets.Location = new Point(178, 102);
+            btnReviewTickets.Name = "btnReviewTickets";
+            btnReviewTickets.Size = new Size(154, 36);
+            btnReviewTickets.TabIndex = 5;
+            btnReviewTickets.Text = "🚩 Reports";
+            btnReviewTickets.UseVisualStyleBackColor = false;
             btnReviewTickets.Click += BtnReviewTickets_Click;
 
-            // 
-            // btnMonitorSwaps
-            // 
-            FormatShortcutBtn(btnMonitorSwaps, "🔄 Swaps Log", new Point(18, 146), new Size(150, 36));
+            btnMonitorSwaps.BackColor = Color.FromArgb(28, 38, 30);
+            btnMonitorSwaps.Cursor = Cursors.Hand;
+            btnMonitorSwaps.FlatAppearance.BorderColor = Color.FromArgb(42, 60, 48);
+            btnMonitorSwaps.FlatAppearance.MouseOverBackColor = Color.FromArgb(42, 65, 48);
+            btnMonitorSwaps.FlatStyle = FlatStyle.Flat;
+            btnMonitorSwaps.Font = new Font("Segoe UI Semibold", 8.5F);
+            btnMonitorSwaps.ForeColor = Color.FromArgb(220, 235, 225);
+            btnMonitorSwaps.Location = new Point(18, 146);
+            btnMonitorSwaps.Name = "btnMonitorSwaps";
+            btnMonitorSwaps.Size = new Size(150, 36);
+            btnMonitorSwaps.TabIndex = 6;
+            btnMonitorSwaps.Text = "🔄 Swaps Log";
+            btnMonitorSwaps.UseVisualStyleBackColor = false;
             btnMonitorSwaps.Click += BtnMonitorSwaps_Click;
 
-            // 
-            // btnExportReports
-            // 
-            FormatShortcutBtn(btnExportReports, "📊 Export CSV", new Point(178, 146), new Size(154, 36));
+            btnExportReports.BackColor = Color.FromArgb(28, 38, 30);
+            btnExportReports.Cursor = Cursors.Hand;
+            btnExportReports.FlatAppearance.BorderColor = Color.FromArgb(42, 60, 48);
+            btnExportReports.FlatAppearance.MouseOverBackColor = Color.FromArgb(42, 65, 48);
+            btnExportReports.FlatStyle = FlatStyle.Flat;
+            btnExportReports.Font = new Font("Segoe UI Semibold", 8.5F);
+            btnExportReports.ForeColor = Color.FromArgb(220, 235, 225);
+            btnExportReports.Location = new Point(178, 146);
+            btnExportReports.Name = "btnExportReports";
+            btnExportReports.Size = new Size(154, 36);
+            btnExportReports.TabIndex = 7;
+            btnExportReports.Text = "📊 Export CSV";
+            btnExportReports.UseVisualStyleBackColor = false;
             btnExportReports.Click += BtnExportReports_Click;
 
             // 
@@ -472,7 +527,7 @@ namespace Co_LAB
             dgv_PendingStudentVerification.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
             dgv_PendingStudentVerification.ColumnHeadersDefaultCellStyle = dgvHeaderStyle;
             dgv_PendingStudentVerification.ColumnHeadersHeight = 32;
-            dgv_PendingStudentVerification.Columns.AddRange(new DataGridViewColumn[] { colPendingId, colPendingName, colPendingEmail, colPendingApprove });
+            dgv_PendingStudentVerification.Columns.AddRange(new DataGridViewColumn[] { colPendingId, colPendingName, colPendingEmail, colPendingApprove, colPendingDecline });
             dgv_PendingStudentVerification.DefaultCellStyle = dgvRowStyle;
             dgv_PendingStudentVerification.EnableHeadersVisualStyles = false;
             dgv_PendingStudentVerification.GridColor = Color.FromArgb(30, 44, 34);
@@ -502,11 +557,18 @@ namespace Co_LAB
 
             colPendingApprove.DefaultCellStyle = approveBtnStyle;
             colPendingApprove.FlatStyle = FlatStyle.Flat;
-            colPendingApprove.HeaderText = "Action";
+            colPendingApprove.HeaderText = "Approve";
             colPendingApprove.Name = "colPendingApprove";
             colPendingApprove.Text = "✓ Approve";
             colPendingApprove.UseColumnTextForButtonValue = true;
-            colPendingApprove.Width = 90;
+            colPendingApprove.Width = 85;
+
+            colPendingDecline.FlatStyle = FlatStyle.Flat;
+            colPendingDecline.HeaderText = "Decline";
+            colPendingDecline.Name = "colPendingDecline";
+            colPendingDecline.Text = "✗ Decline";
+            colPendingDecline.UseColumnTextForButtonValue = true;
+            colPendingDecline.Width = 85;
 
             // 
             // pnlBlacklisted
@@ -744,7 +806,7 @@ namespace Co_LAB
             // uc_AdminDashboard
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
+            AutoScaleMode = AutoScaleMode.None;
             AutoScroll = true;
             AutoScrollMinSize = new Size(920, 956);
             BackColor = Color.FromArgb(14, 20, 16);
@@ -787,22 +849,6 @@ namespace Co_LAB
             ((System.ComponentModel.ISupportInitialize)dgvReportRecords).EndInit();
             ResumeLayout(false);
             PerformLayout();
-        }
-
-        private static void FormatShortcutBtn(Button btn, string text, Point loc, Size sz)
-        {
-            btn.Text = text;
-            btn.Location = loc;
-            btn.Size = sz;
-            btn.BackColor = Color.FromArgb(28, 38, 30);
-            btn.ForeColor = Color.FromArgb(220, 235, 225);
-            btn.Font = new Font("Segoe UI Semibold", 8.5F);
-            btn.FlatStyle = FlatStyle.Flat;
-            btn.FlatAppearance.BorderColor = Color.FromArgb(42, 60, 48);
-            btn.FlatAppearance.BorderSize = 1;
-            btn.FlatAppearance.MouseOverBackColor = Color.FromArgb(42, 65, 48);
-            btn.Cursor = Cursors.Hand;
-            btn.UseVisualStyleBackColor = false;
         }
 
         #endregion
@@ -849,6 +895,7 @@ namespace Co_LAB
         private DataGridViewTextBoxColumn colPendingName;
         private DataGridViewTextBoxColumn colPendingEmail;
         private DataGridViewButtonColumn colPendingApprove;
+        private DataGridViewButtonColumn colPendingDecline;
 
         // Blacklisted
         private Panel pnlBlacklisted;

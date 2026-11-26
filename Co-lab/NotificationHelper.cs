@@ -20,7 +20,7 @@ namespace Co_LAB
         {
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 MySqlCommand cmd = new MySqlCommand();
                 conn.Open();
                 cmd.CommandText = @"INSERT INTO tbl_notifications 
@@ -51,7 +51,7 @@ namespace Co_LAB
         {
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 MySqlCommand cmd = new MySqlCommand();
                 DataSet ds = new DataSet();
                 MySqlDataAdapter da = new MySqlDataAdapter();
@@ -92,7 +92,7 @@ namespace Co_LAB
         {
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 MySqlCommand cmd = new MySqlCommand();
                 DataSet ds = new DataSet();
                 MySqlDataAdapter da = new MySqlDataAdapter();
@@ -175,7 +175,7 @@ namespace Co_LAB
         {
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 conn.Open();
 
                 // For Admin: Sync pending reports
@@ -227,7 +227,7 @@ namespace Co_LAB
         {
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 MySqlCommand cmd = new MySqlCommand();
                 conn.Open();
                 if (string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
@@ -265,7 +265,7 @@ namespace Co_LAB
             try
             {
                 int safeLimit = Math.Clamp(limit, 1, 200);
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 MySqlCommand cmd = new MySqlCommand();
                 DataSet ds = new DataSet();
                 MySqlDataAdapter da = new MySqlDataAdapter();
@@ -273,14 +273,15 @@ namespace Co_LAB
 
                 if (string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))
                 {
-                    cmd.CommandText = $"SELECT * FROM tbl_notifications WHERE TargetRole = 'Admin' ORDER BY NotificationId DESC LIMIT {safeLimit}";
+                    cmd.CommandText = "SELECT * FROM tbl_notifications WHERE TargetRole = 'Admin' ORDER BY NotificationId DESC LIMIT @lim";
                 }
                 else
                 {
-                    cmd.CommandText = $"SELECT * FROM tbl_notifications WHERE TargetRole = 'Student' AND ((@email != '' AND UserEmail = @email) OR (UserId = @uid AND @uid > 0)) ORDER BY NotificationId DESC LIMIT {safeLimit}";
+                    cmd.CommandText = "SELECT * FROM tbl_notifications WHERE TargetRole = 'Student' AND ((@email != '' AND UserEmail = @email) OR (UserId = @uid AND @uid > 0)) ORDER BY NotificationId DESC LIMIT @lim";
                     cmd.Parameters.AddWithValue("@email", userEmail ?? string.Empty);
                     cmd.Parameters.AddWithValue("@uid", UserSession.UserId);
                 }
+                cmd.Parameters.AddWithValue("@lim", safeLimit);
 
                 cmd.Connection = conn;
                 da.SelectCommand = cmd;
@@ -301,7 +302,7 @@ namespace Co_LAB
         {
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 MySqlCommand cmd = new MySqlCommand();
                 conn.Open();
                 cmd.CommandText = "UPDATE tbl_notifications SET IsRead = 1 WHERE NotificationId = @id";
@@ -320,7 +321,7 @@ namespace Co_LAB
         {
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 MySqlCommand cmd = new MySqlCommand();
                 conn.Open();
                 if (string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase))

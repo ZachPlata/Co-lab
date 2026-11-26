@@ -25,6 +25,10 @@ CREATE TABLE `tbl_users` (
     `SecurityQuestion` VARCHAR(255) DEFAULT 'What was the name of your first pet?',
     `SecurityAnswer` VARCHAR(255) DEFAULT 'dog',
     `is_verified` TINYINT(1) DEFAULT 0,
+    `VerificationStatus` ENUM('Pending', 'Verified', 'Declined') NOT NULL DEFAULT 'Pending',
+    `VerificationNote` VARCHAR(255) DEFAULT NULL,
+    `VerificationDocument` LONGBLOB DEFAULT NULL,
+    `VerificationDocName` VARCHAR(255) DEFAULT NULL,
     `is_blacklisted` TINYINT(1) DEFAULT 0,
     `BanReason` VARCHAR(255) DEFAULT NULL,
     `CreatedAt` DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -34,12 +38,12 @@ CREATE TABLE `tbl_users` (
 ) ENGINE=InnoDB;
 
 -- Populate ONLY the 5 specific users (Password: 12345678, PBKDF2-HMAC-SHA256)
-INSERT INTO `tbl_users` (`UserId`, `FullName`, `Email`, `Password`, `Role`, `SecurityQuestion`, `SecurityAnswer`, `is_verified`) VALUES
-(1, 'Zach Plata', 'plata.zachbenedict@ue.edu.ph', 'PBKDF2$100000$qTzxb8BxYtDDPj5MxnuZMg==$Cbr/X/hKT5aRiaFeTUg6GLi9nf4wAo0vW+XJ27HehGA=', 'Student', 'What was the name of your first pet?', 'dog', 1),
-(2, 'Trowa Bugarin', 'bugarin.trowabarton@ue.edu.ph', 'PBKDF2$100000$zyu7gfrAa54M3y5NeCfZ/g==$been6LNNyqjDHChpxmd1OaA9DYDR9Hc3tO/wAA8VCjI=', 'Student', 'What was the name of your first pet?', 'dog', 1),
-(3, 'Gabs Katipunan', 'katipunan.karisgabriel@ue.edu.ph', 'PBKDF2$100000$6+kUbBobCJUCYKdGPfR88Q==$YJWKov9Yssf44jowfNgUYs4keWq52gjatkBDogPm48E=', 'Student', 'What was the name of your first pet?', 'dog', 1),
-(4, 'Andrei Sarmiento', 'sarmiento.andrei@ue.edu.ph', 'PBKDF2$100000$+zYoTxKcLX1gSX3zYw6EeQ==$UkyATxysysj4TxvLAciS632U7b9bLixLVeTQJUNtGI4=', 'Student', 'What was the name of your first pet?', 'dog', 1),
-(5, 'Miguel Borja', 'borja.miguelantonio@ue.edu.ph', 'PBKDF2$100000$Y3rkzU/k+cKebcwjFdqZUg==$loEyRk9hVllo2wcxrmbxhRjcdzFpMTflH6ZZklzGOqw=', 'Admin', 'What was the name of your first pet?', 'dog', 1);
+INSERT INTO `tbl_users` (`UserId`, `FullName`, `Email`, `Password`, `Role`, `SecurityQuestion`, `SecurityAnswer`, `is_verified`, `VerificationStatus`) VALUES
+(1, 'Zach Plata', 'plata.zachbenedict@ue.edu.ph', 'PBKDF2$100000$qTzxb8BxYtDDPj5MxnuZMg==$Cbr/X/hKT5aRiaFeTUg6GLi9nf4wAo0vW+XJ27HehGA=', 'Student', 'What was the name of your first pet?', 'dog', 1, 'Verified'),
+(2, 'Trowa Bugarin', 'bugarin.trowabarton@ue.edu.ph', 'PBKDF2$100000$zyu7gfrAa54M3y5NeCfZ/g==$been6LNNyqjDHChpxmd1OaA9DYDR9Hc3tO/wAA8VCjI=', 'Student', 'What was the name of your first pet?', 'dog', 1, 'Verified'),
+(3, 'Gabs Katipunan', 'katipunan.karisgabriel@ue.edu.ph', 'PBKDF2$100000$6+kUbBobCJUCYKdGPfR88Q==$YJWKov9Yssf44jowfNgUYs4keWq52gjatkBDogPm48E=', 'Student', 'What was the name of your first pet?', 'dog', 1, 'Verified'),
+(4, 'Andrei Sarmiento', 'sarmiento.andrei@ue.edu.ph', 'PBKDF2$100000$+zYoTxKcLX1gSX3zYw6EeQ==$UkyATxysysj4TxvLAciS632U7b9bLixLVeTQJUNtGI4=', 'Student', 'What was the name of your first pet?', 'dog', 1, 'Verified'),
+(5, 'Miguel Borja', 'borja.miguelantonio@ue.edu.ph', 'PBKDF2$100000$Y3rkzU/k+cKebcwjFdqZUg==$loEyRk9hVllo2wcxrmbxhRjcdzFpMTflH6ZZklzGOqw=', 'Admin', 'What was the name of your first pet?', 'dog', 1, 'Verified');
 
 -- -----------------------------------------------------------------------------
 -- 2. Table: tbl_categories
@@ -48,7 +52,8 @@ INSERT INTO `tbl_users` (`UserId`, `FullName`, `Email`, `Password`, `Role`, `Sec
 DROP TABLE IF EXISTS `tbl_categories`;
 CREATE TABLE `tbl_categories` (
     `CategoryId` INT AUTO_INCREMENT PRIMARY KEY,
-    `CategoryName` VARCHAR(100) NOT NULL UNIQUE
+    `CategoryName` VARCHAR(100) NOT NULL UNIQUE,
+    `Description` TEXT DEFAULT NULL
 ) ENGINE=InnoDB;
 
 INSERT INTO `tbl_categories` (`CategoryId`, `CategoryName`) VALUES
@@ -137,6 +142,7 @@ CREATE TABLE `tbl_reports` (
     `SkillId` INT DEFAULT NULL,
     `ReportedUserId` INT DEFAULT NULL,
     `ReportedUser` VARCHAR(100) NOT NULL,
+    `ReporterName` VARCHAR(100) DEFAULT NULL,
     `Reason` TEXT NOT NULL,
     `ReportDate` DATETIME DEFAULT CURRENT_TIMESTAMP,
     `Status` ENUM('Pending', 'Reviewed', 'Dismissed') DEFAULT 'Pending',

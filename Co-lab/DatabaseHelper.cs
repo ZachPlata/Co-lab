@@ -13,4 +13,3 @@ namespace Co_LAB
         }
     }
 }
-

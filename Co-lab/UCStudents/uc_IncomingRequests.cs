@@ -80,7 +80,7 @@ namespace Co_LAB
 
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 MySqlCommand cmd = new MySqlCommand();
                 DataSet ds = new DataSet();
                 MySqlDataAdapter da = new MySqlDataAdapter();
@@ -482,7 +482,7 @@ namespace Co_LAB
         {
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 conn.Open();
 
                 MySqlCommand cmd = new MySqlCommand();

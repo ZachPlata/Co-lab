@@ -11,10 +11,18 @@ namespace Co_LAB.UCAuth
     {
         private static readonly Regex EmailRegex = new Regex(@"^[A-Za-z0-9._%+-]+@ue\.edu\.ph$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
         private bool _hasUserInteracted = false;
+        private readonly ErrorProvider _errorProvider;
 
         public uc_Register()
         {
             InitializeComponent();
+            _errorProvider = ValidationHelper.Create(this);
+            lblFullNameError.Visible = false;
+            lblEmailError.Visible = false;
+            lblPasswordError.Visible = false;
+            lblConfirmPasswordError.Visible = false;
+            lblSecurityQuestionError.Visible = false;
+            lblSecurityAnswerError.Visible = false;
         }
 
         private void uc_Register_Load(object sender, EventArgs e)
@@ -34,25 +42,22 @@ namespace Co_LAB.UCAuth
         {
             lblGeneralError.Visible = false;
             bool isValid = true;
+            Control? firstInvalid = null;
 
             // 1. Full Name
             string fullName = txtFullName.Text.Trim();
             if (string.IsNullOrWhiteSpace(fullName))
             {
                 isValid = false;
-                if (showErrors && _hasUserInteracted && !string.IsNullOrEmpty(txtFullName.Text))
-                {
-                    lblFullNameError.Text = "Full name is required.";
-                    lblFullNameError.Visible = true;
-                }
+                firstInvalid ??= txtFullName;
+                if (showErrors && _hasUserInteracted)
+                    ValidationHelper.SetError(_errorProvider, txtFullName, "Full name is required.");
                 else if (!showErrors)
-                {
-                    lblFullNameError.Visible = false;
-                }
+                    ValidationHelper.ClearError(_errorProvider, txtFullName);
             }
             else
             {
-                lblFullNameError.Visible = false;
+                ValidationHelper.ClearError(_errorProvider, txtFullName);
             }
 
             // 2. UE Email
@@ -60,28 +65,22 @@ namespace Co_LAB.UCAuth
             if (string.IsNullOrWhiteSpace(email))
             {
                 isValid = false;
-                if (showErrors && _hasUserInteracted && !string.IsNullOrEmpty(txtEmail.Text))
-                {
-                    lblEmailError.Text = "UE email is required.";
-                    lblEmailError.Visible = true;
-                }
+                firstInvalid ??= txtEmail;
+                if (showErrors && _hasUserInteracted)
+                    ValidationHelper.SetError(_errorProvider, txtEmail, "UE email is required.");
                 else if (!showErrors)
-                {
-                    lblEmailError.Visible = false;
-                }
+                    ValidationHelper.ClearError(_errorProvider, txtEmail);
             }
             else if (!EmailRegex.IsMatch(email))
             {
                 isValid = false;
+                firstInvalid ??= txtEmail;
                 if (showErrors)
-                {
-                    lblEmailError.Text = "Please use your @ue.edu.ph email.";
-                    lblEmailError.Visible = true;
-                }
+                    ValidationHelper.SetError(_errorProvider, txtEmail, "Please use your @ue.edu.ph email.");
             }
             else
             {
-                lblEmailError.Visible = false;
+                ValidationHelper.ClearError(_errorProvider, txtEmail);
             }
 
             // 3. Password
@@ -89,19 +88,15 @@ namespace Co_LAB.UCAuth
             if (string.IsNullOrEmpty(password) || password.Length < 8)
             {
                 isValid = false;
-                if (showErrors && !string.IsNullOrEmpty(password))
-                {
-                    lblPasswordError.Text = "Password must be at least 8 characters.";
-                    lblPasswordError.Visible = true;
-                }
+                firstInvalid ??= txtPassword;
+                if (showErrors && _hasUserInteracted)
+                    ValidationHelper.SetError(_errorProvider, pnlPassword, "Password must be at least 8 characters.");
                 else if (!showErrors)
-                {
-                    lblPasswordError.Visible = false;
-                }
+                    ValidationHelper.ClearError(_errorProvider, pnlPassword);
             }
             else
             {
-                lblPasswordError.Visible = false;
+                ValidationHelper.ClearError(_errorProvider, pnlPassword);
             }
 
             // 4. Confirm Password
@@ -109,33 +104,30 @@ namespace Co_LAB.UCAuth
             if (string.IsNullOrEmpty(confirmPassword) || confirmPassword != password)
             {
                 isValid = false;
-                if (showErrors && !string.IsNullOrEmpty(confirmPassword))
-                {
-                    lblConfirmPasswordError.Text = "Passwords do not match.";
-                    lblConfirmPasswordError.Visible = true;
-                }
+                firstInvalid ??= txtConfirmPassword;
+                if (showErrors && (!string.IsNullOrEmpty(confirmPassword) || _hasUserInteracted))
+                    ValidationHelper.SetError(_errorProvider, pnlConfirmPassword, "Passwords do not match.");
                 else if (!showErrors)
-                {
-                    lblConfirmPasswordError.Visible = false;
-                }
+                    ValidationHelper.ClearError(_errorProvider, pnlConfirmPassword);
             }
             else
             {
-                lblConfirmPasswordError.Visible = false;
+                ValidationHelper.ClearError(_errorProvider, pnlConfirmPassword);
             }
 
             // 5. Security Question
             if (cmbSecurityQuestion.SelectedIndex < 0)
             {
                 isValid = false;
+                firstInvalid ??= cmbSecurityQuestion;
                 if (showErrors && _hasUserInteracted)
-                {
-                    // Do not show aggressively until submit or interaction
-                }
+                    ValidationHelper.SetError(_errorProvider, cmbSecurityQuestion, "Please select a security question.");
+                else if (!showErrors)
+                    ValidationHelper.ClearError(_errorProvider, cmbSecurityQuestion);
             }
             else
             {
-                lblSecurityQuestionError.Visible = false;
+                ValidationHelper.ClearError(_errorProvider, cmbSecurityQuestion);
             }
 
             // 6. Security Answer
@@ -143,25 +135,30 @@ namespace Co_LAB.UCAuth
             if (string.IsNullOrWhiteSpace(answer) || answer.Length < 2)
             {
                 isValid = false;
-                if (showErrors && !string.IsNullOrEmpty(txtSecurityAnswer.Text))
-                {
-                    lblSecurityAnswerError.Text = "Security answer must be at least 2 characters.";
-                    lblSecurityAnswerError.Visible = true;
-                }
+                firstInvalid ??= txtSecurityAnswer;
+                if (showErrors && _hasUserInteracted)
+                    ValidationHelper.SetError(_errorProvider, txtSecurityAnswer, "Security answer must be at least 2 characters.");
                 else if (!showErrors)
-                {
-                    lblSecurityAnswerError.Visible = false;
-                }
+                    ValidationHelper.ClearError(_errorProvider, txtSecurityAnswer);
             }
             else
             {
-                lblSecurityAnswerError.Visible = false;
+                ValidationHelper.ClearError(_errorProvider, txtSecurityAnswer);
             }
 
             // 7. Terms of Service accepted
             if (!chkTos.Checked)
             {
                 isValid = false;
+                firstInvalid ??= chkTos;
+                if (showErrors && _hasUserInteracted)
+                    ValidationHelper.SetError(_errorProvider, pnlTos, "You must read and accept the Terms of Service.");
+                else if (!showErrors)
+                    ValidationHelper.ClearError(_errorProvider, pnlTos);
+            }
+            else
+            {
+                ValidationHelper.ClearError(_errorProvider, pnlTos);
             }
 
             // Update button state
@@ -244,7 +241,7 @@ namespace Co_LAB.UCAuth
             try
             {
                 // Check if email is already registered
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 MySqlCommand cmd = new MySqlCommand();
                 conn.Open();
                 cmd.CommandText = "SELECT COUNT(*) FROM tbl_users WHERE Email = @Email";
@@ -273,7 +270,7 @@ namespace Co_LAB.UCAuth
 
                 // Insert student user
                 string hashedPassword = AuthHelper.HashPassword(password);
-                using MySqlConnection insertConn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection insertConn = DatabaseHelper.GetConnection();
                 MySqlCommand insertCmd = new MySqlCommand();
                 insertConn.Open();
                 insertCmd.CommandText = @"INSERT INTO tbl_users (FullName, Email, Password, Role, SecurityQuestion, SecurityAnswer) 

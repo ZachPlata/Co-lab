@@ -500,7 +500,7 @@ namespace Co_LAB.UCAuth
             // uc_Register
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
+            AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.FromArgb(14, 20, 16);
             Controls.Add(pnlScrollContainer);
             Name = "uc_Register";

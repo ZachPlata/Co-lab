@@ -49,7 +49,7 @@ namespace Co_LAB
         {
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 MySqlCommand cmd = new MySqlCommand();
                 conn.Open();
                 cmd.CommandText = @"SELECT CONCAT(
@@ -99,7 +99,7 @@ namespace Co_LAB
         {
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 conn.Open();
 
                 MySqlCommand c1 = new MySqlCommand("SELECT COUNT(*) FROM tbl_users WHERE Role = 'Student'", conn);
@@ -139,11 +139,20 @@ namespace Co_LAB
 
         private void DgvApprove_CellFormatting(object? sender, DataGridViewCellFormattingEventArgs e)
         {
-            if (e.RowIndex >= 0 && e.ColumnIndex == dgv_PendingStudentVerification.Columns["colPendingApprove"]?.Index)
+            if (e.RowIndex < 0) return;
+
+            if (e.ColumnIndex == dgv_PendingStudentVerification.Columns["colPendingApprove"]?.Index)
             {
                 e.CellStyle!.BackColor = Color.FromArgb(34, 85, 52);
                 e.CellStyle.ForeColor = Color.FromArgb(167, 243, 208);
                 e.CellStyle.SelectionBackColor = Color.FromArgb(46, 115, 70);
+                e.CellStyle.SelectionForeColor = Color.White;
+            }
+            else if (e.ColumnIndex == dgv_PendingStudentVerification.Columns["colPendingDecline"]?.Index)
+            {
+                e.CellStyle!.BackColor = Color.FromArgb(65, 25, 28);
+                e.CellStyle.ForeColor = Color.FromArgb(248, 113, 113);
+                e.CellStyle.SelectionBackColor = Color.FromArgb(95, 32, 36);
                 e.CellStyle.SelectionForeColor = Color.White;
             }
         }
@@ -171,40 +180,16 @@ namespace Co_LAB
         // =====================================================
         // PENDING STUDENT VERIFICATIONS
         // =====================================================
-        private static bool _verifiedColumnChecked = false;
-
-        private void EnsureVerificationColumnExists()
-        {
-            if (_verifiedColumnChecked) return;
-            try
-            {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
-                MySqlCommand cmd = new MySqlCommand();
-                conn.Open();
-                cmd.CommandText = "ALTER TABLE tbl_users ADD COLUMN IF NOT EXISTS is_verified TINYINT(1) DEFAULT 0";
-                cmd.Connection = conn;
-                cmd.ExecuteNonQuery();
-                conn.Close();
-                _verifiedColumnChecked = true;
-            }
-            catch
-            {
-                // Column may already exist or DB offline
-            }
-        }
-
         private void LoadPendingVerifications()
         {
             try
             {
-                EnsureVerificationColumnExists();
-
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 MySqlCommand cmd = new MySqlCommand();
                 DataSet ds = new DataSet();
                 MySqlDataAdapter da = new MySqlDataAdapter();
                 conn.Open();
-                cmd.CommandText = "SELECT UserId, FullName, Email FROM tbl_users WHERE Role = 'Student' AND is_verified = 0 AND is_blacklisted = 0 ORDER BY UserId DESC LIMIT 10";
+                cmd.CommandText = "SELECT UserId, FullName, Email FROM tbl_users WHERE Role = 'Student' AND is_verified = 0 AND VerificationStatus = 'Pending' AND is_blacklisted = 0 ORDER BY UserId DESC LIMIT 10";
                 cmd.Connection = conn;
                 da.SelectCommand = cmd;
                 da.Fill(ds, "pending");
@@ -231,11 +216,11 @@ namespace Co_LAB
         {
             if (e.RowIndex < 0) return;
 
+            string userId = dgv_PendingStudentVerification.Rows[e.RowIndex].Cells["colPendingId"].Value?.ToString() ?? "";
+            string fullName = dgv_PendingStudentVerification.Rows[e.RowIndex].Cells["colPendingName"].Value?.ToString() ?? "";
+
             if (e.ColumnIndex == dgv_PendingStudentVerification.Columns["colPendingApprove"]?.Index)
             {
-                string userId = dgv_PendingStudentVerification.Rows[e.RowIndex].Cells["colPendingId"].Value?.ToString() ?? "";
-                string fullName = dgv_PendingStudentVerification.Rows[e.RowIndex].Cells["colPendingName"].Value?.ToString() ?? "";
-
                 var result = MessageBox.Show(
                     $"Approve and verify student account for '{fullName}'?",
                     "Confirm Approval",
@@ -246,10 +231,10 @@ namespace Co_LAB
                 {
                     try
                     {
-                        using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                        using MySqlConnection conn = DatabaseHelper.GetConnection();
                         MySqlCommand cmd = new MySqlCommand();
                         conn.Open();
-                        cmd.CommandText = "UPDATE tbl_users SET is_verified = 1 WHERE UserId = @id";
+                        cmd.CommandText = "UPDATE tbl_users SET is_verified = 1, VerificationStatus = 'Verified', VerificationNote = NULL WHERE UserId = @id";
                         cmd.Connection = conn;
                         cmd.Parameters.AddWithValue("@id", userId);
                         cmd.ExecuteNonQuery();
@@ -266,6 +251,32 @@ namespace Co_LAB
                     }
                 }
             }
+            else if (e.ColumnIndex == dgv_PendingStudentVerification.Columns["colPendingDecline"]?.Index)
+            {
+                using DeclineReasonDialog dlg = new DeclineReasonDialog(fullName);
+                if (dlg.ShowDialog(this) != DialogResult.OK) return;
+                string note = dlg.DeclineNote;
+
+                try
+                {
+                    using MySqlConnection conn = DatabaseHelper.GetConnection();
+                    conn.Open();
+                    using MySqlCommand cmd = new MySqlCommand(
+                        "UPDATE tbl_users SET is_verified = 0, VerificationStatus = 'Declined', VerificationNote = @note WHERE UserId = @id", conn);
+                    cmd.Parameters.AddWithValue("@note", string.IsNullOrWhiteSpace(note) ? (object)DBNull.Value : note.Trim());
+                    cmd.Parameters.AddWithValue("@id", userId);
+                    cmd.ExecuteNonQuery();
+
+                    MessageBox.Show($"Student account for '{fullName}' has been declined.", "Verification Declined",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadDashboard();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error: {ex.Message}", "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
 
         // =====================================================
@@ -275,7 +286,7 @@ namespace Co_LAB
         {
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 MySqlCommand cmd = new MySqlCommand();
                 DataSet ds = new DataSet();
                 MySqlDataAdapter da = new MySqlDataAdapter();
@@ -322,7 +333,7 @@ namespace Co_LAB
                 {
                     try
                     {
-                        using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                        using MySqlConnection conn = DatabaseHelper.GetConnection();
                         MySqlCommand cmd = new MySqlCommand();
                         conn.Open();
                         cmd.CommandText = "UPDATE tbl_users SET is_blacklisted = 0, BanReason = NULL WHERE UserId = @id";
@@ -351,15 +362,17 @@ namespace Co_LAB
         {
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 MySqlCommand cmd = new MySqlCommand();
                 DataSet ds = new DataSet();
                 MySqlDataAdapter da = new MySqlDataAdapter();
                 conn.Open();
                 cmd.CommandText =
-                    "SELECT 'Dismissed Report' AS RecordType, ReportedUser AS StudentName, Reason, Status FROM tbl_reports WHERE Status IN ('Dismissed', 'Declined') " +
+                    "SELECT 'Declined Verification' AS RecordType, FullName AS StudentName, COALESCE(NULLIF(VerificationNote, ''), 'Verification declined by Admin') AS Reason, 'Declined' AS Status " +
+                    "FROM tbl_users WHERE Role = 'Student' AND VerificationStatus = 'Declined' " +
                     "UNION ALL " +
-                    "SELECT 'Declined Proposal' AS RecordType, SenderName AS StudentName, CONCAT('Proposal: ', OfferedSkillTitle) AS Reason, Status FROM tbl_traderequests WHERE Status = 'Declined' " +
+                    "SELECT 'Dismissed Report' AS RecordType, ReportedUser AS StudentName, Reason, Status " +
+                    "FROM tbl_reports WHERE Status = 'Dismissed' " +
                     "LIMIT 10";
                 cmd.Connection = conn;
                 da.SelectCommand = cmd;
@@ -387,53 +400,11 @@ namespace Co_LAB
         // =====================================================
         // REPORT RECORDS TABLE
         // =====================================================
-        private static bool _reportedUserIdColumnChecked = false;
-
-        private void EnsureReportedUserIdColumnExists()
-        {
-            if (_reportedUserIdColumnChecked) return;
-            try
-            {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
-                conn.Open();
-                MySqlCommand checkCmd = new MySqlCommand();
-                checkCmd.CommandText = @"SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS 
-                                         WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'tbl_reports' AND COLUMN_NAME = 'ReportedUserId'";
-                checkCmd.Connection = conn;
-
-                int exists = 0;
-                using (MySqlDataReader reader = checkCmd.ExecuteReader())
-                {
-                    if (reader.Read() && reader[0] != DBNull.Value)
-                    {
-                        exists = Convert.ToInt32(reader[0]);
-                    }
-                }
-
-                if (exists == 0)
-                {
-                    MySqlCommand alterCmd = new MySqlCommand();
-                    alterCmd.CommandText = "ALTER TABLE tbl_reports ADD COLUMN ReportedUserId INT DEFAULT NULL";
-                    alterCmd.Connection = conn;
-                    alterCmd.ExecuteNonQuery();
-                }
-
-                conn.Close();
-                _reportedUserIdColumnChecked = true;
-            }
-            catch
-            {
-                // Column may already exist or DB offline
-            }
-        }
-
         private void LoadReportRecords()
         {
             try
             {
-                EnsureReportedUserIdColumnExists();
-
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 MySqlCommand cmd = new MySqlCommand();
                 DataSet ds = new DataSet();
                 MySqlDataAdapter da = new MySqlDataAdapter();
@@ -509,7 +480,7 @@ namespace Co_LAB
         {
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 conn.Open();
 
                 int total = 0, pending = 0, accepted = 0, declined = 0;
@@ -554,7 +525,7 @@ namespace Co_LAB
         {
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 MySqlCommand cmd = new MySqlCommand();
                 DataSet ds = new DataSet();
                 MySqlDataAdapter da = new MySqlDataAdapter();
@@ -620,7 +591,7 @@ namespace Co_LAB
                 {
                     try
                     {
-                        using MySqlConnection lookupConn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                        using MySqlConnection lookupConn = DatabaseHelper.GetConnection();
                         MySqlCommand lookupCmd = new MySqlCommand();
                         DataSet ds = new DataSet();
                         MySqlDataAdapter da = new MySqlDataAdapter();
@@ -660,8 +631,18 @@ namespace Co_LAB
                     return;
                 }
 
+                if (ModerationHelper.IsAdminUser(resolvedUserId))
+                {
+                    MessageBox.Show(
+                        "Admin accounts are protected and cannot be blacklisted.",
+                        "Action Blocked",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                    return;
+                }
+
                 var result = MessageBox.Show(
-                    $"Blacklist student '{reportedUser}'?",
+                    $"Blacklist student '{reportedUser}'?\n\nThis will terminate their session, pause active listings, and decline pending trade requests.",
                     "Confirm Blacklist",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Warning);
@@ -670,22 +651,8 @@ namespace Co_LAB
                 {
                     try
                     {
-                        using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
-                        conn.Open();
-
-                        MySqlCommand userCmd = new MySqlCommand();
-                        userCmd.CommandText = "UPDATE tbl_users SET is_blacklisted = 1, BanReason = 'Blacklisted via Report' WHERE UserId = @uid";
-                        userCmd.Connection = conn;
-                        userCmd.Parameters.AddWithValue("@uid", resolvedUserId);
-                        userCmd.ExecuteNonQuery();
-
-                        MySqlCommand repCmd = new MySqlCommand();
-                        repCmd.CommandText = "UPDATE tbl_reports SET Status = 'Reviewed' WHERE ReportId = @id";
-                        repCmd.Connection = conn;
-                        repCmd.Parameters.AddWithValue("@id", reportId);
-                        repCmd.ExecuteNonQuery();
-
-                        conn.Close();
+                        int.TryParse(reportId, out int parsedReportId);
+                        ModerationHelper.BlacklistStudent(resolvedUserId, "Blacklisted via Report", parsedReportId > 0 ? parsedReportId : null);
 
                         MessageBox.Show("Student blacklisted.", "Done",
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -704,7 +671,7 @@ namespace Co_LAB
 
                 try
                 {
-                    using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                    using MySqlConnection conn = DatabaseHelper.GetConnection();
                     MySqlCommand cmd = new MySqlCommand();
                     conn.Open();
                     cmd.CommandText = "UPDATE tbl_reports SET Status = 'Dismissed' WHERE ReportId = @id";

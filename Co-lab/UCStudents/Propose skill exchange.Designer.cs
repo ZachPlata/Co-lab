@@ -33,7 +33,6 @@ namespace Co_LAB
             lblTheyOffer = new Label();
             lblTheyNeed = new Label();
             pnlProfileCard = new Panel();
-            lblRating = new Label();
             lblUserDept = new Label();
             lblUserName = new Label();
             pnlAvatar = new Panel();
@@ -77,10 +76,12 @@ namespace Co_LAB
             // 
             // lblTheyOffer
             // 
+            lblTheyOffer.AutoEllipsis = true;
             lblTheyOffer.AutoSize = true;
             lblTheyOffer.Font = new Font("Segoe UI", 9F);
             lblTheyOffer.ForeColor = Color.FromArgb(200, 220, 210);
             lblTheyOffer.Location = new Point(116, 54);
+            lblTheyOffer.MaximumSize = new Size(330, 20);
             lblTheyOffer.Name = "lblTheyOffer";
             lblTheyOffer.Size = new Size(234, 15);
             lblTheyOffer.TabIndex = 2;
@@ -88,10 +89,12 @@ namespace Co_LAB
             // 
             // lblTheyNeed
             // 
+            lblTheyNeed.AutoEllipsis = true;
             lblTheyNeed.AutoSize = true;
             lblTheyNeed.Font = new Font("Segoe UI", 9F);
             lblTheyNeed.ForeColor = Color.FromArgb(200, 220, 210);
             lblTheyNeed.Location = new Point(116, 72);
+            lblTheyNeed.MaximumSize = new Size(330, 20);
             lblTheyNeed.Name = "lblTheyNeed";
             lblTheyNeed.Size = new Size(243, 15);
             lblTheyNeed.TabIndex = 3;
@@ -100,7 +103,6 @@ namespace Co_LAB
             // pnlProfileCard
             // 
             pnlProfileCard.BackColor = Color.FromArgb(20, 28, 23);
-            pnlProfileCard.Controls.Add(lblRating);
             pnlProfileCard.Controls.Add(lblUserDept);
             pnlProfileCard.Controls.Add(lblUserName);
             pnlProfileCard.Controls.Add(pnlAvatar);
@@ -109,17 +111,6 @@ namespace Co_LAB
             pnlProfileCard.Size = new Size(430, 58);
             pnlProfileCard.TabIndex = 4;
             pnlProfileCard.Paint += pnlProfileCard_Paint;
-            // 
-            // lblRating
-            // 
-            lblRating.AutoSize = true;
-            lblRating.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
-            lblRating.ForeColor = Color.FromArgb(250, 204, 21);
-            lblRating.Location = new Point(345, 17);
-            lblRating.Name = "lblRating";
-            lblRating.Size = new Size(49, 20);
-            lblRating.TabIndex = 3;
-            lblRating.Text = "★ 5.0";
             // 
             // lblUserDept
             // 
@@ -245,9 +236,9 @@ namespace Co_LAB
             txtLocation.ForeColor = Color.White;
             txtLocation.Location = new Point(20, 306);
             txtLocation.Name = "txtLocation";
+            txtLocation.PlaceholderText = "e.g., UE Manila Library 3rd Floor Study Hub, Tan Yan Kee Bldg";
             txtLocation.Size = new Size(430, 23);
             txtLocation.TabIndex = 10;
-            txtLocation.Text = "e.g., UE Manila Library 3rd Floor Study Hub, Tan Yan Kee Bldg";
             // 
             // lblNotes
             // 
@@ -308,7 +299,7 @@ namespace Co_LAB
             // Propose_skill_exchange
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
+            AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.FromArgb(14, 20, 16);
             Controls.Add(btnCancel);
             Controls.Add(btnSendRequest);
@@ -345,7 +336,6 @@ namespace Co_LAB
         private Panel pnlAvatar;
         private Label lblUserName;
         private Label lblUserDept;
-        private Label lblRating;
         private Label lblReturnSkill;
         private ComboBox cmbReturnSkill;
         private Label lblTradeMode;

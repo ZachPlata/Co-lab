@@ -16,10 +16,21 @@ namespace Co_LAB.UCAuth
         private string _storedQuestion = string.Empty;
         private string _storedAnswer = string.Empty;
         private int _failedAttempts = 0;
+        private readonly ErrorProvider _errorProvider;
 
         public uc_ForgotPassword()
         {
             InitializeComponent();
+            _errorProvider = ValidationHelper.Create(this);
+            lblEmailError.Visible = false;
+            lblAnswerError.Visible = false;
+            lblNewPasswordError.Visible = false;
+            lblConfirmPasswordError.Visible = false;
+
+            txtEmail.TextChanged += (s, e) => ValidationHelper.ClearError(_errorProvider, txtEmail);
+            txtAnswer.TextChanged += (s, e) => ValidationHelper.ClearError(_errorProvider, txtAnswer);
+            txtNewPassword.TextChanged += (s, e) => ValidationHelper.ClearError(_errorProvider, pnlNewPassword);
+            txtConfirmPassword.TextChanged += (s, e) => ValidationHelper.ClearError(_errorProvider, pnlConfirmPassword);
         }
 
         private void uc_ForgotPassword_Load(object sender, EventArgs e)
@@ -54,6 +65,7 @@ namespace Co_LAB.UCAuth
 
         private void btnContinue_Click(object sender, EventArgs e)
         {
+            ValidationHelper.ClearAll(_errorProvider);
             lblStep1Error.Visible = false;
             lblEmailError.Visible = false;
 
@@ -61,21 +73,21 @@ namespace Co_LAB.UCAuth
 
             if (string.IsNullOrWhiteSpace(email))
             {
-                lblEmailError.Text = "UE email is required.";
-                lblEmailError.Visible = true;
+                ValidationHelper.SetError(_errorProvider, txtEmail, "UE email is required.");
+                txtEmail.Focus();
                 return;
             }
 
             if (!EmailRegex.IsMatch(email))
             {
-                lblEmailError.Text = "Please use your @ue.edu.ph email.";
-                lblEmailError.Visible = true;
+                ValidationHelper.SetError(_errorProvider, txtEmail, "Please use your @ue.edu.ph email.");
+                txtEmail.Focus();
                 return;
             }
 
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 MySqlCommand cmd = new MySqlCommand();
                 DataSet ds = new DataSet();
                 MySqlDataAdapter da = new MySqlDataAdapter();
@@ -125,6 +137,7 @@ namespace Co_LAB.UCAuth
 
         private void btnResetPassword_Click(object sender, EventArgs e)
         {
+            ValidationHelper.ClearAll(_errorProvider);
             lblStep2Error.Visible = false;
             lblAnswerError.Visible = false;
             lblNewPasswordError.Visible = false;
@@ -141,31 +154,29 @@ namespace Co_LAB.UCAuth
             string inputAnswer = txtAnswer.Text.Trim();
             string newPassword = txtNewPassword.Text;
             string confirmPassword = txtConfirmPassword.Text;
-            bool hasError = false;
+            Control? firstInvalid = null;
 
             if (string.IsNullOrWhiteSpace(inputAnswer))
             {
-                lblAnswerError.Text = "Security answer is required.";
-                lblAnswerError.Visible = true;
-                hasError = true;
+                ValidationHelper.SetError(_errorProvider, txtAnswer, "Security answer is required.");
+                firstInvalid ??= txtAnswer;
             }
 
             if (string.IsNullOrEmpty(newPassword) || newPassword.Length < 8)
             {
-                lblNewPasswordError.Text = "Password must be at least 8 characters.";
-                lblNewPasswordError.Visible = true;
-                hasError = true;
+                ValidationHelper.SetError(_errorProvider, pnlNewPassword, "Password must be at least 8 characters.");
+                firstInvalid ??= txtNewPassword;
             }
 
             if (string.IsNullOrEmpty(confirmPassword) || confirmPassword != newPassword)
             {
-                lblConfirmPasswordError.Text = "Passwords do not match.";
-                lblConfirmPasswordError.Visible = true;
-                hasError = true;
+                ValidationHelper.SetError(_errorProvider, pnlConfirmPassword, "Passwords do not match.");
+                firstInvalid ??= txtConfirmPassword;
             }
 
-            if (hasError)
+            if (firstInvalid != null)
             {
+                firstInvalid.Focus();
                 return;
             }
 
@@ -194,7 +205,7 @@ namespace Co_LAB.UCAuth
             try
             {
                 string hashedPassword = AuthHelper.HashPassword(newPassword);
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 MySqlCommand cmd = new MySqlCommand();
                 conn.Open();
                 cmd.CommandText = "UPDATE tbl_users SET Password = @Password WHERE Email = @Email";

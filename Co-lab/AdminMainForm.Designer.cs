@@ -23,6 +23,8 @@ namespace Co_LAB
             btn_ReportedStudents = new Button();
             btn_ModerateListings = new Button();
             btn_SkillCategories = new Button();
+            btn_StudentVerification = new Button();
+            btn_StudentLists = new Button();
             btn_AdminDashboard = new Button();
             pnlSidebarBottom = new Panel();
             btn_SignOut = new Button();
@@ -32,6 +34,7 @@ namespace Co_LAB
             lblBrandSubtitle = new Label();
             lblBrandTitle = new Label();
             pnlHeader = new Panel();
+            _lblDbStatusPill = new Label();
             btnNotificationBell = new Button();
             pnlDividerHeader = new Panel();
             lblAdminProfile = new Label();
@@ -64,6 +67,8 @@ namespace Co_LAB
             pnlNavContainer.Controls.Add(btn_ReportedStudents);
             pnlNavContainer.Controls.Add(btn_ModerateListings);
             pnlNavContainer.Controls.Add(btn_SkillCategories);
+            pnlNavContainer.Controls.Add(btn_StudentVerification);
+            pnlNavContainer.Controls.Add(btn_StudentLists);
             pnlNavContainer.Controls.Add(btn_AdminDashboard);
             pnlNavContainer.Dock = DockStyle.Fill;
             pnlNavContainer.Location = new Point(0, 113);
@@ -144,6 +149,44 @@ namespace Co_LAB
             btn_SkillCategories.TextAlign = ContentAlignment.MiddleLeft;
             btn_SkillCategories.UseVisualStyleBackColor = true;
             btn_SkillCategories.Click += btn_SkillCategories_Click;
+
+            btn_StudentVerification.Cursor = Cursors.Hand;
+            btn_StudentVerification.Dock = DockStyle.Top;
+            btn_StudentVerification.FlatAppearance.BorderSize = 0;
+            btn_StudentVerification.FlatAppearance.MouseDownBackColor = Color.FromArgb(35, 35, 42);
+            btn_StudentVerification.FlatAppearance.MouseOverBackColor = Color.FromArgb(28, 28, 33);
+            btn_StudentVerification.FlatStyle = FlatStyle.Flat;
+            btn_StudentVerification.Font = new Font("Segoe UI", 10F);
+            btn_StudentVerification.ForeColor = Color.FromArgb(161, 161, 170);
+            btn_StudentVerification.Location = new Point(0, 80);
+            btn_StudentVerification.Margin = new Padding(3, 4, 3, 4);
+            btn_StudentVerification.Name = "btn_StudentVerification";
+            btn_StudentVerification.Padding = new Padding(25, 0, 11, 0);
+            btn_StudentVerification.Size = new Size(286, 67);
+            btn_StudentVerification.TabIndex = 5;
+            btn_StudentVerification.Text = "Student Verification";
+            btn_StudentVerification.TextAlign = ContentAlignment.MiddleLeft;
+            btn_StudentVerification.UseVisualStyleBackColor = true;
+            btn_StudentVerification.Click += btn_StudentVerification_Click;
+
+            btn_StudentLists.Cursor = Cursors.Hand;
+            btn_StudentLists.Dock = DockStyle.Top;
+            btn_StudentLists.FlatAppearance.BorderSize = 0;
+            btn_StudentLists.FlatAppearance.MouseDownBackColor = Color.FromArgb(35, 35, 42);
+            btn_StudentLists.FlatAppearance.MouseOverBackColor = Color.FromArgb(28, 28, 33);
+            btn_StudentLists.FlatStyle = FlatStyle.Flat;
+            btn_StudentLists.Font = new Font("Segoe UI", 10F);
+            btn_StudentLists.ForeColor = Color.FromArgb(161, 161, 170);
+            btn_StudentLists.Location = new Point(0, 80);
+            btn_StudentLists.Margin = new Padding(3, 4, 3, 4);
+            btn_StudentLists.Name = "btn_StudentLists";
+            btn_StudentLists.Padding = new Padding(25, 0, 11, 0);
+            btn_StudentLists.Size = new Size(286, 67);
+            btn_StudentLists.TabIndex = 4;
+            btn_StudentLists.Text = "Student Lists";
+            btn_StudentLists.TextAlign = ContentAlignment.MiddleLeft;
+            btn_StudentLists.UseVisualStyleBackColor = true;
+            btn_StudentLists.Click += btn_StudentLists_Click;
             // 
             // btn_AdminDashboard
             // 
@@ -255,6 +298,7 @@ namespace Co_LAB
             // pnlHeader
             // 
             pnlHeader.BackColor = Color.FromArgb(18, 25, 20);
+            pnlHeader.Controls.Add(_lblDbStatusPill);
             pnlHeader.Controls.Add(btnNotificationBell);
             pnlHeader.Controls.Add(pnlDividerHeader);
             pnlHeader.Controls.Add(lblAdminProfile);
@@ -265,6 +309,18 @@ namespace Co_LAB
             pnlHeader.Name = "pnlHeader";
             pnlHeader.Size = new Size(1085, 113);
             pnlHeader.TabIndex = 1;
+            _lblDbStatusPill.AutoSize = true;
+            _lblDbStatusPill.BackColor = Color.FromArgb(70, 48, 15);
+            _lblDbStatusPill.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
+            _lblDbStatusPill.ForeColor = Color.FromArgb(251, 191, 36);
+            _lblDbStatusPill.Location = new Point(290, 38);
+            _lblDbStatusPill.Name = "_lblDbStatusPill";
+            _lblDbStatusPill.Padding = new Padding(10, 4, 10, 4);
+            _lblDbStatusPill.Size = new Size(218, 23);
+            _lblDbStatusPill.TabIndex = 4;
+            _lblDbStatusPill.Text = "⚠️ Database Disconnected — Retrying...";
+            _lblDbStatusPill.Visible = false;
+
             // 
             // btnNotificationBell
             // 
@@ -341,18 +397,21 @@ namespace Co_LAB
             // AdminMainForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
-            AutoScaleMode = AutoScaleMode.Font;
+            AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.FromArgb(14, 20, 16);
             ClientSize = new Size(1371, 960);
             Controls.Add(_notificationPanel);
             Controls.Add(panelContent);
             Controls.Add(pnlHeader);
             Controls.Add(pnlSidebar);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
             Margin = new Padding(3, 4, 3, 4);
+            MaximizeBox = false;
             MinimumSize = new Size(1140, 784);
             Name = "AdminMainForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "CO-LAB - Admin Management Portal";
+            WindowState = FormWindowState.Maximized;
             Load += AdminMainForm_Load;
             pnlSidebar.ResumeLayout(false);
             pnlNavContainer.ResumeLayout(false);
@@ -373,6 +432,8 @@ namespace Co_LAB
         private Panel pnlDividerTop;
         private Panel pnlNavContainer;
         private Button btn_AdminDashboard;
+        private Button btn_StudentLists;
+        private Button btn_StudentVerification;
         private Button btn_SkillCategories;
         private Button btn_ModerateListings;
         private Button btn_ReportedStudents;
@@ -386,6 +447,7 @@ namespace Co_LAB
         private Label lblAdminProfile;
         private Panel pnlDividerHeader;
         private Panel panelContent;
+        private Label _lblDbStatusPill;
         private NotificationPanel _notificationPanel;
     }
 }

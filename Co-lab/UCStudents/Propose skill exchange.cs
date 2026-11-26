@@ -22,9 +22,15 @@ namespace Co_LAB
         [System.ComponentModel.DesignerSerializationVisibility(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public string TargetDesiredSkill { get; set; } = string.Empty;
 
+        private ErrorProvider? _errorProvider;
+
         public Propose_skill_exchange()
         {
             InitializeComponent();
+            _errorProvider = ValidationHelper.Create(this);
+            cmbReturnSkill.SelectedIndexChanged += (s, e) => ValidationHelper.ClearError(_errorProvider, cmbReturnSkill);
+            txtLocation.TextChanged += (s, e) => ValidationHelper.ClearError(_errorProvider, txtLocation);
+            txtNotes.TextChanged += (s, e) => ValidationHelper.ClearError(_errorProvider, txtNotes);
             btnCancel.Click += btnCancel_Click;
         }
 
@@ -40,7 +46,7 @@ namespace Co_LAB
             // Fetch details from tbl_skills (desired skill, college/dept if available)
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 MySqlCommand cmd = new MySqlCommand();
                 DataSet ds = new DataSet();
                 MySqlDataAdapter da = new MySqlDataAdapter();
@@ -106,7 +112,7 @@ namespace Co_LAB
 
                 if (uid > 0)
                 {
-                    using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                    using MySqlConnection conn = DatabaseHelper.GetConnection();
                     MySqlCommand cmd = new MySqlCommand();
                     DataSet ds = new DataSet();
                     MySqlDataAdapter da = new MySqlDataAdapter();
@@ -121,7 +127,7 @@ namespace Co_LAB
                 }
                 else if (!string.IsNullOrWhiteSpace(UserSession.FullName))
                 {
-                    using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                    using MySqlConnection conn = DatabaseHelper.GetConnection();
                     MySqlCommand cmd = new MySqlCommand();
                     DataSet ds = new DataSet();
                     MySqlDataAdapter da = new MySqlDataAdapter();
@@ -208,26 +214,37 @@ namespace Co_LAB
 
         private void btnSendRequest_Click(object sender, EventArgs e)
         {
+            _errorProvider ??= ValidationHelper.Create(this);
+            ValidationHelper.ClearAll(_errorProvider);
+            Control? firstInvalid = null;
+
             string chosenSkill = cmbReturnSkill.SelectedItem?.ToString() ?? "";
             if (string.IsNullOrWhiteSpace(chosenSkill) || chosenSkill.StartsWith("--"))
             {
-                MessageBox.Show(
-                    "You need to select one of your known skills to offer in return.\n\n" +
-                    "If you have not added skills yet, please go to your Student Dashboard to add skills to your profile first.",
-                    "No Skill Selected",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
-                return;
+                ValidationHelper.SetError(_errorProvider, cmbReturnSkill, "Select one of your known skills to offer in return.");
+                firstInvalid ??= cmbReturnSkill;
             }
 
             string meetingMode = rbFaceToFace.Checked ? "Face-to-Face" : "Online";
             string location = txtLocation.Text.Trim();
-            if (string.IsNullOrWhiteSpace(location))
+            if (string.IsNullOrWhiteSpace(location) || location.Length < 3 || location.Length > 150)
             {
-                location = meetingMode == "Online" ? "Discord / Google Meet" : "Campus Library";
+                ValidationHelper.SetError(_errorProvider, txtLocation, "Enter a meeting location or platform (3–150 characters).");
+                firstInvalid ??= txtLocation;
             }
 
             string notes = txtNotes.Text.Trim();
+            if (notes.Length > 500)
+            {
+                ValidationHelper.SetError(_errorProvider, txtNotes, "Notes cannot exceed 500 characters.");
+                firstInvalid ??= txtNotes;
+            }
+
+            if (firstInvalid != null)
+            {
+                firstInvalid.Focus();
+                return;
+            }
             string senderName = UserSession.FullName?.Trim() ?? string.Empty;
             string senderEmail = UserSession.Email?.Trim() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(senderName) || string.IsNullOrWhiteSpace(senderEmail))
@@ -242,7 +259,7 @@ namespace Co_LAB
 
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 conn.Open();
 
                 // Guard: Check if duplicate request already exists in Pending or Accepted state

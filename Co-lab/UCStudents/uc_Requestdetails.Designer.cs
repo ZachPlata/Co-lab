@@ -32,7 +32,6 @@ namespace Co_LAB.UCStudents
             lblUserName = new Label();
             pnlAvatar = new Panel();
             txtNotes = new TextBox();
-            lblRating = new Label();
             lblNotes = new Label();
             lblLocation = new Label();
             lblTradeMode = new Label();
@@ -95,17 +94,6 @@ namespace Co_LAB.UCStudents
             txtNotes.Size = new Size(430, 110);
             txtNotes.TabIndex = 27;
             // 
-            // lblRating
-            // 
-            lblRating.AutoSize = true;
-            lblRating.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
-            lblRating.ForeColor = Color.FromArgb(250, 204, 21);
-            lblRating.Location = new Point(345, 17);
-            lblRating.Name = "lblRating";
-            lblRating.Size = new Size(49, 20);
-            lblRating.TabIndex = 3;
-            lblRating.Text = "★ 5.0";
-            // 
             // lblNotes
             // 
             lblNotes.AutoSize = true;
@@ -153,7 +141,6 @@ namespace Co_LAB.UCStudents
             // pnlProfileCard
             // 
             pnlProfileCard.BackColor = Color.FromArgb(20, 28, 23);
-            pnlProfileCard.Controls.Add(lblRating);
             pnlProfileCard.Controls.Add(lblUserDept);
             pnlProfileCard.Controls.Add(lblUserName);
             pnlProfileCard.Controls.Add(pnlAvatar);
@@ -223,7 +210,7 @@ namespace Co_LAB.UCStudents
             // uc_Requestdetails
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
+            AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.FromArgb(14, 20, 16);
             Controls.Add(textBox3);
             Controls.Add(textBox2);
@@ -250,7 +237,6 @@ namespace Co_LAB.UCStudents
         private Label lblUserName;
         private Panel pnlAvatar;
         private TextBox txtNotes;
-        private Label lblRating;
         private Label lblNotes;
         private Label lblLocation;
         private Label lblTradeMode;

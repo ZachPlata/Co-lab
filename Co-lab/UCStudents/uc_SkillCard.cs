@@ -100,6 +100,7 @@ namespace Co_LAB.UCStudents
                 case CardTradeState.OwnListing:
                     lblOngoingBadge.Visible = false;
                     lblDeliveryMode.Visible = true;
+                    btnReport.Visible = false;
 
                     btnRequestTrade.Text = "👤 Your Skill";
                     btnRequestTrade.Enabled = true;
@@ -114,14 +115,23 @@ namespace Co_LAB.UCStudents
                 default:
                     lblOngoingBadge.Visible = false;
                     lblDeliveryMode.Visible = true;
+                    btnReport.Visible = true;
 
-                    btnRequestTrade.Text = "🤝 Request Trade";
-                    btnRequestTrade.Enabled = true;
-                    btnRequestTrade.BackColor = Color.FromArgb(46, 125, 70);
-                    btnRequestTrade.ForeColor = Color.White;
+                    bool canTrade = UserSession.IsVerified || !UserSession.IsLoggedIn;
+                    btnRequestTrade.Text = canTrade ? "🤝 Request Trade" : "🔒 Pending Verification";
+                    btnRequestTrade.Enabled = canTrade;
+                    btnRequestTrade.BackColor = canTrade ? Color.FromArgb(46, 125, 70) : Color.FromArgb(45, 52, 47);
+                    btnRequestTrade.ForeColor = canTrade ? Color.White : Color.FromArgb(170, 175, 170);
                     btnRequestTrade.FlatAppearance.BorderSize = 0;
-                    btnRequestTrade.Cursor = Cursors.Hand;
+                    btnRequestTrade.Cursor = canTrade ? Cursors.Hand : Cursors.Default;
+                    btnReport.Enabled = canTrade;
                     break;
+            }
+
+            if (state != CardTradeState.OwnListing && state != CardTradeState.Available)
+            {
+                btnReport.Visible = true;
+                btnReport.Enabled = UserSession.IsVerified || !UserSession.IsLoggedIn;
             }
         }
 

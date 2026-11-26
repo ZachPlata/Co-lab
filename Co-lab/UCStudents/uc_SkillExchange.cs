@@ -45,7 +45,7 @@ namespace Co_LAB
         {
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 MySqlCommand cmd = new MySqlCommand();
                 conn.Open();
                 cmd.CommandText = @"SELECT CONCAT(
@@ -86,7 +86,7 @@ namespace Co_LAB
 
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 MySqlCommand cmd = new MySqlCommand();
                 DataSet ds = new DataSet();
                 MySqlDataAdapter da = new MySqlDataAdapter();
@@ -123,46 +123,6 @@ namespace Co_LAB
             cmbCategory.SelectedIndex = 0;
         }
 
-        private static bool _reportedUserIdColumnChecked = false;
-
-        private static void EnsureReportedUserIdColumnExists()
-        {
-            if (_reportedUserIdColumnChecked) return;
-            try
-            {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
-                conn.Open();
-                MySqlCommand checkCmd = new MySqlCommand();
-                checkCmd.CommandText = @"SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS 
-                                         WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'tbl_reports' AND COLUMN_NAME = 'ReportedUserId'";
-                checkCmd.Connection = conn;
-
-                int exists = 0;
-                using (MySqlDataReader reader = checkCmd.ExecuteReader())
-                {
-                    if (reader.Read() && reader[0] != DBNull.Value)
-                    {
-                        exists = Convert.ToInt32(reader[0]);
-                    }
-                }
-
-                if (exists == 0)
-                {
-                    MySqlCommand alterCmd = new MySqlCommand();
-                    alterCmd.CommandText = "ALTER TABLE tbl_reports ADD COLUMN ReportedUserId INT DEFAULT NULL";
-                    alterCmd.Connection = conn;
-                    alterCmd.ExecuteNonQuery();
-                }
-
-                conn.Close();
-                _reportedUserIdColumnChecked = true;
-            }
-            catch
-            {
-                // Column may already exist or user lacks ALTER permission
-            }
-        }
-
         /// <summary>
         /// Queries the database and dynamically generates cards inside the FlowLayoutPanel.
         /// Keeps ongoing listings visible on the marketplace while marking them as Ongoing and disabling trade requests.
@@ -183,7 +143,7 @@ namespace Co_LAB
 
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 MySqlCommand cmd = new MySqlCommand();
                 DataSet ds = new DataSet();
                 MySqlDataAdapter da = new MySqlDataAdapter();
@@ -306,6 +266,12 @@ namespace Co_LAB
 
         private void OnRequestTradeClicked(string skillId, string title, string owner, string mode)
         {
+            if (!UserSession.IsVerified)
+            {
+                MessageBox.Show("Your account is pending Admin verification. You can browse listings, and propose trades once approved.", "Pending Verification", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
             string currentStudent = UserSession.FullName ?? string.Empty;
             string currentEmail = UserSession.Email ?? string.Empty;
 
@@ -320,7 +286,7 @@ namespace Co_LAB
             // Guard: Check if the user already has an ongoing trade request for this skill
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 conn.Open();
 
                 MySqlCommand checkCmd = new MySqlCommand();
@@ -415,60 +381,65 @@ namespace Co_LAB
 
         private void OnReportClicked(string skillId, string title, string owner)
         {
-            string reason = Microsoft.VisualBasic.Interaction.InputBox(
-                $"Why are you reporting this listing?\n\nListing: {title}\nPosted by: {owner}",
-                "Report Listing / Student",
-                "Inappropriate content or spam");
-
-            if (!string.IsNullOrWhiteSpace(reason))
+            if (!UserSession.IsVerified)
             {
-                try
+                MessageBox.Show("Your account is pending Admin verification. Reporting is enabled once your account is approved.", "Pending Verification", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            using var dlg = new ReportDialog(title, owner);
+            if (dlg.ShowDialog(this) != DialogResult.OK)
+            {
+                return;
+            }
+
+            string reason = dlg.ReportReason;
+            try
+            {
+                int.TryParse(skillId, out int parsedSkillId);
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
+                conn.Open();
+
+                object? ownerIdObj = null;
+                if (parsedSkillId > 0)
                 {
-                    EnsureReportedUserIdColumnExists();
-
-                    int.TryParse(skillId, out int parsedSkillId);
-                    using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
-                    conn.Open();
-
-                    object? ownerIdObj = null;
-                    if (parsedSkillId > 0)
+                    MySqlCommand ownerCmd = new MySqlCommand();
+                    ownerCmd.CommandText = "SELECT UserId FROM tbl_skills WHERE SkillId = @sid LIMIT 1";
+                    ownerCmd.Connection = conn;
+                    ownerCmd.Parameters.AddWithValue("@sid", parsedSkillId);
+                    using MySqlDataReader reader = ownerCmd.ExecuteReader();
+                    if (reader.Read() && reader[0] != DBNull.Value)
                     {
-                        MySqlCommand ownerCmd = new MySqlCommand();
-                        ownerCmd.CommandText = "SELECT UserId FROM tbl_skills WHERE SkillId = @sid LIMIT 1";
-                        ownerCmd.Connection = conn;
-                        ownerCmd.Parameters.AddWithValue("@sid", parsedSkillId);
-                        using MySqlDataReader reader = ownerCmd.ExecuteReader();
-                        if (reader.Read() && reader[0] != DBNull.Value)
-                        {
-                            ownerIdObj = reader[0];
-                        }
+                        ownerIdObj = reader[0];
                     }
-
-                    object reportedUserIdParam = (ownerIdObj != null && int.TryParse(ownerIdObj.ToString(), out int parsedOwnerId) && parsedOwnerId > 0)
-                        ? parsedOwnerId
-                        : DBNull.Value;
-
-                    MySqlCommand insertCmd = new MySqlCommand();
-                    insertCmd.CommandText = @"INSERT INTO tbl_reports (SkillId, ReportedUserId, ReportedUser, Reason, ReportDate, Status) 
-                                              VALUES (@sid, @ruid, @user, @reason, NOW(), 'Pending')";
-                    insertCmd.Connection = conn;
-                    insertCmd.Parameters.AddWithValue("@sid", parsedSkillId > 0 ? parsedSkillId : (object)DBNull.Value);
-                    insertCmd.Parameters.AddWithValue("@ruid", reportedUserIdParam);
-                    insertCmd.Parameters.AddWithValue("@user", owner);
-                    insertCmd.Parameters.AddWithValue("@reason", reason.Trim());
-                    insertCmd.ExecuteNonQuery();
-                    conn.Close();
-
-                    // Notify Admin of new report
-                    string reporter = string.IsNullOrWhiteSpace(UserSession.FullName) ? "A student" : UserSession.FullName;
-                    NotificationHelper.NotifyAdminNewReport(skillId, title, owner, reason.Trim(), reporter);
-
-                    MessageBox.Show("Report submitted successfully. Admin will review this listing.", "Report Sent", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Could not record report: {ex.Message}", "Database Notice", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
+
+                object reportedUserIdParam = (ownerIdObj != null && int.TryParse(ownerIdObj.ToString(), out int parsedOwnerId) && parsedOwnerId > 0)
+                    ? parsedOwnerId
+                    : DBNull.Value;
+
+                string reporter = string.IsNullOrWhiteSpace(UserSession.FullName) ? "Student Peer" : UserSession.FullName.Trim();
+
+                MySqlCommand insertCmd = new MySqlCommand();
+                insertCmd.CommandText = @"INSERT INTO tbl_reports (SkillId, ReportedUserId, ReportedUser, ReporterName, Reason, ReportDate, Status) 
+                                          VALUES (@sid, @ruid, @user, @reporter, @reason, NOW(), 'Pending')";
+                insertCmd.Connection = conn;
+                insertCmd.Parameters.AddWithValue("@sid", parsedSkillId > 0 ? parsedSkillId : (object)DBNull.Value);
+                insertCmd.Parameters.AddWithValue("@ruid", reportedUserIdParam);
+                insertCmd.Parameters.AddWithValue("@user", owner);
+                insertCmd.Parameters.AddWithValue("@reporter", reporter);
+                insertCmd.Parameters.AddWithValue("@reason", reason);
+                insertCmd.ExecuteNonQuery();
+                conn.Close();
+
+                // Notify Admin of new report
+                NotificationHelper.NotifyAdminNewReport(skillId, title, owner, reason, reporter);
+
+                MessageBox.Show("Report submitted successfully. Admin will review this listing.", "Report Sent", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Could not record report: {ex.Message}", "Database Notice", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 

@@ -14,11 +14,40 @@ namespace Co_LAB
         {
             InitializeComponent();
             this.FormClosing += AdminMainForm_FormClosing;
+            pnlHeader.Resize += (s, e) => LayoutHeaderControls();
+        }
+
+        private void LayoutHeaderControls()
+        {
+            if (pnlHeader == null || btnNotificationBell == null || lblAdminProfile == null) return;
+
+            lblAdminProfile.AutoEllipsis = true;
+            lblAdminProfile.MaximumSize = new Size(280, 28);
+
+            int rightMargin = 24;
+            lblAdminProfile.Location = new Point(
+                Math.Max(lblHeaderTitle.Right + 16, pnlHeader.ClientSize.Width - lblAdminProfile.Width - rightMargin),
+                (pnlHeader.Height - lblAdminProfile.Height) / 2);
+
+            btnNotificationBell.Location = new Point(
+                Math.Max(lblHeaderTitle.Right + 16, lblAdminProfile.Left - btnNotificationBell.Width - 16),
+                (pnlHeader.Height - btnNotificationBell.Height) / 2);
+
+            if (_lblDbStatusPill != null)
+            {
+                _lblDbStatusPill.Location = new Point(lblHeaderTitle.Right + 16, (pnlHeader.Height - _lblDbStatusPill.Height) / 2);
+            }
         }
 
         private void AdminMainForm_Load(object sender, EventArgs e)
         {
             if (DesignMode) return;
+
+            string adminName = string.IsNullOrWhiteSpace(UserSession.FullName) ? "Administrator" : UserSession.FullName;
+            lblAdminProfile.Text = $"🛡️ {adminName}";
+            _lblDbStatusPill.BringToFront();
+
+            LayoutHeaderControls();
 
             // Initialize notification UI & background checking
             InitializeNotificationUI();
@@ -49,20 +78,44 @@ namespace Co_LAB
             };
             _notifTimer.Tick += (s, e) =>
             {
-                UserSession.Heartbeat();
-                CheckNotifications();
+                HandleHeartbeatAndNotifications();
             };
             _notifTimer.Start();
 
             // Initial heartbeat, sync & check
-            UserSession.Heartbeat();
+            HandleHeartbeatAndNotifications();
             NotificationHelper.SyncExistingPendingNotifications();
-            CheckNotifications();
+        }
+
+        private void HandleHeartbeatAndNotifications()
+        {
+            HeartbeatResult hb = UserSession.Heartbeat(out _);
+            if (hb == HeartbeatResult.SessionInvalid)
+            {
+                _notifTimer?.Stop();
+                MessageBox.Show("Your admin session has ended.", "Session Ended", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                UserSession.SignedOut = true;
+                UserSession.Clear();
+                Close();
+                return;
+            }
+
+            if (_lblDbStatusPill != null)
+            {
+                _lblDbStatusPill.Visible = hb == HeartbeatResult.Offline;
+            }
+
+            if (hb == HeartbeatResult.Ok)
+            {
+                CheckNotifications();
+            }
         }
 
         private void BtnNotificationBell_Click(object? sender, EventArgs e)
         {
-            _notificationPanel.Location = new Point(Width - 400, pnlHeader.Bottom + 2);
+            int bellRightOnForm = pnlSidebar.Width + btnNotificationBell.Right;
+            int panelX = Math.Max(8, Math.Min(bellRightOnForm - _notificationPanel.Width, ClientSize.Width - _notificationPanel.Width - 16));
+            _notificationPanel.Location = new Point(panelX, pnlHeader.Bottom + 2);
             _notificationPanel.Visible = !_notificationPanel.Visible;
             if (_notificationPanel.Visible)
             {
@@ -92,7 +145,7 @@ namespace Co_LAB
                 }
 
                 // Also update sidebar badge for pending reports
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 MySqlCommand cmd = new MySqlCommand();
                 conn.Open();
                 cmd.CommandText = "SELECT COUNT(*) FROM tbl_reports WHERE Status = 'Pending'";
@@ -114,7 +167,13 @@ namespace Co_LAB
                     btn_ReportedStudents.Text = "Reports & Blacklist";
                 }
             }
-            catch { }
+            catch (MySqlException)
+            {
+                if (_lblDbStatusPill != null) _lblDbStatusPill.Visible = true;
+            }
+            catch
+            {
+            }
         }
 
         // ==========================================
@@ -141,6 +200,22 @@ namespace Co_LAB
             LoadContentControl(new uc_AdminDashboard());
             SetActiveButton(btn_AdminDashboard);
             lblHeaderTitle.Text = "Admin Dashboard";
+        }
+
+        private void btn_StudentLists_Click(object? sender, EventArgs e)
+        {
+            _notificationPanel?.Hide();
+            LoadContentControl(new uc_StudentLists());
+            SetActiveButton(btn_StudentLists);
+            lblHeaderTitle.Text = "Student & User Lists";
+        }
+
+        private void btn_StudentVerification_Click(object? sender, EventArgs e)
+        {
+            _notificationPanel?.Hide();
+            LoadContentControl(new uc_StudentVerification());
+            SetActiveButton(btn_StudentVerification);
+            lblHeaderTitle.Text = "Student Verification";
         }
 
         private void btn_SkillCategories_Click(object sender, EventArgs e)
@@ -170,7 +245,7 @@ namespace Co_LAB
 
         private void SetActiveButton(Button activeButton)
         {
-            Button[] navButtons = { btn_AdminDashboard, btn_SkillCategories, btn_ModerateListings, btn_ReportedStudents };
+            Button[] navButtons = { btn_AdminDashboard, btn_StudentLists, btn_StudentVerification, btn_SkillCategories, btn_ModerateListings, btn_ReportedStudents };
             foreach (var btn in navButtons)
             {
                 if (btn == activeButton)
@@ -179,6 +254,7 @@ namespace Co_LAB
                     btn.ForeColor = Color.FromArgb(74, 222, 128); // Emerald Green
                     pnlNavIndicator.Location = new Point(0, btn.Top);
                     pnlNavIndicator.Height = btn.Height;
+                    pnlNavIndicator.BringToFront();
                 }
                 else
                 {
@@ -196,7 +272,7 @@ namespace Co_LAB
             switch (destination)
             {
                 case "StudentAccounts":
-                    btn_AdminDashboard.PerformClick();
+                    btn_StudentLists.PerformClick();
                     break;
                 case "SkillCategories":
                     btn_SkillCategories.PerformClick();

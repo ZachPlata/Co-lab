@@ -11,6 +11,16 @@ namespace Co_LAB
         [STAThread]
         static void Main()
         {
+            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+            Application.ThreadException += (s, e) =>
+            {
+                MessageBox.Show(
+                    "Something went wrong. Please try again or restart Co-LAB.",
+                    "Co-LAB",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            };
+
             ApplicationConfiguration.Initialize();
             Application.ApplicationExit += (s, e) => { UserSession.EndSession(); };
 

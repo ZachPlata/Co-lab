@@ -12,40 +12,23 @@ namespace Co_LAB
     {
         private int _selectedCategoryId = 0;
         private string _originalCategoryName = "";
+        private readonly ErrorProvider _errorProvider;
 
         public uc_SkillCategories()
         {
             InitializeComponent();
+            _errorProvider = ValidationHelper.Create(this);
+            txtCategoryName.TextChanged += (s, e) => ValidationHelper.ClearError(_errorProvider, txtCategoryName);
+            txtDescription.TextChanged += (s, e) => ValidationHelper.ClearError(_errorProvider, txtDescription);
+
             DoubleBuffered = true;
             SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
         }
 
         private void uc_SkillCategories_Load(object sender, EventArgs e)
         {
-            EnsureDatabaseSchema();
             ResetForm();
             LoadCategories();
-        }
-
-        /// <summary>
-        /// Ensures tbl_categories has the Description column if it doesn't already exist.
-        /// </summary>
-        private void EnsureDatabaseSchema()
-        {
-            try
-            {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
-                MySqlCommand cmd = new MySqlCommand();
-                conn.Open();
-                cmd.CommandText = "ALTER TABLE tbl_categories ADD COLUMN IF NOT EXISTS Description TEXT DEFAULT NULL;";
-                cmd.Connection = conn;
-                cmd.ExecuteNonQuery();
-                conn.Close();
-            }
-            catch
-            {
-                // Column might already exist or user lacks alter permission, which is safe to ignore
-            }
         }
 
         /// <summary>
@@ -55,7 +38,7 @@ namespace Co_LAB
         {
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 MySqlCommand cmd = new MySqlCommand();
                 DataSet ds = new DataSet();
                 MySqlDataAdapter da = new MySqlDataAdapter();
@@ -84,7 +67,7 @@ namespace Co_LAB
                 UpdateTotalListingsTagged();
             }
             catch (Exception ex)
-            {
+{
                 lblExistingTitle.Text = "Existing Categories (0)";
                 MessageBox.Show($"Could not load categories:\n{ex.Message}\n\nPlease verify XAMPP MySQL is active.",
                     "Database Notice", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -98,7 +81,7 @@ namespace Co_LAB
         {
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 MySqlCommand cmd = new MySqlCommand();
                 conn.Open();
                 cmd.CommandText = "SELECT COUNT(*) FROM tbl_skills WHERE Category IN (SELECT CategoryName FROM tbl_categories);";
@@ -154,19 +137,32 @@ namespace Co_LAB
 
         private void btnAddCategory_Click(object sender, EventArgs e)
         {
+            ValidationHelper.ClearAll(_errorProvider);
             string name = txtCategoryName.Text.Trim();
             string desc = txtDescription.Text.Trim();
+            Control? firstInvalid = null;
 
-            if (string.IsNullOrWhiteSpace(name))
+            if (string.IsNullOrWhiteSpace(name) || name.Length < 3 || name.Length > 100)
             {
-                MessageBox.Show("Please enter a category name.", "Input Required", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                txtCategoryName.Focus();
+                ValidationHelper.SetError(_errorProvider, txtCategoryName, "Category name must be 3–100 characters.");
+                firstInvalid ??= txtCategoryName;
+            }
+
+            if (desc.Length > 300)
+            {
+                ValidationHelper.SetError(_errorProvider, txtDescription, "Description cannot exceed 300 characters.");
+                firstInvalid ??= txtDescription;
+            }
+
+            if (firstInvalid != null)
+            {
+                firstInvalid.Focus();
                 return;
             }
 
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 conn.Open();
 
                 // Check for duplicates
@@ -187,7 +183,7 @@ namespace Co_LAB
                 if (existing > 0)
                 {
                     conn.Close();
-                    MessageBox.Show($"A category named '{name}' already exists.", "Duplicate Category", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    ValidationHelper.SetError(_errorProvider, txtCategoryName, $"A category named '{name}' already exists.");
                     txtCategoryName.Focus();
                     return;
                 }
@@ -208,13 +204,14 @@ namespace Co_LAB
                 }
             }
             catch (Exception ex)
-            {
+{
                 MessageBox.Show($"Error adding category:\n{ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
+            ValidationHelper.ClearAll(_errorProvider);
             if (_selectedCategoryId <= 0)
             {
                 MessageBox.Show("Please select a category from the list to update.", "Selection Required", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -223,17 +220,29 @@ namespace Co_LAB
 
             string name = txtCategoryName.Text.Trim();
             string desc = txtDescription.Text.Trim();
+            Control? firstInvalid = null;
 
-            if (string.IsNullOrWhiteSpace(name))
+            if (string.IsNullOrWhiteSpace(name) || name.Length < 3 || name.Length > 100)
             {
-                MessageBox.Show("Category name cannot be empty.", "Input Required", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                txtCategoryName.Focus();
+                ValidationHelper.SetError(_errorProvider, txtCategoryName, "Category name must be 3–100 characters.");
+                firstInvalid ??= txtCategoryName;
+            }
+
+            if (desc.Length > 300)
+            {
+                ValidationHelper.SetError(_errorProvider, txtDescription, "Description cannot exceed 300 characters.");
+                firstInvalid ??= txtDescription;
+            }
+
+            if (firstInvalid != null)
+            {
+                firstInvalid.Focus();
                 return;
             }
 
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 conn.Open();
 
                 // Check if new name conflicts with another category
@@ -255,14 +264,17 @@ namespace Co_LAB
                 if (existing > 0)
                 {
                     conn.Close();
-                    MessageBox.Show($"Another category named '{name}' already exists.", "Duplicate Category", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    ValidationHelper.SetError(_errorProvider, txtCategoryName, $"Another category named '{name}' already exists.");
                     txtCategoryName.Focus();
                     return;
                 }
 
+                using MySqlTransaction tx = conn.BeginTransaction();
+
                 MySqlCommand updateCmd = new MySqlCommand();
                 updateCmd.CommandText = "UPDATE tbl_categories SET CategoryName = @name, Description = @desc WHERE CategoryId = @id";
                 updateCmd.Connection = conn;
+                updateCmd.Transaction = tx;
                 updateCmd.Parameters.AddWithValue("@name", name);
                 updateCmd.Parameters.AddWithValue("@desc", string.IsNullOrEmpty(desc) ? (object)DBNull.Value : desc);
                 updateCmd.Parameters.AddWithValue("@id", _selectedCategoryId);
@@ -270,17 +282,26 @@ namespace Co_LAB
 
                 if (rows > 0)
                 {
-                    // If name changed, update listings tagged under old name
                     if (!string.Equals(_originalCategoryName, name, StringComparison.OrdinalIgnoreCase))
                     {
-                        MySqlCommand syncCmd = new MySqlCommand();
-                        syncCmd.CommandText = "UPDATE tbl_skills SET Category = @newName WHERE Category = @oldName";
-                        syncCmd.Connection = conn;
-                        syncCmd.Parameters.AddWithValue("@newName", name);
-                        syncCmd.Parameters.AddWithValue("@oldName", _originalCategoryName);
-                        syncCmd.ExecuteNonQuery();
+                        MySqlCommand syncSkillsCmd = new MySqlCommand();
+                        syncSkillsCmd.CommandText = "UPDATE tbl_skills SET Category = @newName WHERE Category = @oldName";
+                        syncSkillsCmd.Connection = conn;
+                        syncSkillsCmd.Transaction = tx;
+                        syncSkillsCmd.Parameters.AddWithValue("@newName", name);
+                        syncSkillsCmd.Parameters.AddWithValue("@oldName", _originalCategoryName);
+                        syncSkillsCmd.ExecuteNonQuery();
+
+                        MySqlCommand syncUserSkillsCmd = new MySqlCommand();
+                        syncUserSkillsCmd.CommandText = "UPDATE tbl_user_skills SET Category = @newName WHERE Category = @oldName";
+                        syncUserSkillsCmd.Connection = conn;
+                        syncUserSkillsCmd.Transaction = tx;
+                        syncUserSkillsCmd.Parameters.AddWithValue("@newName", name);
+                        syncUserSkillsCmd.Parameters.AddWithValue("@oldName", _originalCategoryName);
+                        syncUserSkillsCmd.ExecuteNonQuery();
                     }
 
+                    tx.Commit();
                     conn.Close();
                     MessageBox.Show($"Category '{name}' was updated successfully!", "Category Updated", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     ResetForm();
@@ -288,11 +309,12 @@ namespace Co_LAB
                 }
                 else
                 {
+                    tx.Rollback();
                     conn.Close();
                 }
             }
             catch (Exception ex)
-            {
+{
                 MessageBox.Show($"Error updating category:\n{ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -307,34 +329,47 @@ namespace Co_LAB
 
             string name = _originalCategoryName;
 
-            // Check if any listings are tagged with this category
             int taggedListings = 0;
+            int taggedUserSkills = 0;
             try
             {
-                using MySqlConnection checkConn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
-                MySqlCommand checkCmd = new MySqlCommand();
+                using MySqlConnection checkConn = DatabaseHelper.GetConnection();
                 checkConn.Open();
-                checkCmd.CommandText = "SELECT COUNT(*) FROM tbl_skills WHERE Category = @cat";
-                checkCmd.Connection = checkConn;
-                checkCmd.Parameters.AddWithValue("@cat", name);
 
-                using MySqlDataReader reader = checkCmd.ExecuteReader();
-                if (reader.Read() && reader[0] != DBNull.Value)
+                using (MySqlCommand checkCmd = new MySqlCommand(
+                    "SELECT COUNT(*) FROM tbl_skills WHERE Category = @cat", checkConn))
                 {
-                    int.TryParse(reader[0].ToString(), out taggedListings);
+                    checkCmd.Parameters.AddWithValue("@cat", name);
+                    taggedListings = Convert.ToInt32(checkCmd.ExecuteScalar());
                 }
-                checkConn.Close();
+
+                using (MySqlCommand checkUserCmd = new MySqlCommand(
+                    "SELECT COUNT(*) FROM tbl_user_skills WHERE Category = @cat", checkConn))
+                {
+                    checkUserCmd.Parameters.AddWithValue("@cat", name);
+                    taggedUserSkills = Convert.ToInt32(checkUserCmd.ExecuteScalar());
+                }
             }
             catch
             {
-                // Ignored
+                MessageBox.Show("Could not verify category usage. Please check your database connection.", "Database Notice", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (taggedListings > 0 || taggedUserSkills > 0)
+            {
+                MessageBox.Show(
+                    $"Cannot delete category '{name}' because it is currently in use:\n\n" +
+                    $"• Marketplace listings: {taggedListings}\n" +
+                    $"• Student bio skills: {taggedUserSkills}\n\n" +
+                    "Rename the category or reassign those skills first.",
+                    "Category In Use",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
             }
 
             string confirmMsg = $"Are you sure you want to delete the category '{name}'?";
-            if (taggedListings > 0)
-            {
-                confirmMsg += $"\n\nWarning: There are {taggedListings} active skill listing(s) tagged under this category!";
-            }
 
             if (MessageBox.Show(confirmMsg, "Confirm Category Deletion", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
             {
@@ -343,7 +378,7 @@ namespace Co_LAB
 
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 MySqlCommand cmd = new MySqlCommand();
                 conn.Open();
                 cmd.CommandText = "DELETE FROM tbl_categories WHERE CategoryId = @id";
@@ -360,7 +395,7 @@ namespace Co_LAB
                 }
             }
             catch (Exception ex)
-            {
+{
                 MessageBox.Show($"Error deleting category:\n{ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

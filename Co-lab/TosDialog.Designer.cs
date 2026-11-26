@@ -181,7 +181,7 @@ namespace Co_LAB
             // TosDialog
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
+            AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.FromArgb(14, 20, 16);
             ClientSize = new Size(560, 600);
             Controls.Add(pnlContent);

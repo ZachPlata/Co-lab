@@ -78,9 +78,9 @@ namespace Co_LAB
             pnlAdminBadge.BackColor = Color.FromArgb(20, 28, 23);
             pnlAdminBadge.Controls.Add(lblDot);
             pnlAdminBadge.Controls.Add(lblAdminText);
-            pnlAdminBadge.Location = new Point(730, 20);
+            pnlAdminBadge.Location = new Point(702, 20);
             pnlAdminBadge.Name = "pnlAdminBadge";
-            pnlAdminBadge.Size = new Size(196, 41);
+            pnlAdminBadge.Size = new Size(224, 41);
             pnlAdminBadge.TabIndex = 2;
             pnlAdminBadge.Paint += RoundPanel_Paint;
             // 
@@ -89,7 +89,7 @@ namespace Co_LAB
             lblDot.AutoSize = true;
             lblDot.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
             lblDot.ForeColor = Color.FromArgb(34, 197, 94);
-            lblDot.Location = new Point(14, 8);
+            lblDot.Location = new Point(14, 9);
             lblDot.Name = "lblDot";
             lblDot.Size = new Size(20, 23);
             lblDot.TabIndex = 0;
@@ -100,7 +100,7 @@ namespace Co_LAB
             lblAdminText.AutoSize = true;
             lblAdminText.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             lblAdminText.ForeColor = Color.White;
-            lblAdminText.Location = new Point(34, 11);
+            lblAdminText.Location = new Point(36, 12);
             lblAdminText.Name = "lblAdminText";
             lblAdminText.Size = new Size(168, 19);
             lblAdminText.TabIndex = 1;
@@ -401,7 +401,7 @@ namespace Co_LAB
             // uc_SkillCategories
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
-            AutoScaleMode = AutoScaleMode.Font;
+            AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.FromArgb(14, 20, 16);
             Controls.Add(pnlExistingCategories);
             Controls.Add(pnlCategoryDetails);

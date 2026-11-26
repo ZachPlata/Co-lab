@@ -75,7 +75,7 @@ namespace Co_LAB
 
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 MySqlCommand cmd = new MySqlCommand();
                 DataSet ds = new DataSet();
                 MySqlDataAdapter da = new MySqlDataAdapter();
@@ -368,7 +368,7 @@ namespace Co_LAB
                 // Restore skill to Active if this request was accepted or paused
                 try
                 {
-                    using MySqlConnection restoreConn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                    using MySqlConnection restoreConn = DatabaseHelper.GetConnection();
                     MySqlCommand restoreCmd = new MySqlCommand();
                     restoreConn.Open();
                     restoreCmd.CommandText = @"UPDATE tbl_skills s
@@ -386,7 +386,7 @@ namespace Co_LAB
                 }
                 catch { }
 
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 MySqlCommand cmd = new MySqlCommand();
                 conn.Open();
                 cmd.CommandText = "DELETE FROM tbl_traderequests WHERE RequestId = @id";

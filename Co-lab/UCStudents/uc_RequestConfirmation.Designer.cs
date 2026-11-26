@@ -38,7 +38,6 @@ namespace Co_LAB.UCStudents
             lblTradeMode = new Label();
             lblReturnSkill = new Label();
             pnlProfileCard = new Panel();
-            lblRating = new Label();
             lblUserDept = new Label();
             lblUserName = new Label();
             pnlAvatar = new Panel();
@@ -160,7 +159,6 @@ namespace Co_LAB.UCStudents
             // pnlProfileCard
             // 
             pnlProfileCard.BackColor = Color.FromArgb(20, 28, 23);
-            pnlProfileCard.Controls.Add(lblRating);
             pnlProfileCard.Controls.Add(lblUserDept);
             pnlProfileCard.Controls.Add(lblUserName);
             pnlProfileCard.Controls.Add(pnlAvatar);
@@ -168,17 +166,6 @@ namespace Co_LAB.UCStudents
             pnlProfileCard.Name = "pnlProfileCard";
             pnlProfileCard.Size = new Size(430, 58);
             pnlProfileCard.TabIndex = 34;
-            // 
-            // lblRating
-            // 
-            lblRating.AutoSize = true;
-            lblRating.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
-            lblRating.ForeColor = Color.FromArgb(250, 204, 21);
-            lblRating.Location = new Point(345, 17);
-            lblRating.Name = "lblRating";
-            lblRating.Size = new Size(49, 20);
-            lblRating.TabIndex = 3;
-            lblRating.Text = "★ 5.0";
             // 
             // lblUserDept
             // 
@@ -239,7 +226,7 @@ namespace Co_LAB.UCStudents
             // uc_RequestConfirmation
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
+            AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.FromArgb(14, 20, 16);
             Controls.Add(btnSendRequest);
             Controls.Add(TradeModeTxtBox);
@@ -273,7 +260,6 @@ namespace Co_LAB.UCStudents
         private Label lblTradeMode;
         private Label lblReturnSkill;
         private Panel pnlProfileCard;
-        private Label lblRating;
         private Label lblUserDept;
         private Label lblUserName;
         private Panel pnlAvatar;

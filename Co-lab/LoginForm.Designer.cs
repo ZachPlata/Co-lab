@@ -164,7 +164,7 @@ namespace Co_LAB
             // LoginForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
+            AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.FromArgb(12, 17, 14);
             ClientSize = new Size(900, 600);
             Controls.Add(panelContent);

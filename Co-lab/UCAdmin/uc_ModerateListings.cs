@@ -26,7 +26,7 @@ namespace Co_LAB
         {
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 MySqlCommand cmd = new MySqlCommand();
                 DataSet ds = new DataSet();
                 MySqlDataAdapter da = new MySqlDataAdapter();
@@ -95,7 +95,7 @@ namespace Co_LAB
 
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 MySqlCommand cmd = new MySqlCommand();
                 conn.Open();
                 cmd.CommandText = "UPDATE tbl_skills SET Status = 'Active' WHERE SkillId = @id";
@@ -119,7 +119,7 @@ namespace Co_LAB
 
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 MySqlCommand cmd = new MySqlCommand();
                 conn.Open();
                 cmd.CommandText = "UPDATE tbl_skills SET Status = 'Flagged' WHERE SkillId = @id";
@@ -151,7 +151,7 @@ namespace Co_LAB
             {
                 try
                 {
-                    using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                    using MySqlConnection conn = DatabaseHelper.GetConnection();
                     MySqlCommand cmd = new MySqlCommand();
                     conn.Open();
                     cmd.CommandText = "DELETE FROM tbl_skills WHERE SkillId = @id";

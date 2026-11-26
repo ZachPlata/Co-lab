@@ -24,6 +24,8 @@ namespace Co_LAB
             lblTitle = new Label();
             lblSubtitle = new Label();
             pnlUserBadge = new Panel();
+            _lblVerificationBadge = new Label();
+            _btnUploadVerification = new Button();
             lblUserPrefix = new Label();
             lblUserName = new Label();
             pnlCard1 = new Panel();
@@ -93,6 +95,31 @@ namespace Co_LAB
             lblSubtitle.Size = new Size(154, 19);
             lblSubtitle.TabIndex = 1;
             lblSubtitle.Text = "Welcome back, student!";
+            _lblVerificationBadge.AutoSize = true;
+            _lblVerificationBadge.BackColor = Color.FromArgb(70, 48, 15);
+            _lblVerificationBadge.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            _lblVerificationBadge.ForeColor = Color.FromArgb(251, 191, 36);
+            _lblVerificationBadge.Location = new Point(595, 22);
+            _lblVerificationBadge.Name = "_lblVerificationBadge";
+            _lblVerificationBadge.Padding = new Padding(10, 6, 10, 6);
+            _lblVerificationBadge.Size = new Size(105, 27);
+            _lblVerificationBadge.TabIndex = 8;
+            _lblVerificationBadge.Text = "⏳ Unverified";
+
+            _btnUploadVerification.BackColor = Color.FromArgb(46, 125, 70);
+            _btnUploadVerification.Cursor = Cursors.Hand;
+            _btnUploadVerification.FlatAppearance.BorderSize = 0;
+            _btnUploadVerification.FlatStyle = FlatStyle.Flat;
+            _btnUploadVerification.Font = new Font("Segoe UI Semibold", 8.5F, FontStyle.Bold);
+            _btnUploadVerification.ForeColor = Color.White;
+            _btnUploadVerification.Location = new Point(418, 20);
+            _btnUploadVerification.Name = "_btnUploadVerification";
+            _btnUploadVerification.Size = new Size(165, 32);
+            _btnUploadVerification.TabIndex = 9;
+            _btnUploadVerification.Text = "📄 Upload Regform / ID";
+            _btnUploadVerification.UseVisualStyleBackColor = false;
+            _btnUploadVerification.Click += BtnUploadVerification_Click;
+
             // 
             // pnlUserBadge
             // 
@@ -596,7 +623,6 @@ namespace Co_LAB
             cmbCategory.Font = new Font("Segoe UI", 9F);
             cmbCategory.ForeColor = Color.White;
             cmbCategory.FormattingEnabled = true;
-            cmbCategory.Items.AddRange(new object[] { "Computer Science & IT", "Graphic & Visual Design", "Engineering & Math", "Music & Arts", "Language & Writing", "Business & Marketing", "Video Editing & Multimedia" });
             cmbCategory.Location = new Point(14, 71);
             cmbCategory.Name = "cmbCategory";
             cmbCategory.Size = new Size(255, 25);
@@ -653,7 +679,7 @@ namespace Co_LAB
             // uc_UserDashboard
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
-            AutoScaleMode = AutoScaleMode.Font;
+            AutoScaleMode = AutoScaleMode.None;
             AutoScroll = true;
             AutoScrollMinSize = new Size(902, 716);
             BackColor = Color.FromArgb(14, 20, 16);
@@ -665,6 +691,8 @@ namespace Co_LAB
             Controls.Add(pnlCard2);
             Controls.Add(pnlCard1);
             Controls.Add(pnlUserBadge);
+            Controls.Add(_lblVerificationBadge);
+            Controls.Add(_btnUploadVerification);
             Controls.Add(lblSubtitle);
             Controls.Add(lblTitle);
             Name = "uc_UserDashboard";
@@ -694,6 +722,8 @@ namespace Co_LAB
         private Label lblTitle;
         private Label lblSubtitle;
         private Panel pnlUserBadge;
+        private Label _lblVerificationBadge;
+        private Button _btnUploadVerification;
         private Label lblUserPrefix;
         private Label lblUserName;
 

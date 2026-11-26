@@ -11,10 +11,17 @@ namespace Co_LAB.UCAuth
     public partial class uc_Login : UserControl
     {
         private static readonly Regex EmailRegex = new Regex(@"^[A-Za-z0-9._%+-]+@ue\.edu\.ph$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        private readonly ErrorProvider _errorProvider;
 
         public uc_Login()
         {
             InitializeComponent();
+            _errorProvider = ValidationHelper.Create(this);
+            lblEmailError.Visible = false;
+            lblPasswordError.Visible = false;
+
+            txtEmail.TextChanged += (s, e) => ValidationHelper.ClearError(_errorProvider, txtEmail);
+            txtPassword.TextChanged += (s, e) => ValidationHelper.ClearError(_errorProvider, pnlPasswordWrapper);
         }
 
         private void uc_Login_Load(object sender, EventArgs e)
@@ -35,47 +42,48 @@ namespace Co_LAB.UCAuth
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
+            ValidationHelper.ClearAll(_errorProvider);
             lblEmailError.Visible = false;
             lblPasswordError.Visible = false;
             lblGeneralError.Visible = false;
 
             string email = txtEmail.Text.Trim();
             string password = txtPassword.Text;
-            bool hasError = false;
+            Control? firstInvalid = null;
 
             if (string.IsNullOrWhiteSpace(email))
             {
-                lblEmailError.Text = "Email is required.";
-                lblEmailError.Visible = true;
-                hasError = true;
+                ValidationHelper.SetError(_errorProvider, txtEmail, "Email is required.");
+                firstInvalid ??= txtEmail;
             }
             else if (!EmailRegex.IsMatch(email))
             {
-                lblEmailError.Text = "Please use your @ue.edu.ph email.";
-                lblEmailError.Visible = true;
-                hasError = true;
+                ValidationHelper.SetError(_errorProvider, txtEmail, "Please use your @ue.edu.ph email.");
+                firstInvalid ??= txtEmail;
             }
 
             if (string.IsNullOrEmpty(password))
             {
-                lblPasswordError.Text = "Password is required.";
-                lblPasswordError.Visible = true;
-                hasError = true;
+                ValidationHelper.SetError(_errorProvider, pnlPasswordWrapper, "Password is required.");
+                firstInvalid ??= txtPassword;
             }
 
-            if (hasError)
+            if (firstInvalid != null)
             {
+                firstInvalid.Focus();
                 return;
             }
 
+            btnLogin.Enabled = false;
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 MySqlCommand cmd = new MySqlCommand();
                 DataSet ds = new DataSet();
                 MySqlDataAdapter da = new MySqlDataAdapter();
                 conn.Open();
                 cmd.CommandText = @"SELECT UserId, FullName, Email, Password, Role, is_blacklisted, BanReason,
+                                           is_verified, VerificationStatus, VerificationNote,
                                            is_logged_in, last_active,
                                            TIMESTAMPDIFF(SECOND, last_active, NOW()) AS inactive_seconds
                                     FROM tbl_users WHERE Email = @Email LIMIT 1";
@@ -110,7 +118,7 @@ namespace Co_LAB.UCAuth
                     try
                     {
                         string migratedHash = AuthHelper.HashPassword(password);
-                        using MySqlConnection migConn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                        using MySqlConnection migConn = DatabaseHelper.GetConnection();
                         MySqlCommand migCmd = new MySqlCommand();
                         migConn.Open();
                         migCmd.CommandText = "UPDATE tbl_users SET Password = @Password WHERE UserId = @uid";
@@ -121,7 +129,7 @@ namespace Co_LAB.UCAuth
                         migConn.Close();
                     }
                     catch (Exception ex)
-                    {
+{
                         System.Diagnostics.Debug.WriteLine($"Password migration error: {ex.Message}");
                     }
                 }
@@ -149,6 +157,18 @@ namespace Co_LAB.UCAuth
 
                 string fullName = row["FullName"]?.ToString() ?? "";
                 string role = row["Role"]?.ToString() ?? "Student";
+                bool isVerified = row["is_verified"] != DBNull.Value && Convert.ToInt32(row["is_verified"]) == 1;
+                string verificationStatus = row["VerificationStatus"]?.ToString() ?? (isVerified ? "Verified" : "Pending");
+                string verificationNote = row["VerificationNote"]?.ToString() ?? "";
+
+                if (string.Equals(verificationStatus, "Declined", StringComparison.OrdinalIgnoreCase))
+                {
+                    lblGeneralError.Text = string.IsNullOrWhiteSpace(verificationNote)
+                        ? "Your account verification was declined by an Admin."
+                        : $"Your account verification was declined.\nReason: {verificationNote}";
+                    lblGeneralError.Visible = true;
+                    return;
+                }
 
                 // Check if account is actively logged in on another device
                 int isLoggedIn = 0;
@@ -177,7 +197,7 @@ namespace Co_LAB.UCAuth
 
                 // Generate new session token and register session in DB
                 string newSessionId = Guid.NewGuid().ToString("N");
-                using MySqlConnection sessConn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection sessConn = DatabaseHelper.GetConnection();
                 MySqlCommand sessCmd = new MySqlCommand();
                 sessConn.Open();
                 sessCmd.CommandText = "UPDATE tbl_users SET is_logged_in = 1, last_active = NOW(), session_id = @sid WHERE UserId = @uid";
@@ -187,7 +207,7 @@ namespace Co_LAB.UCAuth
                 sessCmd.ExecuteNonQuery();
                 sessConn.Close();
 
-                UserSession.Set(userId, fullName, email, role, newSessionId);
+                UserSession.Set(userId, fullName, email, role, newSessionId, isVerified, verificationStatus);
 
                 if (ParentForm is LoginForm loginForm)
                 {
@@ -195,17 +215,19 @@ namespace Co_LAB.UCAuth
                     loginForm.Close();
                 }
             }
-            catch (MySqlException ex)
+            catch (MySqlException)
             {
                 lblGeneralError.Text = "Could not connect to the database. Make sure MySQL is running in XAMPP.";
                 lblGeneralError.Visible = true;
-                System.Diagnostics.Debug.WriteLine($"Database connection error: {ex.Message}");
             }
-            catch (Exception ex)
+            catch
             {
                 lblGeneralError.Text = "Could not connect to the database. Make sure MySQL is running in XAMPP.";
                 lblGeneralError.Visible = true;
-                System.Diagnostics.Debug.WriteLine($"Login error: {ex.Message}");
+            }
+            finally
+            {
+                if (!IsDisposed) btnLogin.Enabled = true;
             }
         }
 

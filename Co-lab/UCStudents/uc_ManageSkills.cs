@@ -18,9 +18,49 @@ namespace Co_LAB
             public override string ToString() => $"{SkillName} ({Category})";
         }
 
+        private readonly ErrorProvider _errorProvider;
+
         public uc_ManageSkills()
         {
             InitializeComponent();
+            _errorProvider = ValidationHelper.Create(this);
+            cmbKnownSkills.SelectedIndexChanged += (s, e) => ValidationHelper.ClearError(_errorProvider, cmbKnownSkills);
+            txtDesiredSkill.TextChanged += (s, e) => ValidationHelper.ClearError(_errorProvider, txtDesiredSkill);
+            txtLocation.TextChanged += (s, e) => ValidationHelper.ClearError(_errorProvider, txtLocation);
+            txtDescription.TextChanged += (s, e) => ValidationHelper.ClearError(_errorProvider, txtDescription);
+            pnlCreateOffer.Resize += (s, e) => LayoutCreateOfferControls();
+        }
+
+        private void LayoutCreateOfferControls()
+        {
+            if (pnlCreateOffer == null || cmbKnownSkills == null) return;
+
+            int leftMargin = 28;
+            int rightMargin = 28;
+            int gap = 26;
+            int avail = Math.Max(640, pnlCreateOffer.ClientSize.Width - leftMargin - rightMargin);
+
+            int modeWidth = 140;
+            int remaining = avail - modeWidth - (gap * 3);
+            int knownWidth = (int)(remaining * 0.36);
+            int desiredWidth = (int)(remaining * 0.34);
+            int locWidth = Math.Max(140, remaining - knownWidth - desiredWidth);
+
+            cmbKnownSkills.Location = new Point(leftMargin, 59);
+            cmbKnownSkills.Width = knownWidth;
+            lblSelectKnownSkill.Location = new Point(cmbKnownSkills.Left, 39);
+
+            txtDesiredSkill.Location = new Point(cmbKnownSkills.Right + gap, 59);
+            txtDesiredSkill.Width = desiredWidth;
+            lblDesiredSkill.Location = new Point(txtDesiredSkill.Left, 39);
+
+            cmbDeliveryMode.Location = new Point(txtDesiredSkill.Right + gap, 59);
+            cmbDeliveryMode.Width = modeWidth;
+            lblDeliveryMode.Location = new Point(cmbDeliveryMode.Left, 39);
+
+            txtLocation.Location = new Point(cmbDeliveryMode.Right + gap, 59);
+            txtLocation.Width = locWidth;
+            lblLocation.Location = new Point(txtLocation.Left, 39);
         }
 
         private void uc_ManageSkills_Load(object sender, EventArgs e)
@@ -34,6 +74,17 @@ namespace Co_LAB
 
             LoadKnownSkillsDropdown();
             LoadMyListings();
+            LayoutCreateOfferControls();
+
+            if (!UserSession.IsVerified)
+            {
+                btnPublishListing.Enabled = false;
+                btnPublishListing.BackColor = Color.FromArgb(45, 52, 47);
+                btnPublishListing.ForeColor = Color.FromArgb(160, 165, 160);
+                btnPublishListing.Text = "🔒 Pending Verification";
+                var tt = new ToolTip();
+                tt.SetToolTip(btnPublishListing, "Account pending Admin verification. Publishing listings is disabled until approved.");
+            }
         }
 
         private int ResolveCurrentUserId()
@@ -47,7 +98,7 @@ namespace Co_LAB
             {
                 if (!string.IsNullOrWhiteSpace(UserSession.Email))
                 {
-                    using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                    using MySqlConnection conn = DatabaseHelper.GetConnection();
                     MySqlCommand cmd = new MySqlCommand();
                     conn.Open();
                     cmd.CommandText = "SELECT UserId FROM tbl_users WHERE Email = @email LIMIT 1";
@@ -65,7 +116,7 @@ namespace Co_LAB
 
                 if (!string.IsNullOrWhiteSpace(UserSession.FullName))
                 {
-                    using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                    using MySqlConnection conn = DatabaseHelper.GetConnection();
                     MySqlCommand cmd = new MySqlCommand();
                     conn.Open();
                     cmd.CommandText = "SELECT UserId FROM tbl_users WHERE FullName = @name LIMIT 1";
@@ -106,7 +157,7 @@ namespace Co_LAB
                     return;
                 }
 
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 MySqlCommand cmd = new MySqlCommand();
                 DataSet ds = new DataSet();
                 MySqlDataAdapter da = new MySqlDataAdapter();
@@ -162,7 +213,7 @@ namespace Co_LAB
                     return;
                 }
 
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 MySqlCommand cmd = new MySqlCommand();
                 DataSet ds = new DataSet();
                 MySqlDataAdapter da = new MySqlDataAdapter();
@@ -221,37 +272,51 @@ namespace Co_LAB
 
         private void btnPublishListing_Click(object sender, EventArgs e)
         {
-            if (cmbKnownSkills.SelectedItem is not KnownSkillItem selectedKnownSkill)
+            if (!UserSession.IsVerified)
             {
                 MessageBox.Show(
-                    "You must first have known skills added to your profile inventory!\n\n" +
-                    "Please go to your Student Dashboard to add the skills you know, then return here to publish them to the marketplace.",
-                    "No Known Skill Selected",
+                    "Your account is pending Admin verification. You can set up your bio skills now, and publish listings once approved.",
+                    "Pending Verification",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
                 return;
             }
 
-            string desiredSkill = txtDesiredSkill.Text.Trim();
-            if (string.IsNullOrWhiteSpace(desiredSkill))
+            ValidationHelper.ClearAll(_errorProvider);
+            Control? firstInvalid = null;
+
+            KnownSkillItem? selectedKnownSkill = cmbKnownSkills.SelectedItem as KnownSkillItem;
+            if (selectedKnownSkill == null)
             {
-                MessageBox.Show("Please specify what skill you would like to receive in exchange (e.g. Photoshop, Python help, Calculus).", "Missing Field", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtDesiredSkill.Focus();
-                return;
+                ValidationHelper.SetError(_errorProvider, cmbKnownSkills, "Select one of your known skills from your bio first.");
+                firstInvalid ??= cmbKnownSkills;
+            }
+
+            string desiredSkill = txtDesiredSkill.Text.Trim();
+            if (string.IsNullOrWhiteSpace(desiredSkill) || desiredSkill.Length < 2 || desiredSkill.Length > 150)
+            {
+                ValidationHelper.SetError(_errorProvider, txtDesiredSkill, "Enter a desired skill (2–150 characters).");
+                firstInvalid ??= txtDesiredSkill;
             }
 
             string deliveryMode = cmbDeliveryMode.SelectedItem?.ToString() ?? "Online";
             string location = txtLocation.Text.Trim();
-            if (string.IsNullOrWhiteSpace(location))
+            if (string.IsNullOrWhiteSpace(location) || location.Length < 3 || location.Length > 150)
             {
-                location = deliveryMode == "Online" ? "Discord / Google Meet" : "Campus Library";
+                ValidationHelper.SetError(_errorProvider, txtLocation, "Enter a meeting place or online tool (3–150 characters).");
+                firstInvalid ??= txtLocation;
             }
 
             string description = txtDescription.Text.Trim();
-            if (string.IsNullOrWhiteSpace(description))
+            if (string.IsNullOrWhiteSpace(description) || description.Length < 10 || description.Length > 500)
             {
-                MessageBox.Show("Please enter a short description of what you will teach and what topics you can cover.", "Missing Description", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtDescription.Focus();
+                ValidationHelper.SetError(_errorProvider, txtDescription, "Enter a description (10–500 characters).");
+                firstInvalid ??= txtDescription;
+            }
+
+            if (firstInvalid != null || selectedKnownSkill == null)
+            {
+                firstInvalid?.Focus();
                 return;
             }
 
@@ -267,11 +332,27 @@ namespace Co_LAB
                 return;
             }
 
+            btnPublishListing.Enabled = false;
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
-                MySqlCommand cmd = new MySqlCommand();
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 conn.Open();
+
+                using (MySqlCommand dupCmd = new MySqlCommand(
+                    "SELECT COUNT(*) FROM tbl_skills WHERE UserId = @uid AND UserSkillId = @uskid AND Status = 'Active'", conn))
+                {
+                    dupCmd.Parameters.AddWithValue("@uid", uid);
+                    dupCmd.Parameters.AddWithValue("@uskid", selectedKnownSkill.UserSkillId);
+                    int activeDup = Convert.ToInt32(dupCmd.ExecuteScalar());
+                    if (activeDup > 0)
+                    {
+                        ValidationHelper.SetError(_errorProvider, cmbKnownSkills, "You already have an Active listing for this skill.");
+                        cmbKnownSkills.Focus();
+                        return;
+                    }
+                }
+
+                MySqlCommand cmd = new MySqlCommand();
                 cmd.CommandText = @"INSERT INTO tbl_skills 
                     (UserId, UserSkillId, SkillTitle, Category, Description, OfferedBy, DesiredSkill, DeliveryMode, Location, Status) 
                     VALUES 
@@ -300,6 +381,10 @@ namespace Co_LAB
             catch (Exception ex)
             {
                 MessageBox.Show($"Failed to publish listing: {ex.Message}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                if (!IsDisposed) btnPublishListing.Enabled = UserSession.IsVerified;
             }
         }
 
@@ -336,9 +421,10 @@ namespace Co_LAB
             string currentStatus = row.Cells["Status"]?.Value?.ToString() ?? "Active";
             string newStatus = string.Equals(currentStatus, "Active", StringComparison.OrdinalIgnoreCase) ? "Paused" : "Active";
 
+            btnPublishListing.Enabled = false;
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 MySqlCommand cmd = new MySqlCommand();
                 conn.Open();
                 cmd.CommandText = "UPDATE tbl_skills SET Status = @status WHERE SkillId = @id";
@@ -383,9 +469,10 @@ namespace Co_LAB
                 return;
             }
 
+            btnPublishListing.Enabled = false;
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 MySqlCommand cmd = new MySqlCommand();
                 conn.Open();
                 cmd.CommandText = "DELETE FROM tbl_skills WHERE SkillId = @id";
@@ -410,6 +497,17 @@ namespace Co_LAB
         {
             LoadKnownSkillsDropdown();
             LoadMyListings();
+            LayoutCreateOfferControls();
+
+            if (!UserSession.IsVerified)
+            {
+                btnPublishListing.Enabled = false;
+                btnPublishListing.BackColor = Color.FromArgb(45, 52, 47);
+                btnPublishListing.ForeColor = Color.FromArgb(160, 165, 160);
+                btnPublishListing.Text = "🔒 Pending Verification";
+                var tt = new ToolTip();
+                tt.SetToolTip(btnPublishListing, "Account pending Admin verification. Publishing listings is disabled until approved.");
+            }
         }
     }
 }

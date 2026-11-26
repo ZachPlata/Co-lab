@@ -32,18 +32,21 @@ namespace Co_LAB
             lblBrandSubtitle = new Label();
             lblBrandTitle = new Label();
             pnlHeader = new Panel();
+            _lblDbStatusPill = new Label();
             btnNotificationBell = new Button();
             pnlDividerHeader = new Panel();
             lblWelcome = new Label();
             lblHeaderTitle = new Label();
+            _pnlVerificationBanner = new Panel();
+            _lblVerificationBanner = new Label();
             panelContent = new Panel();
-            content_studpan = new FlowLayoutPanel();
             _notificationPanel = new NotificationPanel();
             pnlSidebar.SuspendLayout();
             pnlNavContainer.SuspendLayout();
             pnlSidebarBottom.SuspendLayout();
             pnlBrand.SuspendLayout();
             pnlHeader.SuspendLayout();
+            _pnlVerificationBanner.SuspendLayout();
             panelContent.SuspendLayout();
             SuspendLayout();
             // 
@@ -241,6 +244,7 @@ namespace Co_LAB
             // pnlHeader
             // 
             pnlHeader.BackColor = Color.FromArgb(18, 25, 20);
+            pnlHeader.Controls.Add(_lblDbStatusPill);
             pnlHeader.Controls.Add(btnNotificationBell);
             pnlHeader.Controls.Add(pnlDividerHeader);
             pnlHeader.Controls.Add(lblWelcome);
@@ -313,38 +317,66 @@ namespace Co_LAB
             lblHeaderTitle.Size = new Size(160, 30);
             lblHeaderTitle.TabIndex = 0;
             lblHeaderTitle.Text = "Skill Exchange";
+            _lblDbStatusPill.AutoSize = true;
+            _lblDbStatusPill.BackColor = Color.FromArgb(70, 48, 15);
+            _lblDbStatusPill.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
+            _lblDbStatusPill.ForeColor = Color.FromArgb(251, 191, 36);
+            _lblDbStatusPill.Location = new Point(210, 28);
+            _lblDbStatusPill.Name = "_lblDbStatusPill";
+            _lblDbStatusPill.Padding = new Padding(10, 4, 10, 4);
+            _lblDbStatusPill.Size = new Size(218, 23);
+            _lblDbStatusPill.TabIndex = 4;
+            _lblDbStatusPill.Text = "⚠️ Database Disconnected — Retrying...";
+            _lblDbStatusPill.Visible = false;
+
+            _pnlVerificationBanner.BackColor = Color.FromArgb(65, 44, 12);
+            _pnlVerificationBanner.Controls.Add(_lblVerificationBanner);
+            _pnlVerificationBanner.Dock = DockStyle.Top;
+            _pnlVerificationBanner.Location = new Point(250, 85);
+            _pnlVerificationBanner.Name = "_pnlVerificationBanner";
+            _pnlVerificationBanner.Size = new Size(950, 36);
+            _pnlVerificationBanner.TabIndex = 4;
+            _pnlVerificationBanner.Visible = false;
+
+            _lblVerificationBanner.Dock = DockStyle.Fill;
+            _lblVerificationBanner.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            _lblVerificationBanner.ForeColor = Color.FromArgb(253, 224, 71);
+            _lblVerificationBanner.Location = new Point(0, 0);
+            _lblVerificationBanner.Name = "_lblVerificationBanner";
+            _lblVerificationBanner.Padding = new Padding(20, 0, 20, 0);
+            _lblVerificationBanner.Size = new Size(950, 36);
+            _lblVerificationBanner.TabIndex = 0;
+            _lblVerificationBanner.Text = "⏳ Account Pending Admin Verification — You can browse and set up your skills, but publishing listings and proposing trades are disabled until approved.";
+            _lblVerificationBanner.TextAlign = ContentAlignment.MiddleLeft;
+
             // 
             // panelContent
             // 
             panelContent.BackColor = Color.FromArgb(14, 20, 16);
-            panelContent.Controls.Add(content_studpan);
             panelContent.Dock = DockStyle.Fill;
             panelContent.Location = new Point(250, 85);
             panelContent.Name = "panelContent";
             panelContent.Size = new Size(950, 635);
             panelContent.TabIndex = 2;
             // 
-            // content_studpan
-            // 
-            content_studpan.Location = new Point(0, 1);
-            content_studpan.Name = "content_studpan";
-            content_studpan.Size = new Size(950, 632);
-            content_studpan.TabIndex = 1;
-            // 
             // StudentMainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
+            AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.FromArgb(14, 20, 16);
             ClientSize = new Size(1200, 720);
             Controls.Add(_notificationPanel);
             Controls.Add(panelContent);
+            Controls.Add(_pnlVerificationBanner);
             Controls.Add(pnlHeader);
             Controls.Add(pnlSidebar);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
             MinimumSize = new Size(1000, 598);
             Name = "StudentMainForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "CO-LAB - Student Portal";
+            WindowState = FormWindowState.Maximized;
             Load += StudentMainForm_Load;
             pnlSidebar.ResumeLayout(false);
             pnlNavContainer.ResumeLayout(false);
@@ -353,6 +385,7 @@ namespace Co_LAB
             pnlBrand.PerformLayout();
             pnlHeader.ResumeLayout(false);
             pnlHeader.PerformLayout();
+            _pnlVerificationBanner.ResumeLayout(false);
             panelContent.ResumeLayout(false);
             ResumeLayout(false);
         }
@@ -379,7 +412,9 @@ namespace Co_LAB
         private Label lblWelcome;
         private Panel pnlDividerHeader;
         private Panel panelContent;
-        private FlowLayoutPanel content_studpan;
+        private Panel _pnlVerificationBanner;
+        private Label _lblVerificationBanner;
+        private Label _lblDbStatusPill;
         private NotificationPanel _notificationPanel;
     }
 }

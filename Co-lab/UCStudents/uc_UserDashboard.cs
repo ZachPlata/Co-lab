@@ -19,10 +19,16 @@ namespace Co_LAB
 
         private System.Windows.Forms.Timer? _liveRefreshTimer;
         private string _lastDashboardFingerprint = "";
+        private readonly ErrorProvider _errorProvider;
 
         public uc_UserDashboard()
         {
             InitializeComponent();
+            _errorProvider = ValidationHelper.Create(this);
+            txtSkillName.TextChanged += (s, e) => ValidationHelper.ClearError(_errorProvider, txtSkillName);
+            cmbCategory.SelectedIndexChanged += (s, e) => ValidationHelper.ClearError(_errorProvider, cmbCategory);
+            cmbProficiency.SelectedIndexChanged += (s, e) => ValidationHelper.ClearError(_errorProvider, cmbProficiency);
+
             DoubleBuffered = true;
             SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
 
@@ -49,11 +55,7 @@ namespace Co_LAB
                 cmbProficiency.SelectedIndex = 1; // Intermediate
             }
 
-            if (cmbCategory.Items.Count > 0 && cmbCategory.SelectedIndex < 0)
-            {
-                cmbCategory.SelectedIndex = 0;
-            }
-
+            LoadCategories();
             LoadDashboardData();
 
             _liveRefreshTimer = new System.Windows.Forms.Timer { Interval = 4000 };
@@ -71,7 +73,7 @@ namespace Co_LAB
         {
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 MySqlCommand cmd = new MySqlCommand();
                 conn.Open();
                 cmd.CommandText = @"SELECT CONCAT(
@@ -102,13 +104,163 @@ namespace Co_LAB
             catch { }
         }
 
+        private void LoadCategories()
+        {
+            cmbCategory.Items.Clear();
+            try
+            {
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
+                conn.Open();
+                using MySqlCommand cmd = new MySqlCommand("SELECT CategoryName FROM tbl_categories ORDER BY CategoryName ASC", conn);
+                using MySqlDataReader r = cmd.ExecuteReader();
+                while (r.Read())
+                {
+                    string? cat = r["CategoryName"]?.ToString();
+                    if (!string.IsNullOrWhiteSpace(cat))
+                    {
+                        cmbCategory.Items.Add(cat);
+                    }
+                }
+            }
+            catch
+            {
+            }
+
+            if (cmbCategory.Items.Count == 0)
+            {
+                cmbCategory.Items.AddRange(new object[] {
+                    "Computer Science & IT",
+                    "Graphic & Visual Design",
+                    "Engineering & Math",
+                    "Music & Arts",
+                    "Language & Writing",
+                    "Business & Marketing",
+                    "Video Editing & Multimedia"
+                });
+            }
+
+            if (cmbCategory.Items.Count > 0)
+            {
+                cmbCategory.SelectedIndex = 0;
+            }
+        }
+
         /// <summary>
         /// Loads live metrics and table data from MySQL.
         /// When there are no records, tables remain blank without dummy data.
         /// </summary>
+        private void RefreshVerificationStatusUI()
+        {
+            if (_lblVerificationBadge == null || _btnUploadVerification == null) return;
+
+            if (UserSession.IsVerified)
+            {
+                _lblVerificationBadge.Text = "✓ Verified";
+                _lblVerificationBadge.BackColor = Color.FromArgb(20, 60, 35);
+                _lblVerificationBadge.ForeColor = Color.FromArgb(74, 222, 128);
+            }
+            else
+            {
+                _lblVerificationBadge.Text = "⏳ Unverified";
+                _lblVerificationBadge.BackColor = Color.FromArgb(70, 48, 15);
+                _lblVerificationBadge.ForeColor = Color.FromArgb(251, 191, 36);
+            }
+
+            try
+            {
+                if (UserSession.UserId > 0)
+                {
+                    MySqlConnection conn = DatabaseHelper.GetConnection();
+                    MySqlCommand cmd = new MySqlCommand();
+                    conn.Open();
+                    cmd.CommandText = "SELECT VerificationDocName FROM tbl_users WHERE UserId = @uid LIMIT 1";
+                    cmd.Connection = conn;
+                    cmd.Parameters.AddWithValue("@uid", UserSession.UserId);
+                    object? docName = cmd.ExecuteScalar();
+                    conn.Close();
+
+                    if (docName != null && docName != DBNull.Value && !string.IsNullOrWhiteSpace(docName.ToString()))
+                    {
+                        _btnUploadVerification.Text = "📄 Update Regform / ID";
+                    }
+                    else
+                    {
+                        _btnUploadVerification.Text = "📄 Upload Regform / ID";
+                    }
+                }
+            }
+            catch
+            {
+            }
+
+            LayoutHeaderBadges();
+        }
+
+        private void BtnUploadVerification_Click(object? sender, EventArgs e)
+        {
+            if (UserSession.UserId <= 0)
+            {
+                MessageBox.Show("User session is not valid. Please log in again.", "Session Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            using OpenFileDialog ofd = new OpenFileDialog
+            {
+                Title = "Select Registration Form or Student ID Picture",
+                Filter = "Images & PDF (*.jpg;*.jpeg;*.png;*.bmp;*.pdf)|*.jpg;*.jpeg;*.png;*.bmp;*.pdf"
+            };
+
+            if (ofd.ShowDialog(this) != DialogResult.OK) return;
+
+            try
+            {
+                System.IO.FileInfo fi = new System.IO.FileInfo(ofd.FileName);
+                if (fi.Length > 5 * 1024 * 1024)
+                {
+                    MessageBox.Show("File is too large. Please upload a file smaller than 5 MB.", "File Too Large", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                byte[] fileBytes = System.IO.File.ReadAllBytes(ofd.FileName);
+                string fileName = fi.Name;
+
+                MySqlConnection conn = DatabaseHelper.GetConnection();
+                MySqlCommand cmd = new MySqlCommand();
+                conn.Open();
+                cmd.CommandText = "UPDATE tbl_users SET VerificationDocument = @doc, VerificationDocName = @name WHERE UserId = @uid";
+                cmd.Connection = conn;
+                cmd.Parameters.Add("@doc", MySqlDbType.LongBlob).Value = fileBytes;
+                cmd.Parameters.AddWithValue("@name", fileName);
+                cmd.Parameters.AddWithValue("@uid", UserSession.UserId);
+                cmd.ExecuteNonQuery();
+                conn.Close();
+
+                RefreshVerificationStatusUI();
+                MessageBox.Show("Verification document uploaded! An Admin will review it shortly.", "Uploaded", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Could not upload document:\n{ex.Message}", "Upload Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void LayoutHeaderBadges()
+        {
+            if (_lblVerificationBadge == null || _btnUploadVerification == null || pnlUserBadge == null) return;
+
+            _lblVerificationBadge.Location = new Point(
+                pnlUserBadge.Left - _lblVerificationBadge.Width - 12,
+                pnlUserBadge.Top + (pnlUserBadge.Height - _lblVerificationBadge.Height) / 2);
+
+            _btnUploadVerification.Location = new Point(
+                _lblVerificationBadge.Left - _btnUploadVerification.Width - 12,
+                pnlUserBadge.Top + (pnlUserBadge.Height - _btnUploadVerification.Height) / 2);
+        }
+
         public void LoadDashboardData()
         {
             lblUserName.Text = CurrentStudentName;
+            RefreshVerificationStatusUI();
 
             // Load Known Skills (Bio Inventory) independently so metrics errors never block it
             LoadKnownSkills();
@@ -127,7 +279,7 @@ namespace Co_LAB
 
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 MySqlCommand cmd = new MySqlCommand();
                 DataSet ds = new DataSet();
                 MySqlDataAdapter da = new MySqlDataAdapter();
@@ -150,7 +302,7 @@ namespace Co_LAB
                 lblCard1Value.Text = count.ToString();
             }
             catch (Exception ex)
-            {
+{
                 System.Diagnostics.Debug.WriteLine($"Error loading known skills: {ex.Message}");
                 BindMySkillsGrid(null);
             }
@@ -168,7 +320,7 @@ namespace Co_LAB
 
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 conn.Open();
 
                 // 1. Pending Incoming Requests (targeted at this student's skills)
@@ -239,7 +391,7 @@ namespace Co_LAB
                 conn.Close();
             }
             catch (Exception ex)
-            {
+{
                 System.Diagnostics.Debug.WriteLine($"Error loading trade metrics: {ex.Message}");
             }
 
@@ -290,11 +442,46 @@ namespace Co_LAB
 
         private void btnAddSkill_Click(object sender, EventArgs e)
         {
+            ValidationHelper.ClearAll(_errorProvider);
             string skillName = txtSkillName.Text.Trim();
-            if (string.IsNullOrWhiteSpace(skillName))
+            Control? firstInvalid = null;
+
+            if (string.IsNullOrWhiteSpace(skillName) || skillName.Length < 2 || skillName.Length > 100)
             {
-                MessageBox.Show("Please enter a skill name that you know (e.g. C# Programming, Guitar, Calculus).", "Missing Skill", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtSkillName.Focus();
+                ValidationHelper.SetError(_errorProvider, txtSkillName, "Enter a skill name (2–100 characters).");
+                firstInvalid ??= txtSkillName;
+            }
+            else
+            {
+                foreach (DataGridViewRow r in dgvMySkills.Rows)
+                {
+                    string existingName = r.Cells["SkillName"]?.Value?.ToString()
+                        ?? r.Cells[1]?.Value?.ToString()
+                        ?? string.Empty;
+                    if (string.Equals(existingName.Trim(), skillName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        ValidationHelper.SetError(_errorProvider, txtSkillName, "You already added this skill to your bio.");
+                        firstInvalid ??= txtSkillName;
+                        break;
+                    }
+                }
+            }
+
+            if (cmbCategory.SelectedIndex < 0)
+            {
+                ValidationHelper.SetError(_errorProvider, cmbCategory, "Please select a category.");
+                firstInvalid ??= cmbCategory;
+            }
+
+            if (cmbProficiency.SelectedIndex < 0)
+            {
+                ValidationHelper.SetError(_errorProvider, cmbProficiency, "Please select a proficiency level.");
+                firstInvalid ??= cmbProficiency;
+            }
+
+            if (firstInvalid != null)
+            {
+                firstInvalid.Focus();
                 return;
             }
 
@@ -303,7 +490,7 @@ namespace Co_LAB
             {
                 try
                 {
-                    using MySqlConnection lookupConn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                    using MySqlConnection lookupConn = DatabaseHelper.GetConnection();
                     MySqlCommand lookupCmd = new MySqlCommand();
                     lookupConn.Open();
                     lookupCmd.CommandText = "SELECT UserId FROM tbl_users WHERE FullName = @name LIMIT 1";
@@ -331,7 +518,7 @@ namespace Co_LAB
 
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 MySqlCommand cmd = new MySqlCommand();
                 conn.Open();
                 cmd.CommandText = "INSERT INTO tbl_user_skills (UserId, SkillName, Category, ProficiencyLevel) VALUES (@uid, @name, @cat, @level)";
@@ -351,7 +538,7 @@ namespace Co_LAB
                 }
             }
             catch (Exception ex)
-            {
+{
                 MessageBox.Show($"Could not add skill to database: {ex.Message}", "Database Notice", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
@@ -389,7 +576,7 @@ namespace Co_LAB
 
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 MySqlCommand cmd = new MySqlCommand();
                 conn.Open();
                 cmd.CommandText = "DELETE FROM tbl_user_skills WHERE UserSkillId = @id";
@@ -405,7 +592,7 @@ namespace Co_LAB
                 }
             }
             catch (Exception ex)
-            {
+{
                 MessageBox.Show($"Could not remove skill from database: {ex.Message}", "Database Notice", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
@@ -442,7 +629,7 @@ namespace Co_LAB
 
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 conn.Open();
 
                 MySqlCommand cmd = new MySqlCommand();
@@ -478,7 +665,7 @@ namespace Co_LAB
                 }
             }
             catch (Exception ex)
-            {
+{
                 MessageBox.Show($"Could not update trade request in database: {ex.Message}", "Database Notice", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
@@ -510,7 +697,7 @@ namespace Co_LAB
 
             try
             {
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 conn.Open();
 
                 MySqlCommand cmd = new MySqlCommand();
@@ -552,7 +739,7 @@ namespace Co_LAB
                 }
             }
             catch (Exception ex)
-            {
+{
                 MessageBox.Show($"Could not update trade request in database: {ex.Message}", "Database Notice", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
@@ -601,6 +788,9 @@ namespace Co_LAB
             int padding = 24;
             int availWidth = Math.Max(902, ClientSize.Width - (padding * 2) - (VScroll ? SystemInformation.VerticalScrollBarWidth : 0));
 
+            pnlUserBadge.Location = new Point(padding + availWidth - pnlUserBadge.Width, 18);
+            LayoutHeaderBadges();
+
             // 1. Stat cards: 4 columns
             int cardGap = 16;
             int cardWidth = (availWidth - (cardGap * 3)) / 4;
@@ -636,28 +826,41 @@ namespace Co_LAB
 
             // 3. Row 3: Incoming & My Skills
             int halfWidth = (availWidth - cardGap) / 2;
+            int bottomHeight = Math.Max(340, ClientSize.Height - 312 - padding);
+
             pnlIncoming.Location = new Point(padding, 312);
             pnlIncoming.Width = halfWidth;
+            pnlIncoming.Height = bottomHeight;
 
+            lblIncomingSub.Location = new Point(lblIncomingTitle.Right + 8, lblIncomingTitle.Top + 3);
             btnAccept.Left = pnlIncoming.Width - 14 - btnAccept.Width;
             btnDecline.Left = pnlIncoming.Width - 14 - btnDecline.Width;
             dgvIncoming.Width = Math.Max(200, btnAccept.Left - 24);
+            dgvIncoming.Height = Math.Max(180, pnlIncoming.Height - dgvIncoming.Top - 16);
 
             pnlMySkills.Location = new Point(pnlIncoming.Right + cardGap, 312);
             pnlMySkills.Width = availWidth - halfWidth - cardGap;
+            pnlMySkills.Height = bottomHeight;
+
+            lblMySkillsSub.Location = new Point(lblMySkillsTitle.Right + 8, lblMySkillsTitle.Top + 3);
 
             int rightWidth = 154;
-            int leftWidth = Math.Max(150, pnlMySkills.Width - 14 - 10 - rightWidth - 14);
+            int epGap = 26;
+            int leftWidth = Math.Max(140, pnlMySkills.Width - 14 - epGap - rightWidth - epGap);
             txtSkillName.Width = leftWidth;
             cmbCategory.Width = leftWidth;
-            cmbProficiency.Left = txtSkillName.Right + 10;
+            cmbProficiency.Left = txtSkillName.Right + epGap;
             cmbProficiency.Width = rightWidth;
-            btnAddSkill.Left = cmbCategory.Right + 10;
+            btnAddSkill.Left = cmbCategory.Right + epGap;
             btnAddSkill.Width = rightWidth;
 
-            dgvMySkills.Width = Math.Max(200, pnlMySkills.Width - 28);
+            btnOfferInMarket.Top = pnlMySkills.Height - 14 - btnOfferInMarket.Height;
+            btnDeleteSkill.Top = btnOfferInMarket.Top;
             btnOfferInMarket.Left = pnlMySkills.Width - 14 - btnOfferInMarket.Width;
             btnDeleteSkill.Left = 14;
+
+            dgvMySkills.Width = Math.Max(200, pnlMySkills.Width - 28);
+            dgvMySkills.Height = Math.Max(120, btnOfferInMarket.Top - dgvMySkills.Top - 10);
 
             Invalidate(true);
         }

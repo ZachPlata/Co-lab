@@ -52,7 +52,7 @@ namespace Co_LAB
             // uc_SentRequests
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
+            AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.FromArgb(14, 20, 16);
             Controls.Add(lblEmpty);
             Controls.Add(flpRequests);

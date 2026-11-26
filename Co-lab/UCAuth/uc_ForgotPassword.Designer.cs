@@ -456,7 +456,7 @@ namespace Co_LAB.UCAuth
             // uc_ForgotPassword
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
+            AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.FromArgb(14, 20, 16);
             Controls.Add(pnlCenter);
             Name = "uc_ForgotPassword";

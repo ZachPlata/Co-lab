@@ -30,10 +30,12 @@ namespace Co_LAB.UCStudents
             // 
             // lblCategoryBadge
             // 
+            lblCategoryBadge.AutoEllipsis = true;
             lblCategoryBadge.AutoSize = true;
             lblCategoryBadge.Font = new Font("Segoe UI Semibold", 7.5F, FontStyle.Bold);
             lblCategoryBadge.ForeColor = Color.FromArgb(74, 222, 128);
             lblCategoryBadge.Location = new Point(14, 12);
+            lblCategoryBadge.MaximumSize = new Size(155, 20);
             lblCategoryBadge.Name = "lblCategoryBadge";
             lblCategoryBadge.Size = new Size(55, 12);
             lblCategoryBadge.TabIndex = 0;
@@ -142,7 +144,7 @@ namespace Co_LAB.UCStudents
             // uc_SkillCard
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
+            AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.FromArgb(20, 28, 23);
             Controls.Add(btnReport);
             Controls.Add(btnRequestTrade);

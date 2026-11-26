@@ -11,11 +11,35 @@ namespace Co_LAB
         public static string CurrentStudentName { get; set; } = string.Empty;
 
         private System.Windows.Forms.Timer _notifTimer = null!;
+        private bool _wasVerified = UserSession.IsVerified;
 
         public StudentMainForm()
         {
             InitializeComponent();
             this.FormClosing += StudentMainForm_FormClosing;
+            pnlHeader.Resize += (s, e) => LayoutHeaderControls();
+        }
+
+        private void LayoutHeaderControls()
+        {
+            if (pnlHeader == null || btnNotificationBell == null || lblWelcome == null) return;
+
+            lblWelcome.AutoEllipsis = true;
+            lblWelcome.MaximumSize = new Size(280, 28);
+
+            int rightMargin = 24;
+            lblWelcome.Location = new Point(
+                Math.Max(lblHeaderTitle.Right + 16, pnlHeader.ClientSize.Width - lblWelcome.Width - rightMargin),
+                (pnlHeader.Height - lblWelcome.Height) / 2);
+
+            btnNotificationBell.Location = new Point(
+                Math.Max(lblHeaderTitle.Right + 16, lblWelcome.Left - btnNotificationBell.Width - 16),
+                (pnlHeader.Height - btnNotificationBell.Height) / 2);
+
+            if (_lblDbStatusPill != null)
+            {
+                _lblDbStatusPill.Location = new Point(lblHeaderTitle.Right + 16, (pnlHeader.Height - _lblDbStatusPill.Height) / 2);
+            }
         }
 
         private void StudentMainForm_Load(object sender, EventArgs e)
@@ -26,11 +50,20 @@ namespace Co_LAB
             lblWelcome.Text = $"Welcome, {CurrentStudentName}";
             btn_UserDashboard.Text = $"👤 {CurrentStudentName} (Dashboard)";
 
+            InitializeStatusBanners();
+            LayoutHeaderControls();
+
             // Initialize notifications UI
             InitializeNotificationUI();
 
             // Activate User Dashboard first so students can review/add their known skills
             btn_UserDashboard.PerformClick();
+        }
+
+        private void InitializeStatusBanners()
+        {
+            _pnlVerificationBanner.Visible = !UserSession.IsVerified;
+            _lblDbStatusPill.BringToFront();
         }
 
         private void InitializeNotificationUI()
@@ -56,20 +89,70 @@ namespace Co_LAB
             };
             _notifTimer.Tick += (s, e) =>
             {
-                UserSession.Heartbeat();
-                CheckNotifications();
+                HandleHeartbeatAndNotifications();
             };
             _notifTimer.Start();
 
             // Initial heartbeat, sync & check
-            UserSession.Heartbeat();
+            HandleHeartbeatAndNotifications();
             NotificationHelper.SyncExistingPendingNotifications();
-            CheckNotifications();
+        }
+
+        private void HandleHeartbeatAndNotifications()
+        {
+            HeartbeatResult hb = UserSession.Heartbeat(out string banReason);
+            if (hb == HeartbeatResult.Blacklisted)
+            {
+                _notifTimer?.Stop();
+                string msg = string.IsNullOrWhiteSpace(banReason)
+                    ? "Your account has been suspended by an Administrator."
+                    : $"Your account has been suspended by an Administrator.\n\nReason: {banReason}";
+                MessageBox.Show(msg, "Account Suspended", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                UserSession.SignedOut = true;
+                UserSession.EndSession();
+                Close();
+                return;
+            }
+            if (hb == HeartbeatResult.SessionInvalid)
+            {
+                _notifTimer?.Stop();
+                MessageBox.Show("Your session has ended because your account was signed in elsewhere or reset.",
+                    "Session Ended", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                UserSession.SignedOut = true;
+                UserSession.Clear();
+                Close();
+                return;
+            }
+
+            if (_lblDbStatusPill != null)
+            {
+                _lblDbStatusPill.Visible = hb == HeartbeatResult.Offline;
+            }
+
+            if (_pnlVerificationBanner != null)
+            {
+                _pnlVerificationBanner.Visible = !UserSession.IsVerified;
+                if (UserSession.IsVerified && !_wasVerified)
+                {
+                    _wasVerified = true;
+                    if (panelContent.Controls.Count > 0 && panelContent.Controls[0] is uc_ManageSkills ms)
+                        ms.LoadMyListings();
+                    else if (panelContent.Controls.Count > 0 && panelContent.Controls[0] is uc_UserDashboard ud)
+                        ud.LoadDashboardData();
+                }
+            }
+
+            if (hb == HeartbeatResult.Ok)
+            {
+                CheckNotifications();
+            }
         }
 
         private void BtnNotificationBell_Click(object? sender, EventArgs e)
         {
-            _notificationPanel.Location = new Point(Width - 400, pnlHeader.Bottom + 2);
+            int bellRightOnForm = pnlSidebar.Width + btnNotificationBell.Right;
+            int panelX = Math.Max(8, Math.Min(bellRightOnForm - _notificationPanel.Width, ClientSize.Width - _notificationPanel.Width - 16));
+            _notificationPanel.Location = new Point(panelX, pnlHeader.Bottom + 2);
             _notificationPanel.Visible = !_notificationPanel.Visible;
             if (_notificationPanel.Visible)
             {
@@ -99,7 +182,7 @@ namespace Co_LAB
                 }
 
                 // Update sidebar badge for pending incoming requests
-                using MySqlConnection conn = new MySqlConnection("server=localhost; database=db_colab; uid=root");
+                using MySqlConnection conn = DatabaseHelper.GetConnection();
                 MySqlCommand cmd = new MySqlCommand();
                 conn.Open();
                 cmd.CommandText = @"SELECT COUNT(*) FROM tbl_traderequests r 
@@ -126,7 +209,13 @@ namespace Co_LAB
                     btn_TradeRequests.Text = "Trade Requests";
                 }
             }
-            catch { }
+            catch (MySqlException)
+            {
+                if (_lblDbStatusPill != null) _lblDbStatusPill.Visible = true;
+            }
+            catch
+            {
+            }
         }
 
         // ==========================================
