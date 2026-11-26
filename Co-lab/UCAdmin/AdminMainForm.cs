@@ -180,24 +180,33 @@ namespace Co_LAB
         // SIDEBAR BUTTON CLICK EVENTS (TRANSITIONS)
         // ==========================================
 
-        private void LoadContentControl(UserControl control)
+        private void LoadContentControl(Func<UserControl> createControl)
         {
-            for (int i = panelContent.Controls.Count - 1; i >= 0; i--)
+            using (LoadingOverlay.ShowOver(panelContent))
             {
-                Control old = panelContent.Controls[i];
-                panelContent.Controls.RemoveAt(i);
-                old.Dispose();
-            }
+                panelContent.SuspendLayout();
+                for (int i = panelContent.Controls.Count - 1; i >= 0; i--)
+                {
+                    Control old = panelContent.Controls[i];
+                    panelContent.Controls.RemoveAt(i);
+                    old.Dispose();
+                }
 
-            control.Dock = DockStyle.Fill;
-            panelContent.Controls.Add(control);
-            control.Show();
+                UserControl control = createControl();
+                control.Dock = DockStyle.Fill;
+                panelContent.Controls.Add(control);
+                control.Show();
+                panelContent.ResumeLayout(true);
+                panelContent.PerformLayout();
+                control.Refresh();
+                panelContent.Update();
+            }
         }
 
         private void btn_AdminDashboard_Click(object sender, EventArgs e)
         {
             _notificationPanel?.Hide();
-            LoadContentControl(new uc_AdminDashboard());
+            LoadContentControl(() => new uc_AdminDashboard());
             SetActiveButton(btn_AdminDashboard);
             lblHeaderTitle.Text = "Admin Dashboard";
         }
@@ -205,7 +214,7 @@ namespace Co_LAB
         private void btn_StudentLists_Click(object? sender, EventArgs e)
         {
             _notificationPanel?.Hide();
-            LoadContentControl(new uc_StudentLists());
+            LoadContentControl(() => new uc_StudentLists());
             SetActiveButton(btn_StudentLists);
             lblHeaderTitle.Text = "Student & User Lists";
         }
@@ -213,7 +222,7 @@ namespace Co_LAB
         private void btn_StudentVerification_Click(object? sender, EventArgs e)
         {
             _notificationPanel?.Hide();
-            LoadContentControl(new uc_StudentVerification());
+            LoadContentControl(() => new uc_StudentVerification());
             SetActiveButton(btn_StudentVerification);
             lblHeaderTitle.Text = "Student Verification";
         }
@@ -221,7 +230,7 @@ namespace Co_LAB
         private void btn_SkillCategories_Click(object sender, EventArgs e)
         {
             _notificationPanel?.Hide();
-            LoadContentControl(new uc_SkillCategories());
+            LoadContentControl(() => new uc_SkillCategories());
             SetActiveButton(btn_SkillCategories);
             lblHeaderTitle.Text = "Skill Categories Creation";
         }
@@ -229,7 +238,7 @@ namespace Co_LAB
         private void btn_ModerateListings_Click(object sender, EventArgs e)
         {
             _notificationPanel?.Hide();
-            LoadContentControl(new uc_ModerateListings());
+            LoadContentControl(() => new uc_ModerateListings());
             SetActiveButton(btn_ModerateListings);
             lblHeaderTitle.Text = "Moderate Skill Listings";
         }
@@ -237,7 +246,7 @@ namespace Co_LAB
         private void btn_ReportedStudents_Click(object sender, EventArgs e)
         {
             _notificationPanel?.Hide();
-            LoadContentControl(new uc_ReportedStudents());
+            LoadContentControl(() => new uc_ReportedStudents());
             SetActiveButton(btn_ReportedStudents);
             lblHeaderTitle.Text = "Reports & Blacklist";
             CheckNotifications();

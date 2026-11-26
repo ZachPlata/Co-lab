@@ -44,29 +44,39 @@ namespace Co_LAB
             }
         }
 
-        private void LoadView(UserControl uc)
+        private void LoadView(Func<UserControl> createUc)
         {
-            for (int i = panel1.Controls.Count - 1; i >= 0; i--)
+            using (LoadingOverlay.ShowOver(panel1))
             {
-                Control old = panel1.Controls[i];
-                panel1.Controls.RemoveAt(i);
-                old.Dispose();
+                panel1.SuspendLayout();
+                for (int i = panel1.Controls.Count - 1; i >= 0; i--)
+                {
+                    Control old = panel1.Controls[i];
+                    panel1.Controls.RemoveAt(i);
+                    old.Dispose();
+                }
+
+                UserControl uc = createUc();
+                uc.Dock = DockStyle.Fill;
+                panel1.Controls.Add(uc);
+                uc.Show();
+                panel1.ResumeLayout(true);
+                panel1.PerformLayout();
+                uc.Refresh();
+                panel1.Update();
             }
-            uc.Dock = DockStyle.Fill;
-            panel1.Controls.Add(uc);
-            uc.Show();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             SetActiveButton(button1);
-            LoadView(new uc_IncomingRequests());
+            LoadView(() => new uc_IncomingRequests());
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             SetActiveButton(button2);
-            LoadView(new uc_SentRequests());
+            LoadView(() => new uc_SentRequests());
         }
 
         private void panel1_Paint(object sender, PaintEventArgs e)

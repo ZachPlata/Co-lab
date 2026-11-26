@@ -61,6 +61,9 @@ namespace Co_LAB
             txtLocation.Location = new Point(cmbDeliveryMode.Right + gap, 59);
             txtLocation.Width = locWidth;
             lblLocation.Location = new Point(txtLocation.Left, 39);
+
+            cmbKnownSkills.Refresh();
+            cmbDeliveryMode.Refresh();
         }
 
         private void uc_ManageSkills_Load(object sender, EventArgs e)

@@ -231,24 +231,33 @@ namespace Co_LAB
         // SIDEBAR BUTTON CLICK EVENTS (TRANSITIONS)
         // ==========================================
 
-        private void LoadContentControl(UserControl control)
+        private void LoadContentControl(Func<UserControl> createControl)
         {
-            for (int i = panelContent.Controls.Count - 1; i >= 0; i--)
+            using (LoadingOverlay.ShowOver(panelContent))
             {
-                Control old = panelContent.Controls[i];
-                panelContent.Controls.RemoveAt(i);
-                old.Dispose();
-            }
+                panelContent.SuspendLayout();
+                for (int i = panelContent.Controls.Count - 1; i >= 0; i--)
+                {
+                    Control old = panelContent.Controls[i];
+                    panelContent.Controls.RemoveAt(i);
+                    old.Dispose();
+                }
 
-            control.Dock = DockStyle.Fill;
-            panelContent.Controls.Add(control);
-            control.Show();
+                UserControl control = createControl();
+                control.Dock = DockStyle.Fill;
+                panelContent.Controls.Add(control);
+                control.Show();
+                panelContent.ResumeLayout(true);
+                panelContent.PerformLayout();
+                control.Refresh();
+                panelContent.Update();
+            }
         }
 
         private void btn_SkillExchange_Click(object sender, EventArgs e)
         {
             _notificationPanel?.Hide();
-            LoadContentControl(new uc_SkillExchange());
+            LoadContentControl(() => new uc_SkillExchange());
             SetActiveButton(btn_SkillExchange);
             lblHeaderTitle.Text = "Skill Exchange";
         }
@@ -256,7 +265,7 @@ namespace Co_LAB
         private void btn_ManageSkills_Click(object sender, EventArgs e)
         {
             _notificationPanel?.Hide();
-            LoadContentControl(new uc_ManageSkills());
+            LoadContentControl(() => new uc_ManageSkills());
             SetActiveButton(btn_ManageSkills);
             lblHeaderTitle.Text = "My Listings";
         }
@@ -264,7 +273,7 @@ namespace Co_LAB
         private void btn_TradeRequests_Click(object sender, EventArgs e)
         {
             _notificationPanel?.Hide();
-            LoadContentControl(new uc_TradeRequests());
+            LoadContentControl(() => new uc_TradeRequests());
             SetActiveButton(btn_TradeRequests);
             lblHeaderTitle.Text = "Trade Requests";
             CheckNotifications();
@@ -273,7 +282,7 @@ namespace Co_LAB
         private void btn_UserDashboard_Click(object sender, EventArgs e)
         {
             _notificationPanel?.Hide();
-            LoadContentControl(new uc_UserDashboard
+            LoadContentControl(() => new uc_UserDashboard
             {
                 CurrentStudentName = CurrentStudentName
             });

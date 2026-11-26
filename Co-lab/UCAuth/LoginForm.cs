@@ -28,6 +28,7 @@ namespace Co_LAB
                 panelContent.Controls.RemoveAt(i);
                 old.Dispose();
             }
+
             uc.Dock = DockStyle.Fill;
             panelContent.Controls.Add(uc);
             uc.Show();
