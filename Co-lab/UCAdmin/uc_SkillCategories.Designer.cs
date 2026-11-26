@@ -39,11 +39,11 @@ namespace Co_LAB
             lblTotalTagged = new Label();
             lblHint = new Label();
             dgvCategories = new DataGridView();
+            txtSearch = new TextBox();
+            lblExistingTitle = new Label();
             colId = new DataGridViewTextBoxColumn();
             colName = new DataGridViewTextBoxColumn();
             colDesc = new DataGridViewTextBoxColumn();
-            txtSearch = new TextBox();
-            lblExistingTitle = new Label();
             pnlAdminBadge.SuspendLayout();
             pnlCategoryDetails.SuspendLayout();
             pnlExistingCategories.SuspendLayout();
@@ -346,33 +346,6 @@ namespace Co_LAB
             dgvCategories.CellContentClick += dgvCategories_CellContentClick;
             dgvCategories.SelectionChanged += dgvCategories_SelectionChanged;
             // 
-            // colId
-            // 
-            colId.DataPropertyName = "CategoryId";
-            colId.HeaderText = "ID";
-            colId.MinimumWidth = 6;
-            colId.Name = "colId";
-            colId.ReadOnly = true;
-            colId.Width = 45;
-            // 
-            // colName
-            // 
-            colName.DataPropertyName = "CategoryName";
-            colName.HeaderText = "Category Name";
-            colName.MinimumWidth = 6;
-            colName.Name = "colName";
-            colName.ReadOnly = true;
-            colName.Width = 145;
-            // 
-            // colDesc
-            // 
-            colDesc.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            colDesc.DataPropertyName = "Description";
-            colDesc.HeaderText = "Description";
-            colDesc.MinimumWidth = 6;
-            colDesc.Name = "colDesc";
-            colDesc.ReadOnly = true;
-            // 
             // txtSearch
             // 
             txtSearch.Anchor = AnchorStyles.Top | AnchorStyles.Right;
@@ -398,9 +371,35 @@ namespace Co_LAB
             lblExistingTitle.TabIndex = 0;
             lblExistingTitle.Text = "Existing Categories (0)";
             // 
+            // colId
+            // 
+            colId.DataPropertyName = "CategoryId";
+            colId.HeaderText = "ID";
+            colId.MinimumWidth = 6;
+            colId.Name = "colId";
+            colId.ReadOnly = true;
+            colId.Width = 45;
+            // 
+            // colName
+            // 
+            colName.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colName.DataPropertyName = "CategoryName";
+            colName.HeaderText = "Category Name";
+            colName.MinimumWidth = 6;
+            colName.Name = "colName";
+            colName.ReadOnly = true;
+            // 
+            // colDesc
+            // 
+            colDesc.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colDesc.DataPropertyName = "Description";
+            colDesc.HeaderText = "Description";
+            colDesc.MinimumWidth = 6;
+            colDesc.Name = "colDesc";
+            colDesc.ReadOnly = true;
+            // 
             // uc_SkillCategories
             // 
-            AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.FromArgb(14, 20, 16);
             Controls.Add(pnlExistingCategories);
@@ -445,10 +444,10 @@ namespace Co_LAB
         private Label lblExistingTitle;
         private TextBox txtSearch;
         private DataGridView dgvCategories;
+        private Label lblHint;
+        private Label lblTotalTagged;
         private DataGridViewTextBoxColumn colId;
         private DataGridViewTextBoxColumn colName;
         private DataGridViewTextBoxColumn colDesc;
-        private Label lblHint;
-        private Label lblTotalTagged;
     }
 }

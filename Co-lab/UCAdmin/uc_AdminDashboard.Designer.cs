@@ -63,8 +63,6 @@ namespace Co_LAB
             colPendingId = new DataGridViewTextBoxColumn();
             colPendingName = new DataGridViewTextBoxColumn();
             colPendingEmail = new DataGridViewTextBoxColumn();
-            colPendingApprove = new DataGridViewButtonColumn();
-            colPendingDecline = new DataGridViewButtonColumn();
 
             pnlBlacklisted = new Panel();
             lblBlacklistedTitle = new Label();
@@ -72,7 +70,6 @@ namespace Co_LAB
             colBlacklistId = new DataGridViewTextBoxColumn();
             colBlacklistName = new DataGridViewTextBoxColumn();
             colBlacklistReason = new DataGridViewTextBoxColumn();
-            colBlacklistUnban = new DataGridViewButtonColumn();
 
             pnlDeclined = new Panel();
             lblDeclinedTitle = new Label();
@@ -91,8 +88,6 @@ namespace Co_LAB
             colReason = new DataGridViewTextBoxColumn();
             colDate = new DataGridViewTextBoxColumn();
             colStatus = new DataGridViewTextBoxColumn();
-            colBlacklist = new DataGridViewButtonColumn();
-            colDismiss = new DataGridViewButtonColumn();
 
             dgvHeaderStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dgvHeaderStyle.BackColor = Color.FromArgb(20, 28, 23);
@@ -527,20 +522,19 @@ namespace Co_LAB
             dgv_PendingStudentVerification.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
             dgv_PendingStudentVerification.ColumnHeadersDefaultCellStyle = dgvHeaderStyle;
             dgv_PendingStudentVerification.ColumnHeadersHeight = 32;
-            dgv_PendingStudentVerification.Columns.AddRange(new DataGridViewColumn[] { colPendingId, colPendingName, colPendingEmail, colPendingApprove, colPendingDecline });
+            dgv_PendingStudentVerification.Columns.AddRange(new DataGridViewColumn[] { colPendingId, colPendingName, colPendingEmail });
             dgv_PendingStudentVerification.DefaultCellStyle = dgvRowStyle;
             dgv_PendingStudentVerification.EnableHeadersVisualStyles = false;
             dgv_PendingStudentVerification.GridColor = Color.FromArgb(30, 44, 34);
             dgv_PendingStudentVerification.Location = new Point(16, 42);
             dgv_PendingStudentVerification.MultiSelect = false;
             dgv_PendingStudentVerification.Name = "dgv_PendingStudentVerification";
+            dgv_PendingStudentVerification.ReadOnly = true;
             dgv_PendingStudentVerification.RowHeadersVisible = false;
             dgv_PendingStudentVerification.RowTemplate.Height = 32;
             dgv_PendingStudentVerification.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgv_PendingStudentVerification.Size = new Size(522, 145);
             dgv_PendingStudentVerification.TabIndex = 1;
-            dgv_PendingStudentVerification.CellContentClick += dgv_PendingStudentVerification_CellContentClick;
-            dgv_PendingStudentVerification.CellFormatting += DgvApprove_CellFormatting;
 
             colPendingId.HeaderText = "ID";
             colPendingId.Name = "colPendingId";
@@ -548,27 +542,12 @@ namespace Co_LAB
 
             colPendingName.HeaderText = "Student Name";
             colPendingName.Name = "colPendingName";
-            colPendingName.Width = 160;
+            colPendingName.Width = 180;
 
             colPendingEmail.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             colPendingEmail.HeaderText = "Email Address";
             colPendingEmail.MinimumWidth = 140;
             colPendingEmail.Name = "colPendingEmail";
-
-            colPendingApprove.DefaultCellStyle = approveBtnStyle;
-            colPendingApprove.FlatStyle = FlatStyle.Flat;
-            colPendingApprove.HeaderText = "Approve";
-            colPendingApprove.Name = "colPendingApprove";
-            colPendingApprove.Text = "✓ Approve";
-            colPendingApprove.UseColumnTextForButtonValue = true;
-            colPendingApprove.Width = 85;
-
-            colPendingDecline.FlatStyle = FlatStyle.Flat;
-            colPendingDecline.HeaderText = "Decline";
-            colPendingDecline.Name = "colPendingDecline";
-            colPendingDecline.Text = "✗ Decline";
-            colPendingDecline.UseColumnTextForButtonValue = true;
-            colPendingDecline.Width = 85;
 
             // 
             // pnlBlacklisted
@@ -607,19 +586,19 @@ namespace Co_LAB
             dgv_CurrentlyBlackLister.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
             dgv_CurrentlyBlackLister.ColumnHeadersDefaultCellStyle = dgvHeaderStyle;
             dgv_CurrentlyBlackLister.ColumnHeadersHeight = 32;
-            dgv_CurrentlyBlackLister.Columns.AddRange(new DataGridViewColumn[] { colBlacklistId, colBlacklistName, colBlacklistReason, colBlacklistUnban });
+            dgv_CurrentlyBlackLister.Columns.AddRange(new DataGridViewColumn[] { colBlacklistId, colBlacklistName, colBlacklistReason });
             dgv_CurrentlyBlackLister.DefaultCellStyle = dgvRowStyle;
             dgv_CurrentlyBlackLister.EnableHeadersVisualStyles = false;
             dgv_CurrentlyBlackLister.GridColor = Color.FromArgb(30, 44, 34);
             dgv_CurrentlyBlackLister.Location = new Point(16, 42);
             dgv_CurrentlyBlackLister.MultiSelect = false;
             dgv_CurrentlyBlackLister.Name = "dgv_CurrentlyBlackLister";
+            dgv_CurrentlyBlackLister.ReadOnly = true;
             dgv_CurrentlyBlackLister.RowHeadersVisible = false;
             dgv_CurrentlyBlackLister.RowTemplate.Height = 32;
             dgv_CurrentlyBlackLister.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgv_CurrentlyBlackLister.Size = new Size(408, 155);
             dgv_CurrentlyBlackLister.TabIndex = 1;
-            dgv_CurrentlyBlackLister.CellContentClick += dgv_CurrentlyBlackLister_CellContentClick;
 
             colBlacklistId.HeaderText = "ID";
             colBlacklistId.Name = "colBlacklistId";
@@ -627,20 +606,12 @@ namespace Co_LAB
 
             colBlacklistName.HeaderText = "Student Name";
             colBlacklistName.Name = "colBlacklistName";
-            colBlacklistName.Width = 130;
+            colBlacklistName.Width = 150;
 
             colBlacklistReason.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             colBlacklistReason.HeaderText = "Reason";
             colBlacklistReason.MinimumWidth = 130;
             colBlacklistReason.Name = "colBlacklistReason";
-
-            colBlacklistUnban.DefaultCellStyle = unbanBtnStyle;
-            colBlacklistUnban.FlatStyle = FlatStyle.Flat;
-            colBlacklistUnban.HeaderText = "Action";
-            colBlacklistUnban.Name = "colBlacklistUnban";
-            colBlacklistUnban.Text = "Unban";
-            colBlacklistUnban.UseColumnTextForButtonValue = true;
-            colBlacklistUnban.Width = 75;
 
             // 
             // pnlDeclined
@@ -731,7 +702,7 @@ namespace Co_LAB
             lblReportsTitle.Name = "lblReportsTitle";
             lblReportsTitle.Size = new Size(276, 21);
             lblReportsTitle.TabIndex = 0;
-            lblReportsTitle.Text = "🚩 Report Records & Moderation Actions";
+            lblReportsTitle.Text = "🚩 Recent Report Records";
 
             // 
             // dgvReportRecords
@@ -746,20 +717,19 @@ namespace Co_LAB
             dgvReportRecords.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
             dgvReportRecords.ColumnHeadersDefaultCellStyle = dgvHeaderStyle;
             dgvReportRecords.ColumnHeadersHeight = 32;
-            dgvReportRecords.Columns.AddRange(new DataGridViewColumn[] { colReportId, colReportedUserId, colReportedStudent, colReason, colDate, colStatus, colBlacklist, colDismiss });
+            dgvReportRecords.Columns.AddRange(new DataGridViewColumn[] { colReportId, colReportedUserId, colReportedStudent, colReason, colDate, colStatus });
             dgvReportRecords.DefaultCellStyle = dgvRowStyle;
             dgvReportRecords.EnableHeadersVisualStyles = false;
             dgvReportRecords.GridColor = Color.FromArgb(30, 44, 34);
             dgvReportRecords.Location = new Point(16, 42);
             dgvReportRecords.MultiSelect = false;
             dgvReportRecords.Name = "dgvReportRecords";
+            dgvReportRecords.ReadOnly = true;
             dgvReportRecords.RowHeadersVisible = false;
             dgvReportRecords.RowTemplate.Height = 32;
             dgvReportRecords.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvReportRecords.Size = new Size(888, 195);
             dgvReportRecords.TabIndex = 1;
-            dgvReportRecords.CellContentClick += dgvReportRecords_CellContentClick;
-            dgvReportRecords.CellFormatting += DgvReports_CellFormatting;
 
             colReportId.HeaderText = "ID";
             colReportId.Name = "colReportId";
@@ -784,23 +754,7 @@ namespace Co_LAB
 
             colStatus.HeaderText = "Status";
             colStatus.Name = "colStatus";
-            colStatus.Width = 85;
-
-            colBlacklist.DefaultCellStyle = blacklistBtnStyle;
-            colBlacklist.FlatStyle = FlatStyle.Flat;
-            colBlacklist.HeaderText = "Blacklist";
-            colBlacklist.Name = "colBlacklist";
-            colBlacklist.Text = "Blacklist";
-            colBlacklist.UseColumnTextForButtonValue = true;
-            colBlacklist.Width = 80;
-
-            colDismiss.DefaultCellStyle = dismissBtnStyle;
-            colDismiss.FlatStyle = FlatStyle.Flat;
-            colDismiss.HeaderText = "Dismiss";
-            colDismiss.Name = "colDismiss";
-            colDismiss.Text = "Dismiss";
-            colDismiss.UseColumnTextForButtonValue = true;
-            colDismiss.Width = 75;
+            colStatus.Width = 95;
 
             // 
             // uc_AdminDashboard
@@ -894,8 +848,6 @@ namespace Co_LAB
         private DataGridViewTextBoxColumn colPendingId;
         private DataGridViewTextBoxColumn colPendingName;
         private DataGridViewTextBoxColumn colPendingEmail;
-        private DataGridViewButtonColumn colPendingApprove;
-        private DataGridViewButtonColumn colPendingDecline;
 
         // Blacklisted
         private Panel pnlBlacklisted;
@@ -904,7 +856,6 @@ namespace Co_LAB
         private DataGridViewTextBoxColumn colBlacklistId;
         private DataGridViewTextBoxColumn colBlacklistName;
         private DataGridViewTextBoxColumn colBlacklistReason;
-        private DataGridViewButtonColumn colBlacklistUnban;
 
         // Declined
         private Panel pnlDeclined;
@@ -925,7 +876,5 @@ namespace Co_LAB
         private DataGridViewTextBoxColumn colReason;
         private DataGridViewTextBoxColumn colDate;
         private DataGridViewTextBoxColumn colStatus;
-        private DataGridViewButtonColumn colBlacklist;
-        private DataGridViewButtonColumn colDismiss;
     }
 }
