@@ -11,33 +11,57 @@
 
   <ItemGroup>
     <!-- Forms -->
-    <Compile Update="StudentMainForm.cs">
+    <Compile Update="UCStudents\StudentMainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="StudentMainForm.Designer.cs">
+    <Compile Update="UCStudents\StudentMainForm.Designer.cs">
       <DependentUpon>StudentMainForm.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Update="StudentMainForm.resx">
+    <EmbeddedResource Update="UCStudents\StudentMainForm.resx">
       <DependentUpon>StudentMainForm.cs</DependentUpon>
     </EmbeddedResource>
 
-    <Compile Update="LoginForm.cs">
+    <Compile Update="UCStudents\ReportDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="LoginForm.Designer.cs">
+    <Compile Update="UCStudents\ReportDialog.Designer.cs">
+      <DependentUpon>ReportDialog.cs</DependentUpon>
+    </Compile>
+
+    <Compile Update="UCAdmin\AdminMainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="UCAdmin\AdminMainForm.Designer.cs">
+      <DependentUpon>AdminMainForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="UCAdmin\AdminMainForm.resx">
+      <DependentUpon>AdminMainForm.cs</DependentUpon>
+    </EmbeddedResource>
+
+    <Compile Update="UCAdmin\DeclineReasonDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="UCAdmin\DeclineReasonDialog.Designer.cs">
+      <DependentUpon>DeclineReasonDialog.cs</DependentUpon>
+    </Compile>
+
+    <Compile Update="UCAuth\LoginForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="UCAuth\LoginForm.Designer.cs">
       <DependentUpon>LoginForm.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Update="LoginForm.resx">
+    <EmbeddedResource Update="UCAuth\LoginForm.resx">
       <DependentUpon>LoginForm.cs</DependentUpon>
     </EmbeddedResource>
 
-    <Compile Update="TosDialog.cs">
+    <Compile Update="UCAuth\TosDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="TosDialog.Designer.cs">
+    <Compile Update="UCAuth\TosDialog.Designer.cs">
       <DependentUpon>TosDialog.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Update="TosDialog.resx">
+    <EmbeddedResource Update="UCAuth\TosDialog.resx">
       <DependentUpon>TosDialog.cs</DependentUpon>
     </EmbeddedResource>
 
