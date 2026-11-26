@@ -158,12 +158,20 @@ namespace Co_LAB
                 _lblVerificationBadge.Text = "✓ Verified";
                 _lblVerificationBadge.BackColor = Color.FromArgb(20, 60, 35);
                 _lblVerificationBadge.ForeColor = Color.FromArgb(74, 222, 128);
+                _btnUploadVerification.Visible = true;
+                _btnUploadVerification.Enabled = false;
+                _btnUploadVerification.BackColor = Color.FromArgb(32, 44, 35);
+                _btnUploadVerification.ForeColor = Color.FromArgb(120, 140, 125);
             }
             else
             {
                 _lblVerificationBadge.Text = "⏳ Unverified";
                 _lblVerificationBadge.BackColor = Color.FromArgb(70, 48, 15);
                 _lblVerificationBadge.ForeColor = Color.FromArgb(251, 191, 36);
+                _btnUploadVerification.Visible = true;
+                _btnUploadVerification.Enabled = true;
+                _btnUploadVerification.BackColor = Color.FromArgb(46, 125, 70);
+                _btnUploadVerification.ForeColor = Color.White;
             }
 
             try
@@ -198,6 +206,11 @@ namespace Co_LAB
 
         private void BtnUploadVerification_Click(object? sender, EventArgs e)
         {
+            if (UserSession.IsVerified)
+            {
+                return;
+            }
+
             if (UserSession.UserId <= 0)
             {
                 MessageBox.Show("User session is not valid. Please log in again.", "Session Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -247,6 +260,10 @@ namespace Co_LAB
         private void LayoutHeaderBadges()
         {
             if (_lblVerificationBadge == null || _btnUploadVerification == null || pnlUserBadge == null) return;
+
+            int padding = 24;
+            int availWidth = Math.Max(902, ClientSize.Width - (padding * 2) - (VScroll ? SystemInformation.VerticalScrollBarWidth : 0));
+            pnlUserBadge.Location = new Point(padding + availWidth - pnlUserBadge.Width, 18);
 
             _lblVerificationBadge.Location = new Point(
                 pnlUserBadge.Left - _lblVerificationBadge.Width - 12,

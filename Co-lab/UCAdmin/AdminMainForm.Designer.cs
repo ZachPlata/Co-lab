@@ -404,9 +404,9 @@ namespace Co_LAB
             Controls.Add(panelContent);
             Controls.Add(pnlHeader);
             Controls.Add(pnlSidebar);
-            FormBorderStyle = FormBorderStyle.FixedSingle;
+            FormBorderStyle = FormBorderStyle.Sizable;
             Margin = new Padding(3, 4, 3, 4);
-            MaximizeBox = false;
+            MaximizeBox = true;
             MinimumSize = new Size(1140, 784);
             Name = "AdminMainForm";
             StartPosition = FormStartPosition.CenterScreen;

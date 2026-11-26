@@ -370,8 +370,8 @@ namespace Co_LAB
             Controls.Add(_pnlVerificationBanner);
             Controls.Add(pnlHeader);
             Controls.Add(pnlSidebar);
-            FormBorderStyle = FormBorderStyle.FixedSingle;
-            MaximizeBox = false;
+            FormBorderStyle = FormBorderStyle.Sizable;
+            MaximizeBox = true;
             MinimumSize = new Size(1000, 598);
             Name = "StudentMainForm";
             StartPosition = FormStartPosition.CenterScreen;

@@ -148,16 +148,22 @@ namespace Co_LAB
                         using MemoryStream ms = new MemoryStream(_currentDocBytes);
                         using Image img = Image.FromStream(ms);
                         picDocument.Image = new Bitmap(img);
+                        lblPdfNotice.Visible = false;
                     }
                     catch
                     {
                         picDocument.Image = null;
+                        lblPdfNotice.Text = _currentDocName.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase)
+                            ? "📄 PDF Document Uploaded\n\nClick 'Save / Open Uploaded File' below to view."
+                            : "📄 File Uploaded\n\nClick 'Save / Open Uploaded File' below to view.";
+                        lblPdfNotice.Visible = true;
                     }
                 }
                 else
                 {
                     txtDocName.Text = "No document uploaded";
                     btnDownloadDoc.Enabled = false;
+                    lblPdfNotice.Visible = false;
                 }
             }
             catch (Exception ex)
@@ -204,7 +210,10 @@ namespace Co_LAB
             if (sfd.ShowDialog(this) == DialogResult.OK)
             {
                 File.WriteAllBytes(sfd.FileName, _currentDocBytes);
-                MessageBox.Show($"Saved to:\n{sfd.FileName}", "File Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(sfd.FileName)
+                {
+                    UseShellExecute = true
+                });
             }
         }
 
@@ -304,6 +313,7 @@ namespace Co_LAB
             txtVerificationNote.Text = "";
             picDocument.Image?.Dispose();
             picDocument.Image = null;
+            lblPdfNotice.Visible = false;
             btnDownloadDoc.Enabled = false;
             SetActionMode(false);
         }

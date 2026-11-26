@@ -36,6 +36,7 @@ namespace Co_LAB
             lblDocName = new Label();
             txtDocName = new TextBox();
             picDocument = new PictureBox();
+            lblPdfNotice = new Label();
             btnDownloadDoc = new Button();
             lblNote = new Label();
             txtVerificationNote = new TextBox();
@@ -205,12 +206,26 @@ namespace Co_LAB
 
             picDocument.BackColor = Color.FromArgb(14, 20, 16);
             picDocument.BorderStyle = BorderStyle.FixedSingle;
+            picDocument.Controls.Add(lblPdfNotice);
             picDocument.Location = new Point(20, 210);
             picDocument.Name = "picDocument";
             picDocument.Size = new Size(282, 180);
             picDocument.SizeMode = PictureBoxSizeMode.Zoom;
             picDocument.TabIndex = 7;
             picDocument.TabStop = false;
+
+            lblPdfNotice.BackColor = Color.FromArgb(14, 20, 16);
+            lblPdfNotice.Dock = DockStyle.Fill;
+            lblPdfNotice.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            lblPdfNotice.ForeColor = Color.FromArgb(134, 239, 172);
+            lblPdfNotice.Location = new Point(0, 0);
+            lblPdfNotice.Name = "lblPdfNotice";
+            lblPdfNotice.Padding = new Padding(12);
+            lblPdfNotice.Size = new Size(280, 178);
+            lblPdfNotice.TabIndex = 0;
+            lblPdfNotice.Text = "📄 PDF Document Uploaded\r\n\r\nClick 'Save / Open Uploaded File' below to view.";
+            lblPdfNotice.TextAlign = ContentAlignment.MiddleCenter;
+            lblPdfNotice.Visible = false;
 
             btnDownloadDoc.BackColor = Color.FromArgb(28, 38, 30);
             btnDownloadDoc.Cursor = Cursors.Hand;
@@ -477,6 +492,7 @@ namespace Co_LAB
         private Label lblDocName;
         private TextBox txtDocName;
         private PictureBox picDocument;
+        private Label lblPdfNotice;
         private Button btnDownloadDoc;
         private Label lblNote;
         private TextBox txtVerificationNote;

@@ -123,11 +123,15 @@ namespace Co_LAB
             // 
             // pnlUserBadge
             // 
+            pnlUserBadge.AutoSize = true;
+            pnlUserBadge.AutoSizeMode = AutoSizeMode.GrowOnly;
             pnlUserBadge.BackColor = Color.FromArgb(28, 38, 31);
             pnlUserBadge.Controls.Add(lblUserPrefix);
             pnlUserBadge.Controls.Add(lblUserName);
             pnlUserBadge.Location = new Point(726, 16);
+            pnlUserBadge.MinimumSize = new Size(200, 41);
             pnlUserBadge.Name = "pnlUserBadge";
+            pnlUserBadge.Padding = new Padding(0, 0, 16, 0);
             pnlUserBadge.Size = new Size(200, 41);
             pnlUserBadge.TabIndex = 2;
             pnlUserBadge.Paint += RoundPanel_Paint;
@@ -145,10 +149,12 @@ namespace Co_LAB
             // 
             // lblUserName
             // 
+            lblUserName.AutoEllipsis = true;
             lblUserName.AutoSize = true;
             lblUserName.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             lblUserName.ForeColor = Color.White;
             lblUserName.Location = new Point(48, 10);
+            lblUserName.MaximumSize = new Size(260, 22);
             lblUserName.Name = "lblUserName";
             lblUserName.Size = new Size(107, 19);
             lblUserName.TabIndex = 1;
